@@ -1,0 +1,144 @@
+Metadata-Version: 1.1
+Name: openstacksdk
+Version: 1.0.6
+Summary: An SDK for building applications to work with OpenStack
+Home-page: https://github.com/huaweicloud/huaweicloud-sdk-python
+Author: HUAWEICLOUD
+Author-email: openstack-dev@lists.openstack.org
+License: Apache 2.0
+Description: Python SDK of HUAWEI CLOUD
+        ====================
+        
+        This SDK is under active development, and in the interests of providing
+        a high-quality interface, the APIs provided in this release may differ
+        from those provided in future release.
+        
+        
+        License
+        -------
+        
+        Apache 2.0
+        
+        
+        Copyright
+        ---------
+        
+        Copyright 2017 HuaWei Tld
+        
+        Copyright 2017 OpenStack.org
+        
+        Copyright 2010 Jacob Kaplan-Moss
+        
+        Copyright 2011 Nebula, Inc.
+        
+        2. Grant of Copyright License. Subject to the terms and conditions of
+        copyright license to reproduce, prepare Derivative Works of,
+        publicly display, publicly perform, sublicense, and distribute the
+        (c) You must retain, in the Source form of any Derivative Works
+        You may add Your own copyright statement to Your modifications and
+        may provide additional or different license terms and conditions
+        Copyright (c) 2013 Hewlett-Packard Development Company, L.P.
+        Copyright 2010-2011 OpenStack Foundation
+        
+        Install SDK 
+        ---------
+        
+        git clone https://github.com/huaweicloud/huaweicloud-sdk-python.git
+        
+        cd huaweicloud-sdk-python
+        
+        pip install -r requirements.txt
+        
+        python setup.py install
+        
+        安装完成后，使用python命令，进入python shell，执行下面命令：
+        
+        import openstack
+        
+        查看openstack SDK是否安装成功。若不报错，说明安装成功了。
+        
+        Use SDK
+        ---------
+        
+        ##链接初始化
+        from openstack import connection
+        
+        from openstack import utils
+        
+        username = "yourname"
+        
+        password = "yourpassword"
+        
+        projectId = "yourprojectId"
+        
+        userDomainId = "youruserDomainId"
+        
+        auth_url = "https://iam.cn-north-1.myhuaweicloud.com/v3"
+        
+        conn = connection.Connection(auth_url=auth_url,
+        
+                                     user_domain_id=userDomainId,
+         
+                                     project_id=projectId,
+        
+                                     username=username,
+         
+                                     password=password)
+        
+        
+        
+        
+        ##SDK使用调用
+        data = conn.compute.servers()
+        
+        for i in data:
+        
+            print i
+        
+        
+        增加debug开关
+        ---------
+        
+        import sys
+        
+        
+        from openstack import utils
+        
+        utils.enable_logging(debug=True,stream=sys.stdout)
+        
+        Use SDK exceptions
+        ---------
+        
+        from openstack import exceptions
+        
+        
+        try:
+        
+        
+            get_tag()// your sdk function name
+        
+        
+        except exceptions.HttpException as e:
+        
+        
+            print e.code
+        
+        
+            print e.message
+        
+        
+            print e.details
+        
+        
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.5

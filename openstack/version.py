@@ -13,4 +13,4 @@
 
 import pbr.version
 
-__version__ = pbr.version.VersionInfo('openstacksdk').version_string()
+__version__ = pbr.version.VersionInfo('huaweicloud-sdk-python').version_string()

@@ -12,6 +12,31 @@
 # CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations under the License.
 
+import sys
+import warnings
+
+from openstack import utils
+from openstack import connection
+
+utils.enable_logging(debug=False, stream=sys.stdout)
+warnings.filterwarnings('ignore')
+
+auth_url = '******'
+userDomainId = '******'
+projectId = '******'
+username = '******'
+password = '******'
+
+conn = connection.Connection(
+    auth_url=auth_url,
+    user_domain_id=userDomainId,
+    project_id=projectId,
+    username=username,
+    password=password,
+    verify=False
+)
+
+
 def create_server_ext(conn):
     data = {
         "availability_zone": "az1.dc1",
@@ -176,6 +201,18 @@ def resize_server(conn):
     print ff
 
 
+# New dedicated host ID (only for Elastic Cloud Server on a dedicated host)
+def resize_server_deh(conn):
+    server_id = "b38ce153-5e7f-4560-8617-54d6066bc926"
+    data = {
+        "flavorRef": "c1.2xlarge",
+        "dedicated_host_id": "b38ce153-5e7f-4560-8617-54d6066bc926" # only for Elastic Cloud Server on a dedicated host
+
+    }
+    ff = conn.ecs.resize_server(server_id=server_id, **data)
+    print ff
+
+
 def delete_server(conn):
     data = {
         "servers": [
@@ -246,3 +283,30 @@ def server_action_restart(conn):
     }
     ff = conn.ecs.reboot_server(**data)
     print ff
+
+
+def get_server(_conn):
+    ff = conn.ecs.get_server('600ea016-47c2-4aed-a8c1-c1a2106e3ad0')
+    print ff
+
+
+def servers(_conn):
+    query = {
+        "offset": 1,
+        # Cloud server flavor ID, flavor_id is an alias for flavor.
+        "flavor_id": "c1.medium",
+        "name": "ecs-5280",
+        "status": "SHUTOFF",
+        "limit": 1
+    }
+    generator = conn.ecs.servers(**query)
+    for servers_list in generator:
+        print servers_list
+        for server in servers_list.servers:
+            print(server.get('id'))
+
+
+if __name__ == '__main__':
+    # get_server(conn)
+    # servers(conn)
+    pass

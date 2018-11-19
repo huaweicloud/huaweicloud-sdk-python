@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 # Copyright 2018 Huawei Technologies Co.,Ltd.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 # this file except in compliance with the License.  You may obtain a copy of the
 # License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software distributed
 # under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 # CONDITIONS OF ANY KIND, either express or implied.  See the License for the
@@ -22,6 +22,7 @@ class Servers(resource2.Resource):
     resources_key = 'servers'
     service = ecs_service.EcsService()
     allow_create = True
+    allow_get = True
 
     # string type ECS server name
     name = resource2.Body('name')
@@ -64,7 +65,7 @@ class Servers(resource2.Resource):
     # info for schedule server based host
     scheduler_hints = resource2.Body('os:scheduler_hints', type=dict)
     # tags for identify ecs servers
-    tags = resource2.Body('tags')
+    tags = resource2.Body('tags', type=list)
     # task id
     job_id = resource2.Body('job_id')
     # order id
@@ -72,6 +73,78 @@ class Servers(resource2.Resource):
     error = resource2.Body('error')
     message = resource2.Body('message')
     code = resource2.Body('code')
+
+    # Add fields for get/list server(s).
+    # Status of ecs server.
+    status = resource2.Body('status')
+    # Update time.
+    updated = resource2.Body('updated')
+    # Host ID of the host where the ECS is located.
+    hostId = resource2.Body('hostId')
+    # Host name of the host where the ECS is located.
+    OS_EXT_SRV_ATTR_host = resource2.Body('OS-EXT-SRV-ATTR:host')
+    # Network infomation of ecs server.
+    addresses = resource2.Body('addresses', type=dict)
+    # The state of the current task of the Elastic Cloud Server.
+    OS_EXT_STS_task_state = resource2.Body('OS-EXT-STS:task_state')
+    # The current state of the ECS.
+    OS_EXT_STS_vm_state = resource2.Body('OS-EXT-STS:vm_state')
+    # Elastic cloud server alias.
+    OS_EXT_SRV_ATTR_instance_name = resource2.Body('OS-EXT-SRV-ATTR:instance_name')
+    # The virtualized host name where the ECS is located.
+    OS_EXT_SRV_ATTR_hypervisor_hostname = resource2.Body('OS-EXT-SRV-ATTR:hypervisor_hostname')
+    # Elastic cloud server specification information.
+    flavor = resource2.Body('flavor', type=dict)
+    # Id of ecs server.
+    id = resource2.Body('id')
+    # The name of the available partition where the ECS is located.
+    OS_EXT_AZ_availability_zone = resource2.Body('OS-EXT-AZ:availability_zone')
+    # Create a user ID for the ECS.
+    user_id = resource2.Body('user_id')
+    # Create time.
+    created = resource2.Body('created')
+    # Type of disk config.
+    OS_DCF_diskConfig = resource2.Body('OS-DCF:diskConfig')
+    # Reserve attributes.
+    accessIPv4 = resource2.Body('accessIPv4')
+    # Reserve attributes.
+    accessIPv6 = resource2.Body('accessIPv6')
+    # Elastic cloud server progress.
+    progress = resource2.Body('progress', type=int)
+    # Elastic cloud server power status.
+    OS_EXT_STS_power_state = resource2.Body('OS-EXT-STS:power_state', type=int)
+    # Config drive information.
+    config_drive = resource2.Body('config_drive')
+    # Elastic cloud server startup time.
+    OS_SRV_USG_launched_at = resource2.Body('OS-SRV-USG:launched_at')
+    # Elastic cloud server delete time.
+    OS_SRV_USG_terminated_at = resource2.Body('OS-SRV-USG:terminated_at')
+    # Mount the disk to the Elastic Cloud Server.
+    os_extended_volumes_volumes_attached = resource2.Body('os-extended-volumes:volumes_attached', type=list)
+    # Description of ecs server.
+    description = resource2.Body('description')
+    # Nova compute status.
+    host_status = resource2.Body('host_status')
+    # The host name of the ECS.
+    OS_EXT_SRV_ATTR_hostname = resource2.Body('OS-EXT-SRV-ATTR:hostname')
+    # The reserved ID of the ECS.
+    OS_EXT_SRV_ATTR_reservation_id = resource2.Body('OS-EXT-SRV-ATTR:reservation_id')
+    # The startup sequence of the elastic cloud server.
+    OS_EXT_SRV_ATTR_launch_index = resource2.Body('OS-EXT-SRV-ATTR:launch_index', type=int)
+    # If the image in AMI format is used, it indicates the UUID of the kernel image.
+    OS_EXT_SRV_ATTR_kernel_id = resource2.Body('OS-EXT-SRV-ATTR:kernel_id')
+    # If the AMI format image is used, it indicates the UUID of the ramdisk image.
+    OS_EXT_SRV_ATTR_ramdisk_id = resource2.Body('OS-EXT-SRV-ATTR:ramdisk_id')
+    # Device name of the ECS system disk.
+    OS_EXT_SRV_ATTR_root_device_name = resource2.Body('OS-EXT-SRV-ATTR:root_device_name')
+    # User_data specified when creating an ECS.
+    OS_EXT_SRV_ATTR_user_data = resource2.Body('OS-EXT-SRV-ATTR:user_data')
+    # Whether the ECS is locked.
+    locked = resource2.Body('locked', type=bool)
+    # Enterprise project ID to which the ECS belongs.
+    enterprise_project_id = resource2.Body('enterprise_project_id')
+    # Elastic cloud server system label.
+    sys_tags = resource2.Body('sys_tags', type=list)
 
 
 class ServerAction(resource2.Resource):
@@ -146,3 +219,28 @@ class ResizeServer(resource2.Resource):
     error = resource2.Body('error')
     message = resource2.Body('message')
     code = resource2.Body('code')
+
+
+class ServerDetail(Servers):
+    base_path = '/cloudservers/detail'
+
+    # capabilities
+    allow_create = False
+    allow_get = False
+    allow_list = True
+
+    _query_mapping = resource2.QueryParameters(
+        'name',
+        'status',
+        'limit',
+        'offset',
+        'not-tags',
+        'reservation_id',
+        'enterprise_project_id',
+        flavor_id='flavor'
+    )
+
+    # The total number of lists of elastic cloud servers.
+    count = resource2.Body('count', type=int)
+    # Elastic cloud server details list.
+    servers = resource2.Body('servers', type=list)

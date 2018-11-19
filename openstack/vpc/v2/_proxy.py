@@ -15,6 +15,7 @@
 from openstack import proxy2
 from openstack.vpc.v2 import bandwidth as _bandwidth
 from openstack.vpc.v2 import eip as _eip
+from openstack.vpc.v2 import sharebandwidth as _sharebandwidth
 
 
 class Proxy(proxy2.BaseProxy):
@@ -42,3 +43,45 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.vpc.v2.bandwidth.Bandwidths`
         """
         return self._create(_bandwidth.Bandwidths, bandwidth_id=bandwidth_id, **attrs)
+
+    def create_sharebandwidth(self, **data):
+        """Create a share bandwidth.
+
+        :param data: The attributes to create a share bandwidth.
+        :return: :class:`~openstack.vpc.v2.sharebandwidth.ShareBandwidth`
+        """
+        return self._create(_sharebandwidth.ShareBandwidth, **data)
+
+    def delete_sharebandwidth(self, bandwidth_id):
+        """Delete a share bandwidth.
+
+        :param bandwidth_id: Id of share bandwidth.
+        :return: None
+        """
+        return self._delete(_sharebandwidth.ShareBandwidth, bandwidth_id)
+
+    def create_batch_sharebandwidth(self, **data):
+        """Create share bandwidth in batches.
+
+        :param data: The attributes to create share bandwidth in batches.
+        :return: :class:`~openstack.vpc.v2.sharebandwidth.BatchShareBandwidth`
+        """
+        return self._create(_sharebandwidth.BatchShareBandwidth, **data)
+
+    def insert_ip_to_bandwidth(self, bandwidth_id, **data):
+        """Shared bandwidth is inserted into the elastic public IP address.
+
+        :param bandwidth_id: Id of a bandwidth.
+        :param data: The attributes to insert ip to bandwidth.
+        :return: :class:`~openstack.vpc.v2.sharebandwidth.InsertIpToBandwidth`
+        """
+        return self._create(_sharebandwidth.InsertIpToBandwidth, bandwidth_id=bandwidth_id, **data)
+
+    def remove_ip_from_bandwidth(self, bandwidth_id, **data):
+        """Shared bandwidth removal elastic public IP.
+
+        :param bandwidth_id: Id of a bandwidth.
+        :param data: The attributes to remove ip from bandwidth.
+        :return: None.
+        """
+        return self._create(_sharebandwidth.RemoveIpFromBandwidth, bandwidth_id=bandwidth_id, **data)

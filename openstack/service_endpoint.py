@@ -26,7 +26,7 @@ endpoint = {
   "DNS": {
     "public": "https://dns.%(domain)s/v2"
   },
-   "ECS": {
+  "ECS": {
     "public": "https://ecs.%(region)s.%(domain)s/v1/%(project_id)s"
   },
   "ECSV1.1": {

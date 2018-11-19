@@ -32,7 +32,8 @@ class Domain(cdn_resource.Resource):
 
     _query_mapping = cdn_resource.QueryParameters('domain_name',
                                                   'business_type',
-                                                  'domain_status')
+                                                  'domain_status',
+                                                  'enterprise_project_id')
 
     #: The acceleration domain name.
     domain_name = resource.Body('domain_name')
@@ -41,6 +42,7 @@ class Domain(cdn_resource.Resource):
     #: 'download' (the acceleration for downloads);
     #: 'video' (the acceleration for media streaming).
     business_type = resource.Body('business_type')
+    enterprise_project_id = resource.Body('enterprise_project_id')
     #: The domain ID of the domain name's owner.
     user_domain_id = resource.Body('user_domain_id')
     #: The status of the acceleration domain name. Values include
@@ -348,6 +350,322 @@ class Domain(cdn_resource.Resource):
         endpoint_override = self.service.get_endpoint_override()
         resp = session.get(url, endpoint_filter=self.service,
                            endpoint_override=endpoint_override)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['https']
+
+
+    def get_detail_by_enterprise_project_id(self, session, enterprise_project_id):
+        """Get a remote resource based on this instance.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param boolean requires_id: A boolean indicating whether resource ID
+                                    should be part of the requested URI.
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`~openstack.cdn.v1.domain.Domain`
+        """
+
+        request = self._prepare_request(requires_id=enterprise_project_id)
+        # NOTE(samsong8610): The URL for GET is not standard
+        request.uri = utils.urljoin(request.uri, 'detail')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        response = session.get(request.uri, endpoint_filter=self.service,
+                               endpoint_override=endpoint_override, params=params)
+
+        self._translate_response(response)
+        return self
+
+    def set_sources_by_enterprise_project_id(self, session, enterprise_project_id, **attrs):
+        """Update information about the origin server
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param \*sources: A list of dict which specifies the domain name
+            or the IP address of the origin server.
+            Available keys for each source dict include:
+
+            * ip_or_domain: The IP address or domain name of the origin server
+                            Mandatory.
+            * origin_type: The origin type. The value can be 'ipaddr' or
+                           'domain'. Mandatory.
+            * active_standby: Whether the source is active. 1: active,
+                              0: standby. Mandatory.
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`Domain`
+        """
+        # body = {'origin': {'sources': list(sources)}}
+        # print(attrs)
+        body = {'origin': attrs}
+        url = utils.urljoin(self.base_path, self.id, 'origin')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        self.sources = resp_json['origin']['sources']
+        return self
+
+    def delete_by_enterprise_project_id(self, session, enterprise_project_id):
+        """delete an acceleration domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`Domain`
+        """
+        url = utils.urljoin(self.base_path, self.id)
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.delete(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
+        self._translate_response(resp)
+        return self
+
+    def enable_by_enterprise_project_id(self, session, enterprise_project_id):
+        """Enables an acceleration domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`Domain`
+        """
+
+        url = utils.urljoin(self.base_path, self.id, 'enable')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
+        self._translate_response(resp)
+        return self
+
+    def disable_by_enterprise_project_id(self, session, enterprise_project_id):
+        """Disable an acceleration domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`Domain`
+        """
+        # print(enterprise_project_id)
+        url = utils.urljoin(self.base_path, self.id, 'disable')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
+        self._translate_response(resp)
+        return self
+
+    def set_origin_host_by_enterprise_project_id(self, session, enterprise_project_id, **attrs):
+        """Modifies the configuration of the retrieval host
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param dict attrs: Keyword arguments which contains origin host
+            configuration for :class:`~openstack.cdn.v1.domain.Domain`.
+            Available attributes include:
+
+            * origin_host_type: The type of the retrieval host.
+                'accelerate': the acceleration domain name is used as
+                the retrieval host address;
+                'customize': A custom domain name is used as the retrieval
+                host address;
+                'source': The origin domain name is used as the retrieval
+                host address.
+            * customize_domain: The custom domain name of the retrieval host.
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`Domain`
+        """
+        body = {'origin_host': attrs}
+        url = utils.urljoin(self.base_path, self.id, 'originhost')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        self.domain_origin_host = resp_json['origin_host']
+        return self
+
+    def get_origin_host_by_enterprise_project_id(self, session, enterprise_project_id):
+        """Queries the configuration of the retrieval host
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+
+        :returns: The retrieval host configuration of this domain name
+        :rtype: dict
+        """
+        # print(enterprise_project_id)
+        url = utils.urljoin(self.base_path, self.id, 'originhost')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.get(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['origin_host']
+
+    def set_referer_by_enterprise_project_id(self, session, enterprise_project_id, **attrs):
+        """Configures a referrer list
+
+        Self-define referrer whitelists and blacklists identify and filter
+        user identities, controlling access.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param dict attrs: Keyword arguments which contains origin host
+            configuration for :class:`~openstack.cdn.v1.domain.Domain`.
+            Available attributes include:
+
+            * referer_type: The referer type. The values include:
+            0: referer filter not set; 1: blacklist; 2: whitelist.
+            * referer_list: A list of domain names that are separated from
+            each other by semicolon (;).
+            * include_empty: Whether blank referrers are included.
+            A referrer blacklist including blank referrers indicates that
+            requests without any referrers are not allowed to access.
+            A referrer whitelist including blank referrers indicates that
+            requests without any referrers are allowed to access.
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`Domain`
+        """
+        body = {'referer': attrs}
+        url = utils.urljoin(self.base_path, self.id, 'referer')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return self
+
+    def get_referer_by_enterprise_project_id(self, session, enterprise_project_id):
+        """Queries the referer list of the domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+
+        :returns: The referer list of this domain name
+        :rtype: dict
+        """
+        url = utils.urljoin(self.base_path, self.id, 'referer')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.get(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['referer']
+
+    def set_cache_rules_by_enterprise_project_id(self, session, enterprise_project_id, **attrs):
+        """Configures a cache policy for resources on CDN nodes
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param dict attrs: Keyword arguments which contains cache policies
+            for :class:`~openstack.cdn.v1.domain.Domain`.
+            Available attributes include:
+
+            * ignore_url_parameter: Whether to ignore URL parameters
+            * rules: A list of the cache rules, which overwrite the previous
+            rule configurations. Blank rules are reset to default rules.
+            Each cache rule contains 'rule_type','content','ttl','ttl_type' and
+            'priority' properties.
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`Domain`
+        """
+        body = {'cache_config': attrs}
+        url = utils.urljoin(self.base_path, self.id, 'cache')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return self
+
+    def get_cache_rules_by_enterprise_project_id(self, session, enterprise_project_id):
+        """Queries the cache rules of the domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+
+        :returns: The cache rules of this domain name
+        :rtype: dict
+        """
+        url = utils.urljoin(self.base_path, self.id, 'cache')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.get(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['cache_config']
+
+    def set_https_by_enterprise_project_id(self, session, enterprise_project_id, **attrs):
+        """Configures the HTTPS of the acceleration domain name
+
+        This method sets HTTPS by configuring the certificate of a domain name,
+        and deploy the HTTPS configuration on all CDN nodes to implement
+        secure acceleration.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param dict attrs: Keyword arguments which contains cache policies
+            for :class:`~openstack.cdn.v1.domain.Domain`.
+            Available attributes include:
+
+            * cert_name: The certificate name.
+            * https_status: The HTTPS certificate is enabled.
+            * certificate: The certificate used by HTTPS.
+            * private_key: The private key used by HTTPS.
+            * force_redirect_https: Whether to force the client request to be
+            redirected.
+            * http2: Whether to use HTTP 2.0.
+
+        :returns: This :class:`Domain` instance.
+        :rtype: :class:`Domain`
+        """
+        body = {'https': attrs}
+        url = utils.urljoin(self.base_path, self.id, 'https-info')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return self
+
+    def get_https_by_enterprise_project_id(self, session, enterprise_project_id):
+        """Obtains the certificate for the acceleration domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+
+        :returns: The HTTPS certificate of this domain name
+        :rtype: dict
+        """
+        url = utils.urljoin(self.base_path, self.id, 'https-info')
+        params = {'enterprise_project_id': enterprise_project_id}
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.get(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
         resp_json = resp.json()
         self.check_error(resp_json)
         return resp_json['https']

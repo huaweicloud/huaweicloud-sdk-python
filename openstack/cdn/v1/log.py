@@ -28,7 +28,7 @@ class Log(cdn_resource.Resource):
     allow_delete = False
     allow_list = True
 
-    _query_mapping = cdn_resource.QueryParameters('query_date', 'domain_name')
+    _query_mapping = cdn_resource.QueryParameters('query_date', 'domain_name', 'enterprise_project_id')
 
     #: The queried domain name.
     domain_name = resource.Body('domain_name')

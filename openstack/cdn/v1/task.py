@@ -134,6 +134,36 @@ class RefreshTask(Task):
     # NOTE(samsong8610): This attribute is *ONLY* used in requests.
     type = resource.Body('type')
 
+    def create(self, session, prepend_key=True):
+        """Create a remote resource based on this instance.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param prepend_key: A boolean indicating whether the resource_key
+                            should be prepended in a resource creation
+                            request. Default to True.
+
+        :return: This :class:`Resource` instance.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_create` is not set to ``True``.
+        """
+
+        endpoint_override = self.service.get_endpoint_override()
+        if self.put_create:
+            request = self._prepare_request(requires_id=True,
+                                            prepend_key=prepend_key)
+            response = session.put(request.uri, endpoint_filter=self.service,
+                                   endpoint_override=endpoint_override,
+                                   json=request.body, headers=request.headers)
+        else:
+            request = self._prepare_request(requires_id=False,
+                                            prepend_key=prepend_key)
+            response = session.post(request.uri, endpoint_filter=self.service,
+                                    endpoint_override=endpoint_override,
+                                    json=request.body, headers=request.headers, params={"enterprise_project_id": 'ALL'})
+
+        self._translate_response(response)
+        return self
 
 class PreheatTask(Task):
     base_path = '/cdn/preheatingtasks'
@@ -144,3 +174,34 @@ class PreheatTask(Task):
     allow_get = False
     allow_delete = False
     allow_list = False
+
+    def create(self, session, prepend_key=True):
+        """Create a remote resource based on this instance.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param prepend_key: A boolean indicating whether the resource_key
+                            should be prepended in a resource creation
+                            request. Default to True.
+
+        :return: This :class:`Resource` instance.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_create` is not set to ``True``.
+        """
+
+        endpoint_override = self.service.get_endpoint_override()
+        if self.put_create:
+            request = self._prepare_request(requires_id=True,
+                                            prepend_key=prepend_key)
+            response = session.put(request.uri, endpoint_filter=self.service,
+                                   endpoint_override=endpoint_override,
+                                   json=request.body, headers=request.headers)
+        else:
+            request = self._prepare_request(requires_id=False,
+                                            prepend_key=prepend_key)
+            response = session.post(request.uri, endpoint_filter=self.service,
+                                    endpoint_override=endpoint_override,
+                                    json=request.body, headers=request.headers, params={"enterprise_project_id": 'ALL'})
+
+        self._translate_response(response)
+        return self

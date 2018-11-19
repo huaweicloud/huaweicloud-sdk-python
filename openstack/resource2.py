@@ -900,6 +900,81 @@ class Resource(object):
             query_params[cls.query_marker_key] = new_marker
 
     @classmethod
+    def list_by_offset(cls, session, paginated=False, **params):
+        """This method is a generator which yields resource objects.
+
+        This resource object list generator handles pagination and takes query
+        params for response filtering.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param bool paginated: ``True`` if a GET to this resource returns
+                               a paginated series of responses, or ``False``
+                               if a GET returns only one page of data.
+                               **When paginated is False only one
+                               page of data will be returned regardless
+                               of the API's support of pagination.**
+        :param dict params: These keyword arguments are passed through the
+            :meth:`~openstack.resource2.QueryParamter._transpose` method
+            to find if any of them match expected query parameters to be
+            sent in the *params* argument to
+            :meth:`~openstack.session.Session.get`. They are additionally
+            checked against the
+            :data:`~openstack.resource2.Resource.base_path` format string
+            to see if any path fragments need to be filled in by the contents
+            of this argument.
+
+        :return: A generator of :class:`Resource` objects.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_list` is not set to ``True``.
+        """
+        if not cls.allow_list:
+            raise exceptions.MethodNotSupported(cls, "list")
+
+        more_data = True
+        query_params = cls._query_mapping._transpose(params)
+        uri = cls.get_list_uri(params)
+        offset = query_params.get("offset")
+        limit = query_params.get("limit")
+
+        while more_data:
+            endpoint_override = cls.service.get_endpoint_override()
+            resp = session.get(uri, endpoint_filter=cls.service,
+                               endpoint_override=endpoint_override,
+                               headers={"Accept": "application/json"},
+                               params=query_params)
+            response_json = resp.json()
+            resources = response_json
+
+            if not resources:
+                return
+
+            resources.pop("self", None)
+            value = cls.existing(**resources)
+            yield value
+
+            if not paginated:
+                return
+
+            if offset is None:
+                return
+
+            if limit is None:
+                return
+
+            resource_list = resources[cls.resources_key]
+            current_page_size = len(resource_list)
+
+            # Check if you need to continue sending requests.
+            if current_page_size < int(limit):
+                return
+            else:
+                if int(query_params.get("offset")) == 0:
+                    query_params["offset"] = 2
+                else:
+                    query_params["offset"] = int(query_params.get("offset")) + 1
+
+    @classmethod
     def _get_one_match(cls, name_or_id, results):
         """Given a list of results, return the match"""
         the_result = None

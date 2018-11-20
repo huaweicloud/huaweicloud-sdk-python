@@ -1,9 +1,0 @@
-- [Quick start](quickstart.md)
-- HuaWei libraries
-  - [initial](huawei-sdk.md)
-  - [DNS](dns-sdk.md)
-  - [CES](ces-sdk.md)
-  - [AS](as-sdk.md)
-  - [ELB](elb-sdk.md)
-  - [VBS](vbs-sdk.md)
-  - [MRS](mrs-sdk.md)

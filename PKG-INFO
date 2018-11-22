@@ -3,8 +3,8 @@ Name: huaweicloud-sdk-python
 Version: 1.0.9
 Summary: An SDK for building applications to work with OpenStack
 Home-page: https://github.com/huaweicloud/huaweicloud-sdk-python
-Author: HUAWEICLOUD
-Author-email: openstack-dev@lists.openstack.org
+Author: huawei
+Author-email: 
 License: Apache 2.0
 Description: Python SDK of HUAWEI CLOUD
         ====================

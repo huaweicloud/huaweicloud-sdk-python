@@ -23,7 +23,7 @@ FAKE = {
     "driver": "agent_ipmitool",
     "driver_info": {
         "ipmi_password": "******",
-        "ipmi_username": "ADMIN"
+        "ipmi_username": "******"
     },
     "driver_internal_info": {},
     "extra": {},

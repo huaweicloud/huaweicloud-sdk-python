@@ -62,7 +62,7 @@ class TestInstance(testtools.TestCase):
     def test_enable_root_user(self):
         sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
-        response.body = {'user': {'name': 'root', 'password': 'foo'}}
+        response.body = {'user': {'name': '***', 'password': '***'}}
         response.json = mock.Mock(return_value=response.body)
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)

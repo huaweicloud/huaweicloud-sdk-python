@@ -222,7 +222,8 @@ class TestServer(testtools.TestCase):
         # Let the translate pass through, that portion is tested elsewhere
         sot._translate_response = lambda arg: arg
 
-        result = sot.rebuild(self.sess, name='noo', admin_password='seekr3t',
+        result = sot.rebuild(self.sess, name='***',
+                             admin_password='***',
                              image='http://image/1', access_ipv4="12.34.56.78",
                              access_ipv6="fe80::100",
                              metadata={"meta var": "meta val"},
@@ -234,9 +235,9 @@ class TestServer(testtools.TestCase):
         url = 'servers/IDENTIFIER/action'
         body = {
             "rebuild": {
-                "name": "noo",
+                "name": "***",
                 "imageRef": "http://image/1",
-                "adminPass": "seekr3t",
+                "adminPass": "***",
                 "accessIPv4": "12.34.56.78",
                 "accessIPv6": "fe80::100",
                 "metadata": {"meta var": "meta val"},
@@ -253,8 +254,8 @@ class TestServer(testtools.TestCase):
         # Let the translate pass through, that portion is tested elsewhere
         sot._translate_response = lambda arg: arg
 
-        result = sot.rebuild(self.sess, name='nootoo',
-                             admin_password='seekr3two',
+        result = sot.rebuild(self.sess, name='***',
+                             admin_password='***',
                              image='http://image/2')
 
         self.assertIsInstance(result, server.Server)
@@ -262,9 +263,9 @@ class TestServer(testtools.TestCase):
         url = 'servers/IDENTIFIER/action'
         body = {
             "rebuild": {
-                "name": "nootoo",
+                "name": "***",
                 "imageRef": "http://image/2",
-                "adminPass": "seekr3two",
+                "adminPass": "***",
                 "preserve_ephemeral": False
             }
         }
@@ -553,7 +554,8 @@ class TestServer(testtools.TestCase):
 
         self.assertIsNone(res)
         url = 'servers/IDENTIFIER/action'
-        body = {"evacuate": {'host': 'HOST2', 'adminPass': 'NEW_PASS',
+        body = {"evacuate": {'host': 'HOST2',
+                             'adminPass': '***',
                              'force': True}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(

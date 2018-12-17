@@ -25,8 +25,8 @@ from openstack.tests.unit import base
 
 
 CONFIG_AUTH_URL = "http://127.0.0.1:5000/v2.0"
-CONFIG_USERNAME = "BozoTheClown"
-CONFIG_PASSWORD = "TopSecret"
+CONFIG_USERNAME = "***"
+CONFIG_PASSWORD = "***"
 CONFIG_PROJECT = "TheGrandPrizeGame"
 CONFIG_CACERT = "TrustMe"
 

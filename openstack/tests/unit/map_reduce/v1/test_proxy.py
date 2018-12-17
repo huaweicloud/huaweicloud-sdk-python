@@ -365,8 +365,8 @@ class TestJobs(TestMapReduceProxy):
                 "is_public": True,
                 "is_protected": None,
                 "extra": {
-                    "password": "admin",
-                    "user": "admin"
+                    "password": "***",
+                    "user": "***"
                 }
             }
         ]

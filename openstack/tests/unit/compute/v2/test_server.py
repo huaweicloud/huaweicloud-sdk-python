@@ -47,7 +47,7 @@ EXAMPLE = {
     'OS-SRV-USG:launched_at': '2015-03-09T12:15:57.233772',
     'OS-SRV-USG:terminated_at': '2015-03-09T12:15:57.233772',
     'security_groups': '26',
-    'adminPass': '27',
+    'adminPass': '***',
     'personality': '28',
     'block_device_mapping_v2': {'key': '29'},
     'OS-EXT-SRV-ATTR:hypervisor_hostname': 'hypervisor.example.com',
@@ -190,7 +190,7 @@ class TestServer(testtools.TestCase):
         self.assertIsNone(sot.change_password(self.sess, 'a'))
 
         url = 'servers/IDENTIFIER/action'
-        body = {"changePassword": {"adminPass": "a"}}
+        body = {"changePassword": {"adminPass": "***"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
             url, endpoint_filter=sot.service, json=body, headers=headers)
@@ -222,7 +222,8 @@ class TestServer(testtools.TestCase):
         # Let the translate pass through, that portion is tested elsewhere
         sot._translate_response = lambda arg: arg
 
-        result = sot.rebuild(self.sess, name='noo', admin_password='seekr3t',
+        result = sot.rebuild(self.sess, name='***',
+                             admin_password='***',
                              image='http://image/1', access_ipv4="12.34.56.78",
                              access_ipv6="fe80::100",
                              metadata={"meta var": "meta val"},
@@ -234,9 +235,9 @@ class TestServer(testtools.TestCase):
         url = 'servers/IDENTIFIER/action'
         body = {
             "rebuild": {
-                "name": "noo",
+                "name": "***",
                 "imageRef": "http://image/1",
-                "adminPass": "seekr3t",
+                "adminPass": "***",
                 "accessIPv4": "12.34.56.78",
                 "accessIPv6": "fe80::100",
                 "metadata": {"meta var": "meta val"},
@@ -253,8 +254,8 @@ class TestServer(testtools.TestCase):
         # Let the translate pass through, that portion is tested elsewhere
         sot._translate_response = lambda arg: arg
 
-        result = sot.rebuild(self.sess, name='nootoo',
-                             admin_password='seekr3two',
+        result = sot.rebuild(self.sess, name='***',
+                             admin_password='***',
                              image='http://image/2')
 
         self.assertIsInstance(result, server.Server)
@@ -262,9 +263,9 @@ class TestServer(testtools.TestCase):
         url = 'servers/IDENTIFIER/action'
         body = {
             "rebuild": {
-                "name": "nootoo",
+                "name": "***",
                 "imageRef": "http://image/2",
-                "adminPass": "seekr3two",
+                "adminPass": "***",
                 "preserve_ephemeral": False
             }
         }
@@ -515,7 +516,7 @@ class TestServer(testtools.TestCase):
 
         self.assertIsNone(res)
         url = 'servers/IDENTIFIER/action'
-        body = {"rescue": {'adminPass': 'SECRET',
+        body = {"rescue": {'adminPass': '***',
                            'rescue_image_ref': 'IMG-ID'}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
@@ -553,7 +554,8 @@ class TestServer(testtools.TestCase):
 
         self.assertIsNone(res)
         url = 'servers/IDENTIFIER/action'
-        body = {"evacuate": {'host': 'HOST2', 'adminPass': 'NEW_PASS',
+        body = {"evacuate": {'host': 'HOST2',
+                             'adminPass': '***',
                              'force': True}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(

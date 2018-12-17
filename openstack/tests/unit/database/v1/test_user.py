@@ -18,8 +18,8 @@ INSTANCE_ID = 'INSTANCE_ID'
 
 CREATING = {
     'databases': '1',
-    'name': '2',
-    'password': '3',
+    'name': '***',
+    'password': '***',
 }
 
 

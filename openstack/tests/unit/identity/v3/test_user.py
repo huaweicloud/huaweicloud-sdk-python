@@ -23,8 +23,8 @@ EXAMPLE = {
     'enabled': True,
     'id': IDENTIFIER,
     'links': {'self': 'http://example.com/user1'},
-    'name': '6',
-    'password': '7',
+    'name': '***',
+    'password': '***',
     'password_expires_at': '8',
 }
 

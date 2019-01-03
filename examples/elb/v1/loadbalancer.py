@@ -38,7 +38,7 @@ def test_get_lb(lb_id):
 
 def test_get_all_lb():
     lbs = list(conn.load_balancer.load_balancers())
-    print lbs
+    print(lbs)
 
 
 def test_update_lb(lb_id):

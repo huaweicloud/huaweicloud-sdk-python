@@ -45,6 +45,7 @@ class SecurityGroup(resource.Resource):
 
     _query_mapping = resource.QueryParameters(
         'description', 'name',
+        'page_reverse',
         project_id='tenant_id',
     )
 

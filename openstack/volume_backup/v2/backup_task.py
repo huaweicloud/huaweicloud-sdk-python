@@ -46,3 +46,9 @@ class BackupTask(resource.Resource):
     created_at = resource.Body("created_at")
     #: task finished at
     finished_at = resource.Body("finished_at")
+    # Backup task ID on the VBS side
+    vbs_job_id = resource.Body("vbs_job_id")
+    # The error code returned when an error occurs
+    code = resource.Body("code")
+    # The error message returned when an error occurs
+    message = resource.Body("message")

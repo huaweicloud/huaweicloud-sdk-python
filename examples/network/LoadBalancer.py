@@ -35,19 +35,19 @@ conn = connection.Connection(
 
 def test_show_all_lb():
     lbs = list(conn.network.loadbalancers())
-    print "lbs number : ", len(lbs)
+    print("lbs number : ", len(lbs))
     for lb in lbs:
-        print lb
+        print(lb)
 
 
 def test_show_lb(lb_id):
     lb = conn.network.get_loadbalancer(lb_id)
-    print lb
+    print(lb)
 
 
 def test_show_lb_stree(lb_id):
     st = conn.network.get_loadbalancer_status_stree(lb_id)
-    print st
+    print(st)
 
 
 def test_create_lb(subnet_id):
@@ -60,13 +60,13 @@ def test_create_lb(subnet_id):
     # while len(lbs) <= 10:
     #     lbs.append(conn.network.create_loadbalancer(**_lb))
     lb = conn.network.create_loadbalancer(**_lb)
-    print lb
+    print(lb)
     return lb
 
 
 def test_update_lb(lb_id):
     lb_new = conn.network.update_loadbalancer(lb_id, description='this is test', name='ulb-test')
-    print lb_new
+    print(lb_new)
 
 
 def test_delete_lb(lb_id):

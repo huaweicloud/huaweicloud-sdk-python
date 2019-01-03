@@ -93,7 +93,6 @@ class CheckpointItemCount(resource2.Resource):
     # Query conditions in get operation.
     _query_mapping = resource2.QueryParameters(
         'status',
-        'limit',
         'marker',
         'sort',
         'all_tenants',
@@ -111,6 +110,8 @@ class CheckpointItemCount(resource2.Resource):
         'resource_type',
         'dec'
     )
+    # limit has removed from query filter
+    _query_mapping._mapping.pop("limit", None)
 
     # Count of checkpoint item.
     count = resource2.Body('count', type=int)

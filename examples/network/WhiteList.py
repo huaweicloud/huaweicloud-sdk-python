@@ -35,13 +35,13 @@ conn = connection.Connection(
 
 def test_show_all_whitelist():
     wls = list(conn.network.whitelists())
-    print 'whitelist numbers: ', len(wls)
+    print('whitelist numbers: ', len(wls))
     for wl in wls:
-        print wl
+        print(wl)
 
 
 def test_show_whitelist(wl_id):
-    print conn.network.get_whitelist(wl_id)
+    print(conn.network.get_whitelist(wl_id))
 
 
 def test_create_whitelist(ls_id, wlist):

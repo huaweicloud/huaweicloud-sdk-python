@@ -45,18 +45,19 @@ class Server(resource2.Resource, metadata.MetadataMixin):
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource2.QueryParameters("image", "flavor", "name",
-                                               "status", "host", "all_tenants",
+    _query_mapping = resource2.QueryParameters(
+                                               "image", "flavor", "name",
+                                               "status", "all_tenants",
                                                "sort_key", "sort_dir",
                                                "reservation_id", "tags",
-                                               "project_id",
+                                               "changes_since", "not_tags",
+                                               "project_id","host",
                                                tags_any="tags-any",
-                                               not_tags="not-tags",
                                                not_tags_any="not-tags-any",
                                                is_deleted="deleted",
                                                ipv4_address="ip",
-                                               ipv6_address="ip6",
-                                               changes_since="changes-since")
+                                               ipv6_address="ip6"
+                                               )
 
     #: A list of dictionaries holding links relevant to this server.
     links = resource2.Body('links')
@@ -157,6 +158,17 @@ class Server(resource2.Resource, metadata.MetadataMixin):
 
     min_count = resource2.Body("min_count")
     max_count = resource2.Body("max_count")
+    description = resource2.Body("description")
+    # reservation_id
+    reservation_id = resource2.Body("reservation_id")
+    # tags
+    tags = resource2.Body("tags")
+    # reserved attribute
+    evsOpts = resource2.Body("evsOpts")
+    hyperThreadAffinity = resource2.Body("hyperThreadAffinity")
+    numaOpts = resource2.Body("numaOpts")
+    vcpuAffinity = resource2.Body("vcpuAffinity")
+
 
     def _prepare_request(self, requires_id=True, prepend_key=True):
         request = super(Server, self)._prepare_request(requires_id=requires_id,
@@ -344,8 +356,8 @@ class Server(resource2.Resource, metadata.MetadataMixin):
         body = {"os-start": None}
         self._action(session, body)
 
-    def stop(self, session):
-        body = {"os-stop": None}
+    def stop(self, session, stop_type):
+        body = {"os-stop": {"type": stop_type}}
         self._action(session, body)
 
     def shelve(self, session):

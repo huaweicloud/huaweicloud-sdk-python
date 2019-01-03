@@ -35,13 +35,13 @@ conn = connection.Connection(
 
 def test_show_all_hm():
     hms = list(conn.network.healthmonitors())
-    print "healthmonitor numbers: ", len(hms)
+    print("healthmonitor numbers: ", len(hms))
     for hm in hms:
-        print hm
+        print(hm)
 
 
 def test_show_hm(hm_id):
-    print conn.network.get_healthmonitor(hm_id)
+    print(conn.network.get_healthmonitor(hm_id))
 
 
 def test_create_hm(pool_id):

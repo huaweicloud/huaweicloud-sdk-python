@@ -46,9 +46,9 @@ def create_server_with_user_data():
         }
     }
     ff = conn.compute.create_server(**data)
-    print ff
+    print(ff)
     server_create = conn.compute.wait_for_server(ff, status="ACTIVE", wait=300)
-    print server_create
+    print(server_create)
     return server_create
 
 
@@ -77,40 +77,40 @@ def create_windows_server_with_adminpass():
         }
     }
     ff = conn.compute.create_server(**data)
-    print ff
+    print(ff)
     server_wins = conn.compute.wait_for_server(ff, status="ACTIVE", wait=300)
-    print server_wins
+    print(server_wins)
     return server_wins
 
 
 # stop a server
 def stop_server(server_id):
     ff = conn.compute.stop_server(server_id)
-    print ff
+    print(ff)
     server_stop = conn.compute.wait_for_server(ff, status="SHUTOFF", wait=300)
-    print server_stop
+    print(server_stop)
 
 
 # start a server
 def start_server(server_id):
     ff = conn.compute.start_server(server_id)
-    print ff
+    print(ff)
     server_start = conn.compute.wait_for_server(ff, status="ACTIVE", wait=300)
-    print server_start
+    print(server_start)
 
 
 # reboot a server
 def reboot_server(server_id, type="SOFT"):
     ff = conn.compute.reboot_server(server_id, type)
-    print ff
+    print(ff)
     server_reboot = conn.compute.wait_for_server(ff, status="ACTIVE", wait=300)
-    print server_reboot
+    print(server_reboot)
 
 
 # delete a server
 def delete_server(server_id):
     ff = conn.compute.delete_server(server_id)
-    print ff
+    print(ff)
 
 
 if __name__ == "__main__":

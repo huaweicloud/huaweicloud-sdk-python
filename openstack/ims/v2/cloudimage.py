@@ -68,8 +68,9 @@ class CloudImage(resource2.Resource):
     owner = resource2.Body('owner')
     # Id of image.
     id = resource2.Body('id')
-    size = resource2.Body('size', type=long)
+    size = resource2.Body('size', type=int)
     # Mirror link information.
+    # warning: the self is a python keyword, maybe cause init error
     self = resource2.Body('self')
     # Mirror view.
     schema = resource2.Body('schema')
@@ -141,6 +142,8 @@ class CloudImage(resource2.Resource):
     __support_highperformance = resource2.Body('__support_highperformance')
     # Support for GPU optimization types under the XEN virtualization platform.
     __support_xen_gpu_type = resource2.Body('__support_xen_gpu_type')
+    # support for fpga types under kvm virtualization platform
+    __support_kvm_fpga_type = resource2.Body('__support_kvm_fpga_type')
     # Indicates whether the current image supports publishing as a market image.
     __system_support_market = resource2.Body('__system_support_market', type=bool)
     # Indicates the enterprise project to which the current image belongs.
@@ -150,6 +153,8 @@ class CloudImage(resource2.Resource):
     # Corresponds to the system disk slot location of the cloud server.
     __sequence_num = resource2.Body('__sequence_num')
     hw_vif_multiqueue_enabled = resource2.Body('hw_vif_multiqueue_enabled')
+    # lazy loading
+    __lazyloading = resource2.Body("__lazyloading", type=bool)
 
     def update(self, session, prepend_key=True, has_body=True, **data):
         """Update the remote resource based on this instance.
@@ -230,3 +235,10 @@ class CloudImageAction(resource2.Resource):
 
     # Id of job.
     job_id = resource2.Body('job_id')
+    # Indicates the maximum memory supported by the image in MB.
+    max_ram = resource2.Body("max_ram", type=int)
+    # Indicates the minimum memory required for mirroring. The unit is MB. The default is 0, which means unlimited.
+    min_ram = resource2.Body("min_ram", type=int)
+    # is config init
+    is_config_init = resource2.Body("is_config_init", type=bool)
+

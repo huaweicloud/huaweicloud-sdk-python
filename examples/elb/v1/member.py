@@ -32,8 +32,8 @@ def test_create_member():
 
 def test_get_members():
     members = list(conn.load_balancer.get_member())
-    print len(members)
-    print members
+    print(len(members))
+    print(members)
 
 
 def test_delete_member(member_id):

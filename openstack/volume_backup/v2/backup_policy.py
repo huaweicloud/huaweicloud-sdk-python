@@ -30,11 +30,17 @@ class SchedulePolicy(resource.Resource):
     start_time = resource.Body("start_time")
     #: backup policy status, ``ON``, ``OFF``
     status = resource.Body("status")
+    # week frequency
+    week_frequency = resource.Body("week_frequency", type=list)
+    # Backup retention days
+    rentention_day =  resource.Body("rentention_day", type=int)
+
 
 
 class BackupPolicy(resource.Resource):
     """Cloud Backup"""
     resources_key = "backup_policies"
+    resource_key = None
     base_path = "/backuppolicy"
     service = volume_backup_service.VolumeBackupService()
 
@@ -53,6 +59,16 @@ class BackupPolicy(resource.Resource):
     policy_resource_count = resource.Body("policy_resource_count")
     #: Backup Policy schedule detail
     scheduled_policy = resource.Body("scheduled_policy", type=SchedulePolicy)
+    # code
+    code = resource.Body("code")
+    # message
+    message = resource.Body("message")
+    # tags
+    tags = resource.Body("tags", type=list)
+    # Time zone parameters. The value is UTC+/-HH:mm
+    # The time zone corresponding to the local scheduling time, including the daylight saving time offset.
+    # Such as UTC+08:00, UTC-02:00. When the local time is converted to UTC time, it needs to be used with the week_frequency and start_time fields.
+    time_zone = resource.Body("time_zone")
 
     def execute(self, session):
         """execute backup policy immediately

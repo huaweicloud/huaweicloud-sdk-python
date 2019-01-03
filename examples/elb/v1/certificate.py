@@ -32,8 +32,8 @@ def test_create_cert():
 
 def test_get_certs():
     certs = list(conn.load_balancer.certificates())
-    print len(certs)
-    print certs
+    print(len(certs))
+    print(certs)
 
 
 def test_update_cert(cert_id):

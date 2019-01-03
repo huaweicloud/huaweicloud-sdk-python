@@ -189,7 +189,7 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._create(_volume.Volume, **attrs)
 
-    def delete_volume(self, volume, ignore_missing=True):
+    def delete_volume(self, volume, ignore_missing=True, cascade=False):
         """Delete a volume
 
         :param volume: The value can be either the ID of a volume or a
@@ -199,7 +199,10 @@ class Proxy(proxy2.BaseProxy):
                     raised when the volume does not exist.
                     When set to ``True``, no exception will be set when
                     attempting to delete a nonexistent volume.
+        :param bool cascade: When set to ``Ture``
+                    Delete all snapshots associated with the cloud drive.
+                    The default value is false..
 
         :returns: ``None``
         """
-        self._delete(_volume.Volume, volume, ignore_missing=ignore_missing)
+        self._delete(_volume.Volume, volume, params={"cascade": cascade}, ignore_missing=ignore_missing)

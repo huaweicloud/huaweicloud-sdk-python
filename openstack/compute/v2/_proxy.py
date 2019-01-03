@@ -753,15 +753,17 @@ class Proxy(proxy2.BaseProxy):
         server = self._get_resource(_server.Server, server)
         server.start(self._session)
 
-    def stop_server(self, server):
+    def stop_server(self, server, stop_type="SOFT"):
         """Stops a running server and changes its state to ``SHUTOFF``.
 
         :param server: Either the ID of a server or a
                        :class:`~openstack.compute.v2.server.Server` instance.
+        :param stop_type: The stop type can be "SOFT" or "HARD",
+                           and the default is "SOFT".
         :returns: None
         """
         server = self._get_resource(_server.Server, server)
-        server.stop(self._session)
+        server.stop(self._session, stop_type)
 
     def shelve_server(self, server):
         """Shelves a server.

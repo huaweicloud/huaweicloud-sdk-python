@@ -113,10 +113,20 @@ def build_finished(app, exception):
             if ignored_name in name:
                 return True
         return False
+    # this function is added for python2.x and python3.x compatible
+    # replace the itertools.filterfalse in python3 and itertools.ifilterfalse in python2
 
+    def customfilterfalse(predicate, iterable):
+        # ifilterfalse(lambda x: x%2, range(10)) --> 0 2 4 6 8
+        if predicate is None:
+            predicate = bool
+        for x in iterable:
+            if not predicate(x):
+                yield x
     # TEMPORARY: Ignore the wait_for names when determining what is missing.
     app.info("ENFORCER: Ignoring wait_for_* names...")
-    missing = set(itertools.ifilterfalse(is_ignored, missing))
+    #missing = set(itertools.filterfalse(is_ignored, missing))
+    missing = set(customfilterfalse(is_ignored, missing))
 
     missing_count = len(missing)
     app.info("ENFORCER: Found %d missing proxy methods "

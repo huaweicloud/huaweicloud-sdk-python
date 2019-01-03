@@ -885,7 +885,7 @@ class ResourceTests(base.TestCase):
         self.assertEqual(params, self.session.get.call_args[1]['params'])
         self.assertEqual(3, len(objs))
         for obj in objs:
-            self.assertIn(obj.id, range(fake_id, fake_id + 3))
+            self.assertIn(obj.id, list(range(fake_id, fake_id + 3)))
             self.assertEqual(fake_name, obj['name'])
             self.assertEqual(fake_name, obj.name)
             self.assertIsInstance(obj, FakeResource)
@@ -1270,7 +1270,7 @@ class ResourceMapping(base.TestCase):
         attrs = {"a": 1, "b": 2, "c": 3}
         t = Test(attrs=attrs)
 
-        self.assertEqual(len(attrs.keys()), len(t))
+        self.assertEqual(len(list(attrs.keys())), len(t))
 
     def test__iter__(self):
 

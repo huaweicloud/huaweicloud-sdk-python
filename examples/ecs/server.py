@@ -35,33 +35,33 @@ def createserver():
         "user_data":"IyEvYmluL2Jhc2ggDQogZWNobyAncm9vdDpDbG91ZC4xMjM0JyB8IGNocGFzc3dkIDs="
     }
     server = conn.compute.create_server(**data)
-    print server
+    print(server)
     return server
 
 
 # find server_id or name
 def find_server(server_id):
     server = conn.compute.find_server(server_id)
-    print server
+    print(server)
 
 
 # show server detail
 def show_server(server_id):
     server = conn.compute.get_server(server_id)
-    print server
+    print(server)
 
 
 # get list of server
 def list_servers():
     servers = conn.compute.servers(limit=1)
     for server in servers:
-        print server
+        print(server)
 
 
 # update server
 def update_server(server_id, server_name):
     server = conn.compute.update_server(server_id, name=server_name)
-    print server
+    print(server)
 
 
 # reboot server
@@ -69,7 +69,7 @@ def reboot_server(server_id, type="SOFT"):
     conn.compute.reboot_server(server_id, type)
     server = conn.compute.find_server(server_id)
     server = conn.compute.wait_for_server(server)
-    print server
+    print(server)
 
 
 # rebuild server flavor
@@ -77,7 +77,7 @@ def rebuild_server(server_id, server_name, admin_password, image_id):
     server = conn.compute.rebuild_server(server_id, server_name,
                                          admin_password, image=image_id)
     server = conn.compute.wait_for_server(server)
-    print server
+    print(server)
 
 
 # resize server flavor
@@ -85,7 +85,7 @@ def resize_server(server_id, flavor_id):
     conn.compute.resize_server(server_id, flavor_id)
     server = conn.compute.find_server(server_id)
     server = conn.compute.wait_for_server(server, status="VERIFY_RESIZE")
-    print server
+    print(server)
 
 
 # comfirm server flavor
@@ -93,7 +93,7 @@ def confirm_server_resize(server_id, status):
     conn.compute.confirm_server_resize(server_id)
     server = conn.compute.find_server(server_id)
     server = conn.compute.wait_for_server(server, status=status)
-    print server
+    print(server)
 
 
 # revert server flavor
@@ -101,13 +101,13 @@ def revert_server_resize(server_id, status):
     conn.compute.revert_server_resize(server_id)
     server = conn.compute.find_server(server_id)
     server = conn.compute.wait_for_server(server, status=status)
-    print server
+    print(server)
 
 
 # create server image
 def create_server_image(server_id, name):
     server_image = conn.compute.create_server_image(server_id, name)
-    print server_image
+    print(server_image)
 
 
 # add EIP
@@ -144,13 +144,13 @@ def stop_server(server_id):
 def set_server_metadata(server_id):
     metadata = {"metadata_key": "metadata_value"}
     server = conn.compute.set_server_metadata(server_id, **metadata)
-    print server
+    print(server)
 
 
 # get server metadata
 def get_server_metadata(server_id):
     server_metadata = conn.compute.get_server_metadata(server_id)
-    print server_metadata
+    print(server_metadata)
 
 
 # delete server metadata
@@ -160,7 +160,7 @@ def delete_server_metadata(server_id):
         message = "keys must be a list"
         raise exceptions.SDKException(message)
     server = conn.compute.delete_server_metadata(server_id, keys)
-    print server
+    print(server)
 
 
 # wait for server
@@ -174,7 +174,7 @@ def wait_for_server(server, status):
 # delete server
 def delete_server(server_id):
     server = conn.compute.delete_server(server_id)
-    print server
+    print(server)
 
 
 if __name__ == "__main__":

@@ -104,7 +104,7 @@ def create_server_ext(conn):
     }
 
     ff = conn.ecs.create_server_ext(**data)
-    print ff
+    print(ff)
 
 
 def resize_server_ext(conn):
@@ -116,7 +116,7 @@ def resize_server_ext(conn):
         }
     }
     ff = conn.ecs.resize_server_ext(server_id=server_id, **data)
-    print ff
+    print(ff)
 
 
 def create_server(conn):
@@ -186,7 +186,7 @@ def create_server(conn):
     }
 
     ff = conn.ecs.create_server(**data)
-    print ff
+    print(ff)
 
 
 def resize_server(conn):
@@ -198,7 +198,7 @@ def resize_server(conn):
         }
     }
     ff = conn.ecs.resize_server(server_id=server_id, **data)
-    print ff
+    print(ff)
 
 
 # New dedicated host ID (only for Elastic Cloud Server on a dedicated host)
@@ -210,7 +210,7 @@ def resize_server_deh(conn):
 
     }
     ff = conn.ecs.resize_server(server_id=server_id, **data)
-    print ff
+    print(ff)
 
 
 def delete_server(conn):
@@ -227,7 +227,7 @@ def delete_server(conn):
         "delete_volume": "false"
     }
     ff = conn.ecs.delete_server(**data)
-    print ff
+    print(ff)
 
 
 def server_action_start(conn):
@@ -244,7 +244,7 @@ def server_action_start(conn):
         }
     }
     ff = conn.ecs.start_server(**data)
-    print ff
+    print(ff)
 
 
 def server_action_stop(conn):
@@ -263,7 +263,7 @@ def server_action_stop(conn):
         }
     }
     ff = conn.ecs.stop_server(**data)
-    print ff
+    print(ff)
 
 
 def server_action_restart(conn):
@@ -282,12 +282,12 @@ def server_action_restart(conn):
         }
     }
     ff = conn.ecs.reboot_server(**data)
-    print ff
+    print(ff)
 
 
 def get_server(_conn):
     ff = conn.ecs.get_server('600ea016-47c2-4aed-a8c1-c1a2106e3ad0')
-    print ff
+    print(ff)
 
 
 def servers(_conn):
@@ -301,9 +301,9 @@ def servers(_conn):
     }
     generator = conn.ecs.servers(**query)
     for servers_list in generator:
-        print servers_list
+        print(servers_list)
         for server in servers_list.servers:
-            print(server.get('id'))
+            print((server.get('id')))
 
 
 if __name__ == '__main__':

@@ -37,7 +37,7 @@ def test_create_health_check():
 
 
 def test_get_health_check(health_check_id):
-    print conn.load_balancer.get_health_check(health_check_id)
+    print(conn.load_balancer.get_health_check(health_check_id))
 
 
 def test_update_health_check(health_check_id):

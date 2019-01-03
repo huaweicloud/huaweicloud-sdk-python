@@ -30,13 +30,13 @@ def delete_server_group(server_group):
 # find server group_id or name
 def find_server_group(server_group):
     server_group = conn.compute.find_server_group(server_group)
-    print server_group
+    print(server_group)
 
 
 # get server group 
 def get_server_group(server_group):
     server_group = conn.compute.get_server_group(server_group)
-    print server_group
+    print(server_group)
 
 
 if __name__ == "__main__":

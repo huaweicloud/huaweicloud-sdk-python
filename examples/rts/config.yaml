@@ -1,0 +1,12 @@
+heat_template_version: 2013-05-23
+
+description: Minimal HOT template for config
+
+resources:
+  config_test:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: script
+      config: |
+        #!/bin/sh
+        echo "Running boot script" > /tmp/helloword

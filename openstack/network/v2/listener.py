@@ -37,7 +37,16 @@ class Listener(resource2.Resource):
     base_path = '/lbaas/listeners'
     service = network_service.NetworkService()
 
-    _query_mapping = resource2.QueryParameters()
+    _query_mapping = resource2.QueryParameters(
+        "id",
+        "description",
+        "name",
+        "default_pool_id",
+        "default_tls_container_id",
+        "protocol",
+        "protocol_port",
+        "member_address",
+        "member_device_id")
 
     allow_create = True
     allow_get = True

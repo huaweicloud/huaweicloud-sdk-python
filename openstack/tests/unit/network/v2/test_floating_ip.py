@@ -46,6 +46,24 @@ class TestFloatingIP(testtools.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_list)
 
+        self.assertDictEqual(
+            {
+                "description": "description",
+                "fixed_ip_address": "fixed_ip_address",
+                "floating_ip_address": "floating_ip_address",
+                "floating_network_id": "floating_network_id",
+                "port_id": "port_id",
+                "router_id": "router_id",
+                "status": "status",
+                "limit": "limit",
+                "marker": "marker",
+                "page_reverse": "page_reverse",
+                "id": "id",
+                "project_id": "tenant_id"
+            },
+            sot._query_mapping._mapping
+        )
+
     def test_make_it(self):
         sot = floating_ip.FloatingIP(**EXAMPLE)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)

@@ -383,8 +383,8 @@ class TestResource(base.TestCase):
         body = {"body": 1}
         header = {"header": 2, "Location": "somewhere"}
         uri = {"uri": 3}
-        everything = dict(itertools.chain(body.items(), header.items(),
-                                          uri.items()))
+        everything = dict(itertools.chain(list(body.items()), list(header.items()),
+                                          list(uri.items())))
 
         mock_collect = mock.Mock()
         mock_collect.return_value = body, header, uri
@@ -420,15 +420,15 @@ class TestResource(base.TestCase):
             def __init__(self):
                 self._body = mock.Mock()
                 self._body.attributes.items = mock.Mock(
-                    return_value=a.items())
+                    return_value=list(a.items()))
 
                 self._header = mock.Mock()
                 self._header.attributes.items = mock.Mock(
-                    return_value=b.items())
+                    return_value=list(b.items()))
 
                 self._uri = mock.Mock()
                 self._uri.attributes.items = mock.Mock(
-                    return_value=c.items())
+                    return_value=list(c.items()))
 
         the_repr = repr(Test())
 

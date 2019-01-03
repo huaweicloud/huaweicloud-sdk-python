@@ -35,7 +35,20 @@ class Pool(resource2.Resource):
     base_path = '/lbaas/pools'
     service = network_service.NetworkService()
 
-    _query_mapping = resource2.QueryParameters()
+    _query_mapping = resource2.QueryParameters(
+        "limit",
+        "marker",
+        "page_reverse",
+        "id",
+        "name",
+        "description",
+        "healthmonitor_id",
+        "loadbalancer_id",
+        "protocol",
+        "lb_algorithm",
+        "member_address",
+        "member_device_id"
+    )
 
     allow_create = True
     allow_get = True

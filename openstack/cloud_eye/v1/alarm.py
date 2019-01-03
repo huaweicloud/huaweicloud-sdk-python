@@ -33,7 +33,7 @@ class Alarm(resource.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        "order", "limit",
+        "order", "limit", "start",
         marker=query_marker_key
     )
 
@@ -62,8 +62,10 @@ class Alarm(resource.Resource):
     #: Alarm dismissing trigger action
     ok_actions = resource.Body('ok_actions', type=list)
     #: Insufficient data trigger actions
-    insufficientdata_actions = resource.Body('insufficientdata_actions',
-                                             type=list)
+    insufficientdata_actions = resource.Body('insufficientdata_actions', type=list)
+    # The alarm level is 2 by default and the levels are 1, 2, 3, and 4.
+    # Corresponding to urgent, important, secondary, prompt
+    alarm_level = resource.Body('alarm_level')
 
     def _action(self, session, body):
         """Preform alarm actions given the message body."""

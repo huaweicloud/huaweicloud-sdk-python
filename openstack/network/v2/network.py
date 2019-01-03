@@ -46,6 +46,7 @@ class Network(resource.Resource):
     # NOTE: We don't support query on list or datetime fields yet
     _query_mapping = resource.QueryParameters(
         'description', 'name', 'project_id', 'status',
+        'page_reverse', 'id', 'tenant_id',
         ipv4_address_scope_id='ipv4_address_scope',
         ipv6_address_scope_id='ipv6_address_scope',
         is_admin_state_up='admin_state_up',
@@ -127,6 +128,8 @@ class Network(resource.Resource):
     updated_at = resource.Body('updated_at')
     #: Indicates the VLAN transparency mode of the network
     is_vlan_transparent = resource.Body('vlan_transparent', type=bool)
+    #: The ID of the project this network is associated with.
+    tenant_id = resource.Body('tenant_id')
 
 
 class DHCPAgentHostingNetwork(Network):

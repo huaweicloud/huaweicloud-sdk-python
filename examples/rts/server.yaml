@@ -1,0 +1,46 @@
+heat_template_version: 2013-05-23
+
+description: Minimal HOT template for stack
+
+parameters:
+  name:
+    type: string
+    description: Name of server
+  availability_zone:
+    type: string
+    description: Specifies the name of the AZ to which the ECS belong.
+  key_name:
+    type: string
+    description: Name of an existing key pair to use for the server
+    constraints:
+      - custom_constraint: nova.keypair
+  flavor:
+    type: string
+    description: Flavor for the server to be created
+    default: s1.large
+    constraints:
+      - custom_constraint: nova.flavor
+  image:
+    type: string
+    description: Image ID or image name to use for the server
+    constraints:
+      - custom_constraint: glance.image
+  network:
+    type: string
+    description: Network used by the server
+
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      name: { get_param: name }
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      networks: [ { network: { get_param: network } }]
+      availability_zone: { get_param: availability_zone }
+
+outputs:
+  server_networks:
+    description: The networks of the deployed server
+    value: { get_attr: [server, networks] }

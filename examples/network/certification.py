@@ -36,11 +36,11 @@ conn = connection.Connection(
 def test_get_all_certificate():
     cers = list(conn.network.certificates())
     for cer in cers:
-        print cer
+        print(cer)
 
 
 def test_get_certificate(cf_id):
-    print conn.network.get_certificate(cf_id)
+    print(conn.network.get_certificate(cf_id))
 
 
 def test_create_certificate():

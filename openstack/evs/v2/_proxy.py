@@ -28,16 +28,18 @@ class Proxy(proxy2.BaseProxy):
         :returns: The results of volume creation
         :rtype: :class:`~openstack.evs.v2.volume.Volume`
         """
-        return self._create(_volume.Vloume, **attrs)
+        resource_key = _volume.Volume.resource_key
+        attrs = attrs.get(resource_key, attrs)
+        return self._create(_volume.Volume, **attrs)
 
     def resize_volume(self, volume_id, **data):
         """
         post method to modify volume size
         :param volume_id: EVS volume_id
         :param data:
-        :return: class:`~openstack.evs.v2.volume.ResizeVloume`
+        :return: class:`~openstack.evs.v2.volume.ResizeVolume`
         """
-        return self._create(_volume.ResizeVloume, volume_id=volume_id, **data)
+        return self._create(_volume.ResizeVolume, volume_id=volume_id, **data)
 
     def create_volume_ext(self, **attrs):
         """Create a new volume from attributes
@@ -49,13 +51,30 @@ class Proxy(proxy2.BaseProxy):
         :returns: The results of volume creation
         :rtype: :class:`~openstack.evs.v2.volume_ext.Volume`
         """
-        return self._create(_volume_ext.VloumeExt, **attrs)
+        return self._create(_volume_ext.VolumeExt, **attrs)
 
     def resize_volume_ext(self, volume_id, **data):
         """
         post method to modify volume size
         :param volume_id: EVS volume_id
         :param data:
-        :return: class:`~openstack.evs.v2.volume_ext.ResizeVloume`
+        :return: class:`~openstack.evs.v2.volume_ext.ResizeVolume`
         """
-        return self._create(_volume_ext.ResizeVloume, volume_id=volume_id, **data)
+        return self._create(_volume_ext.ResizeVolume, volume_id=volume_id, **data)
+
+    def update_volume(self, volume_id, **data):
+        """
+        Update a volume.
+        :param volume_id: Id of volume.
+        :param data: Keyword arguments which will be used to update.
+        :return: class:`~openstack.evs.v2.volume.Volume`
+        """
+        return self._update(_volume.Volume, volume_id, **data)
+
+    def get_volume(self, volume_id):
+        """
+        Get a volume.
+        :param volume_id: Id of volume.
+        :return: class:`~openstack.evs.v2.volume.Volume`
+        """
+        return self._get(_volume.Volume, volume_id)

@@ -75,6 +75,18 @@ class TestSecurityGroup(testtools.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_list)
 
+        self.assertDictEqual(
+            {
+                "description": "description",
+                "name": "name",
+                "limit": "limit",
+                "marker": "marker",
+                "page_reverse": "page_reverse",
+                "project_id": "tenant_id"
+            },
+            sot._query_mapping._mapping
+        )
+
     def test_make_it(self):
         sot = security_group.SecurityGroup(**EXAMPLE)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)

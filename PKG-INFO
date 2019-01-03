@@ -1,11 +1,11 @@
 Metadata-Version: 1.1
 Name: huaweicloud-sdk-python
-Version: 1.0.9
+Version: 1.0.10
 Summary: An SDK for building applications to work with OpenStack
 Home-page: https://github.com/huaweicloud/huaweicloud-sdk-python
 Author: huawei
 Author-email: 
-License: Apache 2.0
+License: UNKNOWN
 Description: Python SDK of HUAWEI CLOUD
         ====================
         
@@ -51,16 +51,16 @@ Description: Python SDK of HUAWEI CLOUD
         
         python setup.py install
         
-        安装完成后，使用python命令，进入python shell，执行下面命令：
+        After the installation is complete, use the python command to enter the python shell and execute the following command:
         
         import openstack
         
-        查看openstack SDK是否安装成功。若不报错，说明安装成功了。
+        Check if the SDK is successfully installed. If no error is reported, the installation is successful.
         
         Use SDK
         ---------
+        Connection initialization
         
-        ##链接初始化
         from openstack import connection
         
         from openstack import utils
@@ -73,7 +73,7 @@ Description: Python SDK of HUAWEI CLOUD
         
         userDomainId = "youruserDomainId"
         
-        auth_url = "https://iam.cn-north-1.myhuaweicloud.com/v3"
+        auth_url = "https://iam.xxx.yyy.com/v3"
         
         conn = connection.Connection(auth_url=auth_url,
         
@@ -88,15 +88,15 @@ Description: Python SDK of HUAWEI CLOUD
         
         
         
-        ##SDK使用调用
+        SDK usage
         data = conn.compute.servers()
         
         for i in data:
         
-            print i
+            print(i)
         
         
-        增加debug开关
+        Add the debug switch
         ---------
         
         import sys
@@ -121,13 +121,13 @@ Description: Python SDK of HUAWEI CLOUD
         except exceptions.HttpException as e:
         
         
-            print e.code
+            print (e.code)
         
         
-            print e.message
+            print (e.message)
         
         
-            print e.details
+            print (e.details)
         
         
 Platform: UNKNOWN
@@ -138,6 +138,7 @@ Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Operating System :: POSIX :: Linux
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 2.7
-Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
 Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7

@@ -43,8 +43,8 @@ def test_get_listener(ls_id):
 
 def test_get_listeners():
     listeners = list(conn.load_balancer.listeners())
-    print len(listeners)
-    print listeners
+    print(len(listeners))
+    print(listeners)
 
 
 def test_update_listener(ls_id):

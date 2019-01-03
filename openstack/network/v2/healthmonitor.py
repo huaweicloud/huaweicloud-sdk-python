@@ -59,6 +59,6 @@ class HealthMonitor(resource2.Resource):
     expected_codes = resource2.Body("expected_codes")
     # The health check tests the http request path sent when the member is healthy.
     # Instructions for use: begin with "/"
-    url_path = resource2.URI("url_path")
+    url_path = resource2.Body("url_path")
     # HTTP methods, which can be GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, CONNECT, PATCH
     http_method = resource2.Body("http_method")

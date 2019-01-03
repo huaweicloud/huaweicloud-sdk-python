@@ -66,4 +66,7 @@ class EIP(resource2.Resource):
     create_time = resource2.Body('create_time')
     # bandwidth size
     bandwidth_size = resource2.Body('bandwidth_size')
+    # tenant id
     tenant_id = resource2.Body('tenant_id')
+    #publicip id
+    publicip_id = resource2.Body("publicip_id")

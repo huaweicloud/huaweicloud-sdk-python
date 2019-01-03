@@ -145,6 +145,19 @@ class Servers(resource2.Resource):
     enterprise_project_id = resource2.Body('enterprise_project_id')
     # Elastic cloud server system label.
     sys_tags = resource2.Body('sys_tags', type=list)
+    # server_tags
+    server_tags = resource2.Body("server_tags", type=list)
+    # If you need to use a password to log in to the cloud server, you can use the adminPass field to specify the
+    # initial login password for the cloud server administrator account. The Linux administrator account is root
+    # and the Windows administrator account is Administrator.
+    # Password complexity requirements:
+    # The length is 8-26 digits.
+    # The password must contain at least three of uppercase letters, lowercase letters, numbers,
+    # and special characters (!@$%^-_=+[{}]:, ./?).
+    # The password cannot contain the reverse of the username or username.
+    # The Windows system password cannot contain the reverse order of the username or username, and cannot contain
+    # more than two consecutive characters in the username.
+    adminPass = resource2.Body("adminPass")
 
 
 class ServerAction(resource2.Resource):
@@ -237,7 +250,8 @@ class ServerDetail(Servers):
         'not-tags',
         'reservation_id',
         'enterprise_project_id',
-        flavor_id='flavor'
+        'tags',
+        flavor_id = 'flavor'
     )
 
     # The total number of lists of elastic cloud servers.

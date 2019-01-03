@@ -19,7 +19,7 @@ conn = connection.Connection(auth_url=auth_url,
 def availability_zones():
     azs = conn.compute.availability_zones()
     for az in azs:
-        print az
+        print(az)
 
 
 if __name__ == "__main__":

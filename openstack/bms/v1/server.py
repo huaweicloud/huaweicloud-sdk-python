@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 # Copyright 2018 Huawei Technologies Co.,Ltd.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 # this file except in compliance with the License.  You may obtain a copy of the
 # License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software distributed
 # under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 # CONDITIONS OF ANY KIND, either express or implied.  See the License for the
@@ -22,6 +22,8 @@ class Servers(resource2.Resource):
     resources_key = 'servers'
     service = bms_service.BmsService()
     allow_create = True
+    allow_get = True
+    allow_update = True
 
     # string type BMS server name
     name = resource2.Body('name')
@@ -72,3 +74,74 @@ class Servers(resource2.Resource):
     # error = resource2.Body('error')
     # message = resource2.Body('message')
     # code = resource2.Body('code')
+
+    # Get the properties of the server.
+    # Bare metal server unique ID.
+    id = resource2.Body('id')
+    # Bare metal server current status information.
+    status = resource2.Body('status')
+    # Bare metal server creation time.
+    created = resource2.Body('created')
+    # Bare metal server last update time.
+    updated = resource2.Body('updated')
+    # The bare metal server corresponds to the bare metal server specification information
+    flavor = resource2.Body('flavor', type=dict)
+    # Bare metal server image information.
+    image = resource2.Body('image', type=dict)
+    # The tenant ID of the bare metal server.
+    tenant_id = resource2.Body('tenant_id')
+    # The user ID of the bare metal server.
+    user_id = resource2.Body('user_id')
+    # The host ID corresponding to the bare metal server.
+    hostId = resource2.Body('hostId')
+    # Network address information corresponding to the bare metal server.
+    addresses = resource2.Body('addresses', type=dict)
+    # Bare metal server related quick link information.
+    links = resource2.Body('links', type=list)
+    # Extended attributes, disk configuration.
+    OS_DCF_diskConfig = resource2.Body('OS-DCF:diskConfig')
+    # Extended attributes, available partition coding.
+    OS_EXT_AZ_availability_zone = resource2.Body('OS-EXT-AZ:availability_zone')
+    # Extended attributes, bare metal server service status.
+    OS_EXT_SERVICE_service_state = resource2.Body('OS-EXT-SERVICE:service_state')
+    # Extended attribute, bare metal server host name.
+    OS_EXT_SRV_ATTR_host = resource2.Body('OS-EXT-SRV-ATTR:host')
+    # Extended attributes, hypervisor host name, provided by the Nova virt driver.
+    OS_EXT_SRV_ATTR_hypervisor_hostname = resource2.Body('OS-EXT-SRV-ATTR:hypervisor_hostname')
+    # Extended attribute, bare metal server instance ID.
+    OS_EXT_SRV_ATTR_instance_name = resource2.Body('OS-EXT-SRV-ATTR:instance_name')
+    # Extended attributes, bare metal server power state.
+    # eg:
+    # 0: 'NO STATE', 1: 'RUNNING', 4: 'SHUTDOWN'.
+    OS_EXT_STS_power_state = resource2.Body('OS-EXT-STS:power_state')
+    # Extended attributes, bare metal server task status.
+    # eg:
+    # rebooting, reboot_started, reboot_started_hard,
+    # powering-off, powering-on, rebuilding, scheduling, deleting.
+    OS_EXT_STS_task_state = resource2.Body('OS-EXT-STS:task_state')
+    # Extended attributes, bare metal server status.
+    # eg:
+    # RUNNING, SHUTOFF, SUSPENDED, REBOOT.
+    OS_EXT_STS_vm_state = resource2.Body('OS-EXT-STS:vm_state')
+    # Extended attributes, bare metal server startup time.
+    OS_SRV_USG_launched_at = resource2.Body('OS-SRV-USG:launched_at')
+    # Extended attributes, bare metal server shutdown time.
+    OS_SRV_USG_terminated_at = resource2.Body('OS-SRV-USG:terminated_at')
+    # The information about the cloud drive mounted on the bare metal server.
+    os_extended_volumes_volumes_attached = resource2.Body(
+        'os-extended-volumes:volumes_attached', type=list
+    )
+    # Reserved attribute.
+    accessIPv4 = resource2.Body('accessIPv4')
+    # Reserved attribute.
+    accessIPv6 = resource2.Body('accessIPv6')
+    # Optional returned attributes, the cause of the failure.
+    fault = resource2.Body('fault', type=dict)
+    # Reserved attribute.
+    config_drive = resource2.Body('config_drive')
+    # Reserved attribute.
+    progress = resource2.Body('progress')
+    # Bare metal server description.
+    description = resource2.Body('description')
+    # Nova-compute status: UP, UNKNOWN, DOWN, MAINTENANCE, Empty string.
+    host_status = resource2.Body('host_status')

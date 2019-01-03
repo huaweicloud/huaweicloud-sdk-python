@@ -35,14 +35,14 @@ conn = connection.Connection(
 
 def test_show_all_pool():
     pos = list(conn.network.pools())
-    print "pool numbers: ", len(pos)
+    print("pool numbers: ", len(pos))
     for p in pos:
-        print p
+        print(p)
 
 
 def test_show_pool(pool_id):
     pool = conn.network.get_pool(pool_id)
-    print pool
+    print(pool)
 
 
 def test_create_pool(ls_or_lb_id):

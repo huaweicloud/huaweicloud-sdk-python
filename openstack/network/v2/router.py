@@ -47,6 +47,7 @@ class Router(resource.Resource):
     # NOTE: We don't support query on datetime, list or dict fields
     _query_mapping = resource.QueryParameters(
         'description', 'flavor_id', 'name', 'status',
+        'page_reverse', 'id',
         is_admin_state_up='admin_state_up',
         is_distributed='distributed',
         is_ha='ha',

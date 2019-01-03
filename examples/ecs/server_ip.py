@@ -19,7 +19,7 @@ conn = connection.Connection(auth_url=auth_url,
 def server_ips(server_id):
     server_ips = conn.compute.server_ips(server_id)
     for ip in server_ips:
-        print ip
+        print(ip)
 
 
 if __name__ == "__main__":

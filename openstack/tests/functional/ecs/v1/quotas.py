@@ -13,4 +13,4 @@
 # specific language governing permissions and limitations under the License.
 
 def get_quotas(conn):
-    print  conn.ecs.quotas()
+    print(conn.ecs.quotas())

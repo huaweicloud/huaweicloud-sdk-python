@@ -82,7 +82,7 @@ def create_server():
         }
     }
     server = conn.ecs.create_server_ext(**data)
-    print server
+    print(server)
 
 
 # resize server
@@ -95,7 +95,7 @@ def resize_server_extend():
         }
     }
     ff = conn.ecs.resize_server_ext(server_id=server_id, **data)
-    print ff
+    print(ff)
 
 
 if __name__ == "__main__":

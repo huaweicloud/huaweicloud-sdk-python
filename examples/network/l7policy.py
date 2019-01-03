@@ -35,13 +35,13 @@ conn = connection.Connection(
 
 def test_show_all_l7policy():
     pls = list(conn.network.poliycies())
-    print 'l7policy numbers: ', len(pls)
+    print('l7policy numbers: ', len(pls))
     for pl in pls:
-        print pl
+        print(pl)
 
 
 def test_show_l7policy(policy_id):
-    print conn.network.get_policy(policy_id)
+    print(conn.network.get_policy(policy_id))
 
 
 def test_create_l7policy(lb_id):

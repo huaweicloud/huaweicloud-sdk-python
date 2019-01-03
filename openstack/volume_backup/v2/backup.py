@@ -39,6 +39,15 @@ class CloudBackup(resource.Resource):
     description = resource.Body("description")
     #: The sync cloud backup job id
     job_id = resource.Body("id")
+    # tag
+    tags = resource.Body("tags", type=list)
+    # key. The maximum length is 36 characters. Character set: Cannot contain non-printing characters
+    # ASCII (0-31), "=", "*", "<", ">", "\", ",", "|", "/"
+    key = resource.Body("key")
+    # value. The maximum length is 43 characters and can be an empty string. Character set: Cannot contain
+    # non-printing characters ASCII (0-31), "=", "*", "<", ">", "\", ",", "|", "/"
+    value = resource.Body("value")
+
 
     def restore(self, session, volume_id):
         """Restore current backup to volume
@@ -67,7 +76,7 @@ class Backup(resource.Resource):
     service = volume_backup_service.VolumeBackupService()
 
     _query_mapping = resource.QueryParameters(
-        "name", "status", "volume_id"
+        "name", "status", "volume_id", "offset"
     )
 
     # capabilities
@@ -107,6 +116,18 @@ class Backup(resource.Resource):
     service_metadata = resource.Body("service_metadata")
     #: Backup fail reason
     fail_reason = resource.Body("fail_reason")
+    #: Id of tenant.
+    project_id = resource.Body("project_id")
+    #: URL of backup.
+    links = resource.Body("links", type=list)
+    #: Update time.
+    updated_at = resource.Body("updated_at")
+    #: Current time.
+    data_timestamp = resource.Body("data_timestamp")
+    #: Whether there is a dependent backup.
+    has_dependent_backups = resource.Body("has_dependent_backups", type=bool)
+    #: Whether it is an incremental backup.
+    is_incremental = resource.Body("is_incremental", type=bool)
 
 
 class BackupDetail(Backup):

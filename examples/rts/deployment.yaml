@@ -1,0 +1,11 @@
+heat_template_version: 2013-05-23
+
+description: Minimal HOT template for deployment
+
+resources:
+  dep_test:
+    type: OS::Heat::SoftwareDeployment
+    properties:
+      actions: [CREATE, UPDATE]
+      config_id: 04d6ae5b-010f-460a-95d8-891c033d9ad4
+      server_id: 92782b77-7b3d-46bf-81fe-1d9b6381cb16

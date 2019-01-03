@@ -46,7 +46,8 @@ class InstanceConfig(resource.Resource):
     user_data = resource.Body('user_data')
     #: Metadata(key-pair) for creating new instance
     metadata = resource.Body('metadata', type=dict)
-
+    # security_groups
+    security_groups = resource.Body("security_groups", type=list)
 
 class Config(resource.Resource):
     resource_key = 'scaling_configuration'
@@ -62,7 +63,7 @@ class Config(resource.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        'image_id', 'limit',
+        'image_id', 'limit',"project_id", "start_number",
         name='scaling_configuration_name', marker=query_marker_key
     )
 
@@ -79,6 +80,8 @@ class Config(resource.Resource):
     instance_config = resource.Body('instance_config',
                                     default={},
                                     type=InstanceConfig)
+    #tenant
+    tenant = resource.Body("tenant")
 
     @classmethod
     def get_next_marker(cls, response_json, yielded, query_params):

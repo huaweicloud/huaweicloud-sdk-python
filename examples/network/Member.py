@@ -35,14 +35,14 @@ conn = connection.Connection(
 
 def test_show_all_members(pool_id):
     ms = list(conn.network.members(pool_id = pool_id))
-    print "member numbers: ", len(ms)
+    print("member numbers: ", len(ms))
     for m in ms:
-        print m
+        print(m)
 
 
 def test_show_member(mem_id, pool_id):
     m = conn.network.get_member(mem_id, pool_id)
-    print m
+    print(m)
 
 
 def test_create_member(pool_id, subnet_id, ip_add, protocol_port):

@@ -47,6 +47,25 @@ class TestSecurityGroupRule(testtools.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_list)
 
+        self.assertDictEqual(
+            {
+                "description": "description",
+                "direction": "direction",
+                "protocol": "protocol",
+                "remote_group_id": "remote_group_id",
+                "security_group_id": "security_group_id",
+                "limit": "limit",
+                "marker": "marker",
+                "page_reverse": "page_reverse",
+                "remote_ip_prefix": "remote_ip_prefix",
+                "port_range_max": "port_range_max",
+                "port_range_min": "port_range_min",
+                "ether_type": "ethertype",
+                "project_id": "tenant_id"
+            },
+            sot._query_mapping._mapping
+        )
+
     def test_make_it(self):
         sot = security_group_rule.SecurityGroupRule(**EXAMPLE)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)

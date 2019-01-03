@@ -47,6 +47,7 @@ class Port(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'description', 'device_id', 'device_owner', 'ip_address',
         'mac_address', 'name', 'network_id', 'status', 'subnet_id',
+        'page_reverse', 'id', 'dns_name',
         is_admin_state_up='admin_state_up',
         is_port_security_enabled='port_security_enabled',
         project_id='tenant_id',

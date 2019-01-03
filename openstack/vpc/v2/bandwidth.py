@@ -56,7 +56,6 @@ class Bandwidths(resource2.Resource):
     publicip_address = resource2.Body('publicip_address')
     # public ip type
     publicip_type = resource2.Body('publicip_type')
-
     # project id
     project_id = resource2.Body('tenant_id')
 

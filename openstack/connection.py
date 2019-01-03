@@ -77,7 +77,7 @@ import logging
 import sys
 
 import os
-import os_client_config
+#import os_client_config
 from keystoneauth1.loading import base as ksa_loader
 from openstack import exceptions
 from openstack import profile as _profile
@@ -90,86 +90,86 @@ from openstack import aksksession as aksession
 _logger = logging.getLogger(__name__)
 
 
-def from_config(cloud_name=None, cloud_config=None, options=None):
-    """Create a Connection using os-client-config
-
-    :param str cloud_name: Use the `cloud_name` configuration details when
-                           creating the Connection instance.
-    :param cloud_config: An instance of
-                         `os_client_config.config.OpenStackConfig`
-                         as returned from the os-client-config library.
-                         If no `config` is provided,
-                         `os_client_config.OpenStackConfig` will be called,
-                         and the provided `cloud_name` will be used in
-                         determining which cloud's configuration details
-                         will be used in creation of the
-                         `Connection` instance.
-    :param options: A namespace object; allows direct passing in of options to
-                    be added to the cloud config. This does not have to be an
-                    instance of argparse.Namespace, despite the naming of the
-                    the `os_client_config.config.OpenStackConfig.get_one_cloud`
-                    argument to which it is passed.
-
-    :rtype: :class:`~openstack.connection.Connection`
-    """
-    # TODO(thowe): I proposed that service name defaults to None in OCC
-    defaults = {}
-    prof = _profile.Profile()
-    services = [service.service_type for service in prof.get_services()]
-    for service in services:
-        defaults[service + '_service_name'] = None
-    # TODO(thowe): default is 2 which turns into v2 which doesn't work
-    # this stuff needs to be fixed where we keep version and path separated.
-    defaults['network_api_version'] = 'v2.0'
-    if cloud_config is None:
-        occ = os_client_config.OpenStackConfig(override_defaults=defaults)
-        cloud_config = occ.get_one_cloud(cloud=cloud_name, argparse=options)
-
-    if cloud_config.debug:
-        utils.enable_logging(True, stream=sys.stdout)
-
-    # TODO(mordred) we need to add service_type setting to openstacksdk.
-    # Some clouds have type overridden as well as name.
-
-    services = [service.service_type for service in prof.get_services()]
-    for service in cloud_config.get_services():
-        if service in services:
-            version = cloud_config.get_api_version(service)
-            if version:
-                version = str(version)
-                if not version.startswith("v"):
-                    version = "v" + version
-                prof.set_version(service, version)
-            name = cloud_config.get_service_name(service)
-            if name:
-                prof.set_name(service, name)
-            interface = cloud_config.get_interface(service)
-            if interface:
-                prof.set_interface(service, interface)
-
-    region = cloud_config.get_region_name(service)
-    if region:
-        for service in services:
-            prof.set_region(service, region)
-
-    # Auth
-    auth = cloud_config.config['auth']
-    # TODO(thowe) We should be using auth_type
-    auth['auth_plugin'] = cloud_config.config['auth_type']
-    if 'cacert' in auth:
-        auth['verify'] = auth.pop('cacert')
-    if 'cacert' in cloud_config.config:
-        auth['verify'] = cloud_config.config['cacert']
-    insecure = cloud_config.config.get('insecure', False)
-    if insecure:
-        auth['verify'] = False
-
-    cert = cloud_config.config.get('cert')
-    if cert:
-        key = cloud_config.config.get('key')
-        auth['cert'] = (cert, key) if key else cert
-
-    return Connection(profile=prof, **auth)
+# def from_config(cloud_name=None, cloud_config=None, options=None):
+#     """Create a Connection using os-client-config
+#
+#     :param str cloud_name: Use the `cloud_name` configuration details when
+#                            creating the Connection instance.
+#     :param cloud_config: An instance of
+#                          `os_client_config.config.OpenStackConfig`
+#                          as returned from the os-client-config library.
+#                          If no `config` is provided,
+#                          `os_client_config.OpenStackConfig` will be called,
+#                          and the provided `cloud_name` will be used in
+#                          determining which cloud's configuration details
+#                          will be used in creation of the
+#                          `Connection` instance.
+#     :param options: A namespace object; allows direct passing in of options to
+#                     be added to the cloud config. This does not have to be an
+#                     instance of argparse.Namespace, despite the naming of the
+#                     the `os_client_config.config.OpenStackConfig.get_one_cloud`
+#                     argument to which it is passed.
+#
+#     :rtype: :class:`~openstack.connection.Connection`
+#     """
+#     # TODO(thowe): I proposed that service name defaults to None in OCC
+#     defaults = {}
+#     prof = _profile.Profile()
+#     services = [service.service_type for service in prof.get_services()]
+#     for service in services:
+#         defaults[service + '_service_name'] = None
+#     # TODO(thowe): default is 2 which turns into v2 which doesn't work
+#     # this stuff needs to be fixed where we keep version and path separated.
+#     defaults['network_api_version'] = 'v2.0'
+#     if cloud_config is None:
+#         occ = os_client_config.OpenStackConfig(override_defaults=defaults)
+#         cloud_config = occ.get_one_cloud(cloud=cloud_name, argparse=options)
+#
+#     if cloud_config.debug:
+#         utils.enable_logging(True, stream=sys.stdout)
+#
+#     # TODO(mordred) we need to add service_type setting to openstacksdk.
+#     # Some clouds have type overridden as well as name.
+#
+#     services = [service.service_type for service in prof.get_services()]
+#     for service in cloud_config.get_services():
+#         if service in services:
+#             version = cloud_config.get_api_version(service)
+#             if version:
+#                 version = str(version)
+#                 if not version.startswith("v"):
+#                     version = "v" + version
+#                 prof.set_version(service, version)
+#             name = cloud_config.get_service_name(service)
+#             if name:
+#                 prof.set_name(service, name)
+#             interface = cloud_config.get_interface(service)
+#             if interface:
+#                 prof.set_interface(service, interface)
+#
+#     region = cloud_config.get_region_name(service)
+#     if region:
+#         for service in services:
+#             prof.set_region(service, region)
+#
+#     # Auth
+#     auth = cloud_config.config['auth']
+#     # TODO(thowe) We should be using auth_type
+#     auth['auth_plugin'] = cloud_config.config['auth_type']
+#     if 'cacert' in auth:
+#         auth['verify'] = auth.pop('cacert')
+#     if 'cacert' in cloud_config.config:
+#         auth['verify'] = cloud_config.config['cacert']
+#     insecure = cloud_config.config.get('insecure', False)
+#     if insecure:
+#         auth['verify'] = False
+#
+#     cert = cloud_config.config.get('cert')
+#     if cert:
+#         key = cloud_config.config.get('key')
+#         auth['cert'] = (cert, key) if key else cert
+#
+#     return Connection(profile=prof, **auth)
 
 
 class Connection(object):
@@ -310,7 +310,7 @@ class Connection(object):
                                 proxy_class.__module__)
             setattr(self, attr_name, proxy_class(self.session))
         except Exception as e:
-            _logger.warn("Unable to load %s: %s" % (module, e))
+            _logger.warning("Unable to load %s: %s" % (module, e))
 
     def authorize(self):
         """Authorize this Connection

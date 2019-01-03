@@ -16,7 +16,7 @@ from openstack import resource2
 from openstack.evs import evs_service
 
 
-class VloumeExt(resource2.Resource):
+class VolumeExt(resource2.Resource):
     base_path = "/cloudvolumes"
 
     service = evs_service.EvsServiceV2_1()
@@ -61,12 +61,12 @@ class VloumeExt(resource2.Resource):
     code = resource2.Body('code')
 
 
-class ResizeVloume(VloumeExt):
+class ResizeVolume(VolumeExt):
     base_path = "/cloudvolumes/%(volume_id)s/action"
 
     volume_id = resource2.URI('volume_id')
-    # extend vloume info
+    # extend volume info
     extend = resource2.Body('os-extend', type=dict)
 
-    # vloume new  size
+    # volume new  size
     new_size = resource2.Body('new_size', type=int)

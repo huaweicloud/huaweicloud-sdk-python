@@ -45,7 +45,7 @@ class DnatRule(resource2.Resource):
     )
 
     # RULE id
-    id = resource2.Body("nat_gateway_id")
+    id = resource2.Body("id")
     # tenant id
     tenant_id = resource2.Body("tenant_id")
     # nat gateway id

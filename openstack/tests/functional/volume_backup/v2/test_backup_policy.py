@@ -92,4 +92,4 @@ class TestBackupPolicy(base.BaseFunctionalTest):
 
     def test_5_list_tasks(self):
         tasks = list(self.conn.volume_backup.tasks(self.policy.id))
-        print tasks
+        print(tasks)

@@ -33,6 +33,8 @@ class Group(resource.Resource):
 
     _query_mapping = resource.QueryParameters(
         "scaling_configuration_id", "limit",
+        "project_id", "scaling_configuration_id",
+        "start_number", "enterprise_project_id",
         name="scaling_group_name",
         status="scaling_group_status",
         marker=query_marker_key
@@ -89,9 +91,21 @@ class Group(resource.Resource):
     #: Should delete public ip when terminate instance, default ``false``
     delete_publicip = resource.Body("delete_publicip", type=bool)
     #: availability zones
-    availability_zones = resource.Body("available_zones")
+    availability_zones = resource.Body("available_zones", type = list)
     #: Create time of the group
     create_time = resource.Body("create_time")
+    # The grace period of the health status check of the scaling group is in the range of 0 to 86400, in seconds.
+    # After the instance is added to the scaling group and the Enabled state is enabled, the health check grace period is started.
+    # The scaling group checks the health of the instance after the health check grace period ends.
+    # This parameter takes effect when the health check mode of the expansion group instance is ELB_AUDIT.
+    # If this parameter is not set, the default is 600
+    health_periodic_audit_grace_period = resource.Body("health_periodic_audit_grace_period", type=int)
+    # lbaas listeners
+    lbaas_listeners = resource.Body("lbaas_listeners", type=list)
+    # enterprise project id
+    enterprise_project_id = resource.Body("enterprise_project_id")
+    # cloud location id
+    cloud_location_id = resource.Body("cloud_location_id")
 
     @classmethod
     def get_next_marker(cls, response_json, yielded, query_params):

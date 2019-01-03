@@ -54,6 +54,29 @@ class TestSubnet(testtools.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_list)
 
+        self.assertDictEqual(
+            {
+                "cidr": "cidr",
+                "description": "description",
+                "gateway_ip": "gateway_ip",
+                "ip_version": "ip_version",
+                "ipv6_address_mode": "ipv6_address_mode",
+                "ipv6_ra_mode": "ipv6_ra_mode",
+                "name": "name",
+                "network_id": "network_id",
+                "segment_id": "segment_id",
+                "limit": "limit",
+                "marker": "marker",
+                "page_reverse": "page_reverse",
+                "router_id": "vpc_id",
+                "is_dhcp_enabled": "enable_dhcp",
+                "project_id": "tenant_id",
+                "subnet_pool_id": "subnetpool_id",
+                "use_default_subnet_pool": "use_default_subnetpool",
+            },
+            sot._query_mapping._mapping
+        )
+
     def test_make_it(self):
         sot = subnet.Subnet(**EXAMPLE)
         self.assertEqual(EXAMPLE['allocation_pools'], sot.allocation_pools)

@@ -48,7 +48,7 @@ def create_two_servers_one_time():
     }
 
     ff = conn.ecs.create_server(**data)
-    print ff
+    print(ff)
     wait_time(TIMES, INTERVAL, ff.job_id)
 
 
@@ -68,7 +68,7 @@ def reboot_server():
                 }
             }
     ff = conn.ecs.reboot_server(**data)
-    print ff
+    print(ff)
     wait_time(TIMES, INTERVAL, ff.job_id)
 
 
@@ -88,7 +88,7 @@ def stop_server():
         }
     }
     ff = conn.ecs.stop_server(**data)
-    print ff
+    print(ff)
     wait_time(TIMES, INTERVAL, ff.job_id)
 
 
@@ -107,7 +107,7 @@ def start_server():
         }
     }
     ff = conn.ecs.start_server(**data)
-    print ff
+    print(ff)
     wait_time(TIMES, INTERVAL, ff.job_id)
 
 
@@ -126,7 +126,7 @@ def delete_server(publicip_type="false", volume_type="false"):
             "delete_volume": volume_type
             }
     ff = conn.ecs.delete_server(**data)
-    print ff
+    print(ff)
     wait_time(TIMES, INTERVAL, ff.job_id)
 
 
@@ -136,10 +136,10 @@ def wait_time(times, interval, job_id):
         time.sleep(interval)
         job = conn.ecs.get_job(job_id)
         if job.status == "SUCCESS":
-            print "Get job success after %s tries" % index
+            print("Get job success after %s tries" % index)
             break
         elif job.status == "FAIL":
-            print "Get job failed after %s tries" % index
+            print("Get job failed after %s tries" % index)
             break
 
 

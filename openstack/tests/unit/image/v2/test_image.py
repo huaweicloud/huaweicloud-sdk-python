@@ -76,6 +76,33 @@ EXAMPLE = {
     'vmware_ostype': '48',
     'auto_disk_config': True,
     'os_type': '49',
+    'isregistered': '50',
+    'tag': '51',
+    'member_status': '52',
+    'support_kvm': '53',
+    'support_xen': '54',
+    'support_diskintensive': '55',
+    'support_highperformance': '56',
+    'support_xen_gpu_type': '57',
+    'root_origin': '58',
+    'sequence_num': '59',
+    'self_info': '60',
+    'schema': '61',
+    'deleted': True,
+    'description': '63',
+    'virtual_env_type': '64',
+    'image_source_type': '65',
+    'deleted_at': '66',
+    'originalimagename': '67',
+    'backup_id': '68',
+    'productcode': '69',
+    'image_size': '70',
+    'data_origin': '71',
+    'update_at': '72',
+    'create_at': '73',
+    'image_location': '74',
+    'enterprise_project_id': '75',
+    'max_ram': '76'
 }
 
 
@@ -100,6 +127,44 @@ class TestImage(testtools.TestCase):
         self.assertTrue(sot.allow_update)
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_list)
+
+        self.assertDictEqual(
+            {
+                "name": "name",
+                "visibility": "visibility",
+                "member_status": "member_status",
+                "owner": "owner",
+                "status": "status",
+                "size_min": "size_min",
+                "size_max": "size_max",
+                "sort_key": "sort_key",
+                "sort_dir": "sort_dir",
+                "sort": "sort",
+                "tag": "tag",
+                "created_at": "created_at",
+                "updated_at": "updated_at",
+                "__platform": "__platform",
+                "__imagetype": "__imagetype",
+                "__os_version": "__os_version",
+                "__isregistered": "__isregistered",
+                "protected": "protected",
+                "id": "id",
+                "container_format": "container_format",
+                "disk_format": "disk_format",
+                "min_ram": "min_ram",
+                "min_disk": "min_disk",
+                "__os_bit": "__os_bit",
+                "__os_type": "__os_type",
+                "__support_kvm": "__support_kvm",
+                "__support_xen": "__support_xen",
+                "__support_diskintensive": "__support_diskintensive",
+                "__support_highperformance": "__support_highperformance",
+                "__support_xen_gpu_type": "__support_xen_gpu_type",
+                "limit": "limit",
+                "marker": "marker"
+            },
+            sot._query_mapping._mapping
+        )
 
     def test_make_it(self):
         sot = image.Image(**EXAMPLE)
@@ -160,6 +225,33 @@ class TestImage(testtools.TestCase):
         self.assertEqual(EXAMPLE['vmware_ostype'], sot.vmware_ostype)
         self.assertEqual(EXAMPLE['auto_disk_config'], sot.has_auto_disk_config)
         self.assertEqual(EXAMPLE['os_type'], sot.os_type)
+        self.assertEqual(EXAMPLE['isregistered'], sot.isregistered)
+        self.assertEqual(EXAMPLE['tag'], sot.tag)
+        self.assertEqual(EXAMPLE['member_status'], sot.member_status)
+        self.assertEqual(EXAMPLE['support_kvm'], sot.support_kvm)
+        self.assertEqual(EXAMPLE['support_xen'], sot.support_xen)
+        self.assertEqual(EXAMPLE['support_diskintensive'], sot.support_diskintensive)
+        self.assertEqual(EXAMPLE['support_highperformance'], sot.support_highperformance)
+        self.assertEqual(EXAMPLE['support_xen_gpu_type'], sot.support_xen_gpu_type)
+        self.assertEqual(EXAMPLE['root_origin'], sot.root_origin)
+        self.assertEqual(EXAMPLE['sequence_num'], sot.sequence_num)
+        self.assertEqual(EXAMPLE['self_info'], sot.self_info)
+        self.assertEqual(EXAMPLE['schema'], sot.schema)
+        self.assertEqual(EXAMPLE['deleted'], sot.deleted)
+        self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE['virtual_env_type'], sot.virtual_env_type)
+        self.assertEqual(EXAMPLE['image_source_type'], sot.image_source_type)
+        self.assertEqual(EXAMPLE['deleted_at'], sot.deleted_at)
+        self.assertEqual(EXAMPLE['originalimagename'], sot.originalimagename)
+        self.assertEqual(EXAMPLE['backup_id'], sot.backup_id)
+        self.assertEqual(EXAMPLE['productcode'], sot.productcode)
+        self.assertEqual(EXAMPLE['image_size'], sot.image_size)
+        self.assertEqual(EXAMPLE['data_origin'], sot.data_origin)
+        self.assertEqual(EXAMPLE['update_at'], sot.update_at)
+        self.assertEqual(EXAMPLE['create_at'], sot.create_at)
+        self.assertEqual(EXAMPLE['image_location'], sot.image_location)
+        self.assertEqual(EXAMPLE['enterprise_project_id'], sot.enterprise_project_id)
+        self.assertEqual(EXAMPLE['max_ram'], sot.max_ram)
 
     def test_deactivate(self):
         sot = image.Image(**EXAMPLE)

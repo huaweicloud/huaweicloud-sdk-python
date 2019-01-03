@@ -15,5 +15,5 @@
 def query_flavors(conn):
     flavors = conn.ecs.flavors()
     for f in flavors:
-        print f
+        print(f)
 

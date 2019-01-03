@@ -26,6 +26,9 @@ SNAPSHOT = {
     "id": FAKE_ID,
     "name": "snap-001",
     "force": "true",
+    "updated_at": "2018-03-09T12:14:57.233772",
+    "display_name": "snap-001",
+    "display_description": "Daily backup",
 }
 
 DETAILS = {
@@ -56,6 +59,7 @@ class TestSnapshot(testtools.TestCase):
                               "status": "status",
                               "all_tenants": "all_tenants",
                               "volume_id": "volume_id",
+                              "offset": "offset",
                               "limit": "limit",
                               "marker": "marker"},
                              sot._query_mapping._mapping)
@@ -70,6 +74,9 @@ class TestSnapshot(testtools.TestCase):
         self.assertEqual(SNAPSHOT["size"], sot.size)
         self.assertEqual(SNAPSHOT["name"], sot.name)
         self.assertTrue(sot.is_forced)
+        self.assertEqual(SNAPSHOT["updated_at"], sot.updated_at)
+        self.assertEqual(SNAPSHOT["display_name"], sot.display_name)
+        self.assertEqual(SNAPSHOT["display_description"], sot.display_description)
 
 
 class TestSnapshotDetail(testtools.TestCase):

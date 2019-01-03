@@ -72,6 +72,24 @@ class TestRouter(testtools.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_list)
 
+        self.assertDictEqual(
+            {
+                "description": "description",
+                "flavor_id": "flavor_id",
+                "name": "name",
+                "status": "status",
+                "limit": "limit",
+                "marker": "marker",
+                "page_reverse": "page_reverse",
+                "id": "id",
+                "is_admin_state_up": "admin_state_up",
+                "is_distributed": "distributed",
+                "is_ha": "ha",
+                "project_id": "tenant_id"
+            },
+            sot._query_mapping._mapping
+        )
+
     def test_make_it(self):
         sot = router.Router(**EXAMPLE)
         self.assertTrue(sot.is_admin_state_up)

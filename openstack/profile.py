@@ -97,9 +97,10 @@ from openstack.smn import smn_service
 from openstack.volume_backup import volume_backup_service
 from openstack.vpc import vpc_service
 from openstack.bms import bms_service
+from openstack.deh import deh_service
 from openstack.csbs import csbs_service
 from openstack.ims import ims_service
-# from openstack.nat import nat_service
+from openstack.nat import nat_service
 # from openstack.key_manager import key_manager_service
 # from openstack.bare_metal import bare_metal_service
 # from openstack.cluster import cluster_service
@@ -158,9 +159,10 @@ class Profile(object):
         self._add_service(ecs_service.EcsServiceV1_1(version='v1.1'))
         self._add_service(vpc_service.VpcService(version='v2.0'))
         self._add_service(bms_service.BmsService(version='v1'))
+        self._add_service(deh_service.DehService(version='v1.0'))
         self._add_service(csbs_service.CsbsService(version='v1'))
         self._add_service(ims_service.ImsService(version='v2'))
-        # self._add_service(nat_service.NatService(version='v2.0'))
+        self._add_service(nat_service.NatService(version='v2.0'))
         self._add_service(lb_service.LoadBalancerService(version='v1'))
         # not support below service
         # self._add_service(message_service.MessageService(version="v1"))

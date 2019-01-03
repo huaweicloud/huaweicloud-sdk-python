@@ -23,12 +23,12 @@ def create_server_interface(server_id, net_id=None, port_id=None,
     for key in attrs:
         if attrs[key]:
             kwargs[key] = attrs[key]
-    print kwargs
+    print(kwargs)
     if kwargs == {}:
         message = "Parameter error"
         raise exceptions.SDKException(message)
     server = conn.compute.create_server_interface(server_id, **kwargs)
-    print server
+    print(server)
     return server
 
 
@@ -41,14 +41,14 @@ def delete_server_interface(server_interface, servr_id):
 def get_server_interface(server_interface, servr_id):
     server_ifa = conn.compute.get_server_interface(server_interface,
                                                    server=servr_id)
-    print server_ifa
+    print(server_ifa)
 
 
 # get list of interface
 def server_interfaces(server_id):
     server_ifas = conn.compute.server_interfaces(server_id)
     for ifa in server_ifas:
-        print ifa
+        print(ifa)
 
 
 if __name__ == "__main__":

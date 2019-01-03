@@ -19,19 +19,19 @@ conn = connection.Connection(auth_url=auth_url,
 def list_flavors():
     flavors = conn.compute.flavors()
     for flavor in flavors:
-        print flavor
+        print(flavor)
 
 
 # show flavor detail
 def show_flavor(flavor_id):
     flavor = conn.compute.get_flavor(flavor_id)
-    print flavor
+    print(flavor)
 
 
 # find flavor
 def find_flavor(flavor_id):
     flavor = conn.compute.find_flavor(flavor_id)
-    print flavor
+    print(flavor)
 
 
 if __name__ == "__main__":

@@ -36,7 +36,9 @@ class Zone(resource.Resource):
     allow_get = True
     allow_delete = True
 
-    _query_mapping = resource.QueryParameters(zone_type='type')
+    _query_mapping = resource.QueryParameters(
+        "offset", "tags",
+        zone_type='type')
 
     # The id of zone
     id  = resource.Body("id")
@@ -78,3 +80,5 @@ class Zone(resource.Resource):
     created_at = resource.Body('created_at')
     #: Timestamp when the zone was last updated
     updated_at = resource.Body('updated_at')
+    # tags
+    tags = resource.Body("tags", type=list)

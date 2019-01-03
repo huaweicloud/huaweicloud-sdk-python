@@ -83,7 +83,7 @@ class InstanceHook(resource.Resource):
 
 class InstanceHookList(resource.Resource):
     resource_key = 'instance_hanging_info'
-    resources_key = 'instance_hanging_infos'
+    resources_key = 'instance_hanging_info'
     base_path = '/scaling_instance_hook/%(scaling_group_id)s/list'
     allow_list = True
     service = auto_scaling_service.AutoScalingService()

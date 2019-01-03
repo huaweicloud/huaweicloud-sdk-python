@@ -35,7 +35,7 @@ def get_job():
     }
     ff = conn.ecs.reboot_server(**data)
     job = conn.ecs.get_job(ff.job_id)
-    print job
+    print(job)
 
 
 if __name__ == "__main__":

@@ -49,6 +49,7 @@ class Subnet(resource.Resource):
         'cidr', 'description', 'gateway_ip', 'ip_version',
         'ipv6_address_mode', 'ipv6_ra_mode', 'name', 'network_id',
         'segment_id',
+        'page_reverse',
         router_id='vpc_id',
         is_dhcp_enabled='enable_dhcp',
         project_id='tenant_id',

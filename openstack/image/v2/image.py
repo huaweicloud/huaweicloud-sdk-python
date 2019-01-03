@@ -29,8 +29,6 @@
 import hashlib
 import logging
 
-import jsonpatch
-
 from openstack import exceptions
 from openstack.image import image_service
 from openstack import resource2
@@ -58,9 +56,15 @@ class Image(resource2.Resource):
                                                "size_max", "sort_key",
                                                "sort_dir", "sort", "tag",
                                                "created_at", "updated_at",
-                                               "__platform","__imagetype",
-                                                "__os_version"
-                                                )
+                                               "__platform", "__imagetype",
+                                               "__os_version", "__isregistered",
+                                               "protected", "id", "container_format",
+                                               "disk_format", "min_ram", "min_disk",
+                                               "__os_bit", "__os_type",
+                                               "__support_kvm", "__support_xen",
+                                               "__support_diskintensive",
+                                               "__support_highperformance",
+                                               "__support_xen_gpu_type")
 
     # NOTE: Do not add "self" support here. If you've used Python before,
     # you know that self, while not being a reserved word, has special
@@ -235,6 +239,61 @@ class Image(resource2.Resource):
     os_bit = resource2.Body("__os_bit")
     #: The platform of the operation system installed on the image.
     platform = resource2.Body("__platform")
+    #: Whether it is a registered image.
+    isregistered = resource2.Body("__isregistered")
+    #: Tag.
+    tag = resource2.Body("tag")
+    #: Status of member.
+    member_status = resource2.Body("member_status")
+    #: Whether to support kvm.
+    support_kvm = resource2.Body("__support_kvm")
+    #: Whether to support xen.
+    support_xen = resource2.Body("__support_xen")
+    #: Whether to support dense storage.
+    support_diskintensive = resource2.Body("__support_diskintensive")
+    #: Whether to support high computing performance.
+    support_highperformance = resource2.Body("__support_highperformance")
+    #: Whether to support the GPU optimization type under the XEN virtualization platform.
+    support_xen_gpu_type = resource2.Body("__support_xen_gpu_type")
+    #: Indicates that the current mirror source is imported from outside.
+    root_origin = resource2.Body("__root_origin")
+    #: Indicates the location of the system disk slot where the current image
+    #: corresponds to the cloud server.
+    sequence_num = resource2.Body("__sequence_num")
+    #: Image link's infomation.
+    self_info = resource2.Body("self")
+    #: View image.
+    schema = resource2.Body("schema")
+    #: Whether it is a deleted image.
+    deleted = resource2.Body("deleted", type=bool)
+    #: Description of image.
+    description = resource2.Body("__description")
+    #: Mirror usage environment type
+    virtual_env_type = resource2.Body("virtual_env_type")
+    #: Mirror backend storage type.
+    image_source_type = resource2.Body("__image_source_type")
+    #: Delete time.
+    deleted_at = resource2.Body("deleted_at")
+    #: Parent image ID.
+    originalimagename = resource2.Body("__originalimagename")
+    #: Id of backup.
+    backup_id = resource2.Body("__backup_id")
+    #: The product ID of the market image.
+    productcode = resource2.Body("__productcode")
+    #: Size of image.
+    image_size = resource2.Body("__image_size")
+    #: Mirror source.
+    data_origin = resource2.Body("__data_origin")
+    #: Update time.
+    update_at = resource2.Body("update_at")
+    # Create time
+    create_at = resource2.Body("create_at")
+    #: The storage location of the image.
+    image_location = resource2.Body("__image_location")
+    #: Indicates the enterprise project to which the current image belongs.
+    enterprise_project_id = resource2.Body("enterprise_project_id")
+    #: The maximum memory supported by the image.
+    max_ram = resource2.Body("max_ram")
 
 
     def _action(self, session, action):
@@ -325,12 +384,11 @@ class Image(resource2.Resource):
             'Content-Type': 'application/openstack-images-v2.1-json-patch',
             'Accept': ''
         }
-        original = self.to_dict()
-        patch_string = jsonpatch.make_patch(original, attrs).to_string()
+        patch_body = [attrs]
         endpoint_override = self.service.get_endpoint_override()
         resp = session.patch(url, endpoint_filter=self.service,
-                             data=patch_string,
+                             json=patch_body,
                              headers=headers,
-                             endpoint_override = endpoint_override)
+                             endpoint_override=endpoint_override)
         self._translate_response(resp, has_body=True)
         return self

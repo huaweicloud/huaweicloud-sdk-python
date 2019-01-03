@@ -38,7 +38,7 @@ class Snapshot(resource2.Resource):
     service = block_store_service.BlockStoreService()
 
     _query_mapping = resource2.QueryParameters('all_tenants', 'name', 'status',
-                                               'volume_id')
+                                               'volume_id', "offset")
 
     # capabilities
     allow_get = True
@@ -69,6 +69,12 @@ class Snapshot(resource2.Resource):
     #: Indicate whether to create snapshot, even if the volume is attached.
     #: Default is ``False``. *Type: bool*
     is_forced = resource2.Body("force", type=format.BoolStr)
+    #: Update time.
+    updated_at = resource2.Body("updated_at")
+    #: Same as name.
+    display_name = resource2.Body("display_name")
+    #: Same as description.
+    display_description = resource2.Body("display_description")
 
 
 class SnapshotDetail(Snapshot):

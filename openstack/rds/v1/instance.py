@@ -80,6 +80,8 @@ class Instance(_rdsresource.Resource):
     restorePoint = resource.Body("restorePoint", type=dict)
     #: Root password
     dbRtPd = resource.Body("dbRtPd")
+    #: DB port
+    dbPort = resource.Body("dbPort")
 
     def _action(self, session, body):
         """Perform instance action"""

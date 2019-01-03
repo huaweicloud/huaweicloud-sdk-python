@@ -27,7 +27,18 @@ class LoadBalancer(resource2.Resource):
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource2.QueryParameters()
+    _query_mapping = resource2.QueryParameters(
+        "id",
+        "description",
+        "name",
+        "operating_status",
+        "provisioning_status",
+        "vip_address",
+        "vip_port_id",
+        "vip_subnet_id",
+        "member_address",
+        "member_device_id"
+    )
     # loadbalancer id
     id = resource2.Body("id")
     # tenant id

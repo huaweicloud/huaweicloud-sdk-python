@@ -48,6 +48,7 @@ class FloatingIP(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'description', 'fixed_ip_address', 'floating_ip_address',
         'floating_network_id', 'port_id', 'router_id', 'status',
+        'page_reverse', 'id',
         project_id='tenant_id')
 
     # Properties

@@ -20,26 +20,26 @@ def create_keypair(keypair_name):
     keypair = conn.compute.find_keypair(keypair_name)
     if not keypair:
         keypair = conn.compute.create_keypair(name=keypair_name)
-    print keypair
+    print(keypair)
 
 
 # get list of keypair
 def list_keypair():
     keypairs = conn.compute.keypairs()
     for keypair in keypairs:
-        print keypair
+        print(keypair)
 
 
 # show keypair detail
 def show_keypair(keypair_name):
     keypair = conn.compute.get_keypair(keypair_name)
-    print keypair
+    print(keypair)
 
 
 # find keypair_id or name
 def find_keypair(keypair_name):
     keypair = conn.compute.find_keypair(keypair_name)
-    print keypair
+    print(keypair)
 
 
 # delete keypair

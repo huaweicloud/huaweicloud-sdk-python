@@ -38,7 +38,7 @@ import re
 import six
 
 
-class SDKException(Exception):
+class SDKException(BaseException):
     """The base exception class for all exceptions this library raises."""
     def __init__(self, message=None, cause=None):
         self.message = self.__class__.__name__ if message is None else message

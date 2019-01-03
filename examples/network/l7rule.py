@@ -35,13 +35,13 @@ conn = connection.Connection(
 
 def test_show_all_rules(pl_id):
     rules = list(conn.network.rules(policy_id = pl_id))
-    print 'rule numbers: ', len(rules)
+    print('rule numbers: ', len(rules))
     for rule in rules:
-        print rule
+        print(rule)
 
 
 def test_show_rule(rule_id, pl_id):
-    print conn.network.get_rule(rule_id, pl_id)
+    print(conn.network.get_rule(rule_id, pl_id))
 
 
 def test_create_rule(pl_id):

@@ -19,25 +19,25 @@ conn = connection.Connection(auth_url=auth_url,
 def list_images():
     images = conn.compute.images()
     for image in images:
-        print image
+        print(image)
 
 
 # show image detail
 def get_image(image_id):
     image = conn.compute.get_image(image_id)
-    print image
+    print(image)
 
 
 # find image
 def find_image(image_id):
     image = conn.compute.find_image(image_id)
-    print image
+    print(image)
 
 
 # get image metadata
 def get_image_metadata(image_id):
     image_metadata = conn.compute.get_image_metadata(image_id)
-    print image_metadata
+    print(image_metadata)
 
 
 # delete image

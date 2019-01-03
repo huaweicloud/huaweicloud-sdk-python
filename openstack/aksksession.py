@@ -15,22 +15,18 @@
 import functools
 import hashlib
 import hmac
-import json
-import os
-import urllib
-import urlparse
+import six
+from six.moves import urllib
 
 
 import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
 import datetime
 
 import requests
 from keystoneauth1.session import  TCPKeepAliveAdapter, _JSONEncoder, _determine_user_agent
 from openstack import exceptions
 from openstack import version as openstack_version
-from openstack import  session as osession
+from openstack import session as osession
 from keystoneauth1 import _utils as utils
 from openstack.session import map_exceptions
 from openstack.service_endpoint import endpoint as _endpoint
@@ -40,8 +36,10 @@ from keystoneauth1 import exceptions
 EMPTYSTRING = ""
 TERMINATORSTRING = "sdk_request"
 ALGORITHM = "SDK-HMAC-SHA256"
+PYTHON2 = "2"
+UTF8 = "utf-8"
 
-DEFAULT_USER_AGENT = "openstacksdk/%s" % openstack_version.__version__
+DEFAULT_USER_AGENT = "huaweicloud-sdk-python/%s" % openstack_version.__version__
 _logger = utils.get_logger(__name__)
 
 def construct_session(session_obj=None):
@@ -61,10 +59,18 @@ def get_utf8_bytes(message):
     :param message: the string of message
     :type message: string
     """
-    if sys.stdin.encoding is None:
-        return message.decode('cp936').encode('utf-8')
+
+    codename = 'cp936' if sys.stdin.encoding is None  else sys.stdin.encoding
+    if sys.version.startswith(PYTHON2):
+        if type(message) == str:
+            return message.decode(codename).encode(UTF8)
+        if type(message) == type(u""):
+            return message
     else:
-        return message.decode(sys.stdin.encoding).encode('utf-8')
+        if type(message) == str:
+            return message.encode(UTF8)
+        if type(message) == bytes:
+            return message.decode(codename).encode(UTF8)
 
 
 class AkSksignature(object):
@@ -107,13 +113,13 @@ class AkSksignature(object):
 
         """
         canonical_method = method.upper() if method else EMPTYSTRING
-        uri = urlparse.urlparse(url).path
+        uri = urllib.parse.urlparse(url).path
         uri = uri.replace(":", "%3A")
         canonical_uri = uri if uri.endswith('/') else uri + '/'
         if params:
             result = []
             for k, vs in list(params.items()):
-                if isinstance(vs, basestring) or not hasattr(vs, '__iter__'):
+                if isinstance(vs, str) or not hasattr(vs, '__iter__'):
                     vs = [vs]
                 for v in vs:
                     if v is not None:
@@ -121,12 +127,12 @@ class AkSksignature(object):
                             (k.encode('utf-8') if isinstance(k, str) else k,
                              v.encode('utf-8') if isinstance(v, str) else v))
             result.sort(key= lambda item: item[0])
-            canonical_querystring  = urllib.urlencode(result, doseq=True)
+            canonical_querystring  = urllib.parse.urlencode(result, doseq=True)
             #canonical_querystring = 'image' + '=' +  urllib.quote(json.dumps(params.get('image')).replace(' ',''))
         else:
             canonical_querystring = EMPTYSTRING
         #print "query string ", canonical_querystring
-        canonical_header =  [k.lower() + ':' + headers.get(k).strip() for k  in self.headtosign] if all([headers.has_key(k) for k in self.headtosign]) else []
+        canonical_header =  [k.lower() + ':' + headers.get(k).strip() for k  in self.headtosign] if all([k in headers for k in self.headtosign]) else []
         #canonical_header_partb = [k.lower() + ':' + str(v).strip() for k, v in body.items()] if body else []
         canonical_header = '\n'.join(canonical_header)
         canonical_header += '\n'
@@ -134,7 +140,7 @@ class AkSksignature(object):
 
         body = body if body  else ""
         #print body
-        request_payload = hashlib.sha256(body).hexdigest()
+        request_payload = hashlib.sha256(get_utf8_bytes(body)).hexdigest()
         #print request_payload
         return '\n'.join([canonical_method,canonical_uri,canonical_querystring, canonical_header, signed_header, request_payload])
 
@@ -203,7 +209,7 @@ class AkSksignature(object):
                                                                         credential_scope,
                                                                         signed_header,
                                                                         signature)
-class MissingRequiredArgument(Exception):
+class MissingRequiredArgument(BaseException):
     message = "ClientException"
     def __init__(self, message=None):
         self.message = message or self.message
@@ -267,23 +273,23 @@ class ASKSession(osession.Session):
     def request(self,url, method, json=None, original_ip=None,
                 user_agent=None, redirect=None, endpoint_filter=None,
                 raise_exc=True, log=True,
-                endpoint_override=None, connect_retries=0,
+                endpoint_override=None,connect_retries=0,
                 allow=None, client_name=None, client_version=None,
                 **kwargs):
         headers = kwargs.setdefault('headers', dict())
 
-        if not urlparse.urlparse(url).netloc:
+        if not urllib.parse.urlparse(url).netloc:
             if endpoint_override:
                 base_url = endpoint_override % {"project_id": self.project_id}
             elif endpoint_filter:
                 base_url = self.get_endpoint(interface=endpoint_filter.interface,
                                              service_type=endpoint_filter.service_type)
 
-            if not urlparse.urlparse(base_url).netloc:
+            if not urllib.parse.urlparse(base_url).netloc:
                 raise exceptions.EndpointNotFound()
 
             url = '%s/%s' % (base_url.rstrip('/'), url.lstrip('/'))
-        headers.setdefault("Host", urlparse.urlparse(url).netloc)
+        headers.setdefault("Host", urllib.parse.urlparse(url).netloc)
         if self.cert:
             kwargs.setdefault('cert', self.cert)
 
@@ -416,7 +422,7 @@ class ASKSession(osession.Session):
                      **kwargs):
         base_url = ""
         service_type = service_type.upper().replace('-', '_')
-        if self.endpoint and self.endpoint.has_key(service_type):
+        if self.endpoint and service_type in self.endpoint:
             endpoint = self.endpoint.get(service_type).get(interface, '')
             map = {"project_id": self.project_id, "region": self.region, "domain": self.domain}
             base_url = endpoint % map

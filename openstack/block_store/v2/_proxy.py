@@ -156,7 +156,7 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_volume.Volume, volume)
 
-    def volumes(self, details=True, **query):
+    def volumes(self, details=True, sort_dir="desc", **query):
         """Retrieve a generator of volumes
 
         :param bool details: When set to ``False``
@@ -175,6 +175,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of volume objects.
         """
         volume = _volume.VolumeDetail if details else _volume.Volume
+        query["sort_dir"] = sort_dir
         return self._list(volume, paginated=True, **query)
 
     def create_volume(self, **attrs):

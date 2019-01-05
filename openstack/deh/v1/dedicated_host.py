@@ -43,8 +43,8 @@ class Host(resource2.Resource):
         'name',
         'limit',
         'marker',
-        'changes-since',
-        'sys_enterprise_project_id'
+        'sys_enterprise_project_id',
+        changes_since='changes-since'
     )
 
     # Id of deh.

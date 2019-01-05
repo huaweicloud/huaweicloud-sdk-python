@@ -45,9 +45,9 @@ class Volume(resource2.Resource):
             "sort_key",
             "offset",
             "availability_zone",
-            "change-since",
-            metadata_alias = "metadata",
-            sort_dir="desc"
+            "sort_dir",
+            changes_since="changes-since",
+            metadata_alias="metadata"
             )
 
     # capabilities

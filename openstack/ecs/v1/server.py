@@ -247,11 +247,11 @@ class ServerDetail(Servers):
         'status',
         'limit',
         'offset',
-        'not-tags',
         'reservation_id',
         'enterprise_project_id',
         'tags',
-        flavor_id = 'flavor'
+        not_tags='not-tags',
+        flavor_id='flavor'
     )
 
     # The total number of lists of elastic cloud servers.

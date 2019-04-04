@@ -28,11 +28,12 @@
 
 from openstack.compute import compute_service
 from openstack.compute.v2 import metadata
+from openstack.compute.v2 import tag
 from openstack import resource2
 from openstack import utils
 
 
-class Server(resource2.Resource, metadata.MetadataMixin):
+class Server(resource2.Resource, metadata.MetadataMixin, tag.TagMixin):
     resource_key = 'server'
     resources_key = 'servers'
     base_path = '/servers'
@@ -46,18 +47,19 @@ class Server(resource2.Resource, metadata.MetadataMixin):
     allow_list = True
 
     _query_mapping = resource2.QueryParameters(
-                                               "image", "flavor", "name",
-                                               "status", "all_tenants",
-                                               "sort_key", "sort_dir",
-                                               "reservation_id", "tags",
-                                               "changes_since", "not_tags",
-                                               "project_id","host",
-                                               tags_any="tags-any",
-                                               not_tags_any="not-tags-any",
-                                               is_deleted="deleted",
-                                               ipv4_address="ip",
-                                               ipv6_address="ip6"
-                                               )
+        "image", "flavor", "name",
+        "status", "all_tenants",
+        "sort_key", "sort_dir",
+        "reservation_id", "tags",
+        "project_id", "host",
+        tags_any="tags-any",
+        not_tags_any="not-tags-any",
+        is_deleted="deleted",
+        ipv4_address="ip",
+        ipv6_address="ip6",
+        changes_since="changes-since",
+        not_tags="not-tags"
+    )
 
     #: A list of dictionaries holding links relevant to this server.
     links = resource2.Body('links')
@@ -73,6 +75,8 @@ class Server(resource2.Resource, metadata.MetadataMixin):
     addresses = resource2.Body('addresses', type=dict)
     #: Timestamp of when the server was created.
     created_at = resource2.Body('created')
+    #: The reason about the server in ERROR status.
+    fault = resource2.Body('fault', type=dict)
     #: The flavor reference, as a ID or full URL, for the flavor to use for
     #: this server.
     flavor_id = resource2.Body('flavorRef')
@@ -80,18 +84,38 @@ class Server(resource2.Resource, metadata.MetadataMixin):
     flavor = resource2.Body('flavor', type=dict)
     #: An ID representing the host of this server.
     host_id = resource2.Body('hostId')
+    #: The hostname of the server. Since microversion 2.3.
+    hostname = resource2.Body('OS-EXT-SRV-ATTR:hostname')
+    #: The status of the compute service. The value can be UP,
+    #: DOWN, UNKNOWN or an empty string. Since microversion 2.16.
+    host_status = resource2.Body('host_status')
     #: The image reference, as a ID or full URL, for the image to use for
     #: this server.
     image_id = resource2.Body('imageRef')
     #: The image property as returned from server.
     image = resource2.Body('image', type=dict)
+    #: The UUID of the kernel image when using AMI format image.
+    #: Since microversion 2.3.
+    kernel_id = resource2.Body('OS-EXT-SRV-ATTR:kernel_id')
+    #: The launch order of the server created in batch. Since microversion 2.3.
+    launch_index = resource2.Body('OS-EXT-SRV-ATTR:launch_index', type=int)
+    #: The lock status of the server. Since microversion 2.9.
+    is_locked = resource2.Body('locked')
     #: Metadata stored for this server. *Type: dict*
     metadata = resource2.Body('metadata', type=dict)
+    #: A single metadata queried. *Type: dict*
+    meta = resource2.Body('meta', type=dict)
     #: While the server is building, this value represents the percentage
     #: of completion. Once it is completed, it will be 100.  *Type: int*
     progress = resource2.Body('progress', type=int)
     #: The ID of the project this server is associated with.
     project_id = resource2.Body('tenant_id')
+    #: The UUID of the ramdisk image when using AMI format image.
+    #: Since microversion 2.3.
+    ramdisk_id = resource2.Body('OS-EXT-SRV-ATTR:ramdisk_id')
+    #: The device name of the system disk of the server.
+    #: Since microversion 2.3.
+    root_device_name = resource2.Body('OS-EXT-SRV-ATTR:root_device_name')
     #: The state this server is in. Valid values include ``ACTIVE``,
     #: ``BUILDING``, ``DELETED``, ``ERROR``, ``HARD_REBOOT``, ``PASSWORD``,
     #: ``PAUSED``, ``REBOOT``, ``REBUILD``, ``RESCUED``, ``RESIZED``,
@@ -155,20 +179,31 @@ class Server(resource2.Resource, metadata.MetadataMixin):
     #: instance name template. Appears in the response for administrative users
     #: only.
     instance_name = resource2.Body('OS-EXT-SRV-ATTR:instance_name')
-
     min_count = resource2.Body("min_count")
     max_count = resource2.Body("max_count")
     description = resource2.Body("description")
     # reservation_id
     reservation_id = resource2.Body("reservation_id")
+    # locked
+    locked = resource2.Body("locked", type=bool)
     # tags
-    tags = resource2.Body("tags")
+    tags = resource2.Body("tags", type=list)
     # reserved attribute
     evsOpts = resource2.Body("evsOpts")
     hyperThreadAffinity = resource2.Body("hyperThreadAffinity")
     numaOpts = resource2.Body("numaOpts")
     vcpuAffinity = resource2.Body("vcpuAffinity")
+    # host
+    host = resource2.Body("OS-EXT-SRV-ATTR:host")
 
+    # only microversion
+    # hostname = resource2.Body("OS-EXT-SRV-ATTR:hostname")
+    # kernel_id = resource2.Body("OS-EXT-SRV-ATTR:kernel_id")
+    # ramdisk_id = resource2.Body("OS-EXT-SRV-ATTR:ramdisk_id")
+    # launch_index = resource2.Body("OS-EXT-SRV-ATTR:launch_index")
+    # reservation_id_attr = resource2.Body("OS-EXT-SRV-ATTR:reservation_id")
+    # root_device_name = resource2.Body("OS-EXT-SRV-ATTR:root_device_name")
+    # host_status = resource2.Body("host_status")
 
     def _prepare_request(self, requires_id=True, prepend_key=True):
         request = super(Server, self)._prepare_request(requires_id=requires_id,
@@ -209,8 +244,10 @@ class Server(resource2.Resource, metadata.MetadataMixin):
         url = utils.urljoin(Server.base_path, self.id, 'action')
         headers = {'Accept': ''}
         endpoint_override = self.service.get_endpoint_override()
+        service = self.get_service_filter(self, session)
         return session.post(
-            url, endpoint_filter=self.service, json=body, headers=headers, endpoint_override = endpoint_override)
+            url, endpoint_filter=self.service, microversion=service.microversion, json=body, headers=headers,
+            endpoint_override=endpoint_override)
 
     def change_password(self, session, new_password):
         """Change the administrator password to the given password."""
@@ -368,6 +405,10 @@ class Server(resource2.Resource, metadata.MetadataMixin):
         body = {"unshelve": None}
         self._action(session, body)
 
+    def console_output(self, session, lines):
+        body = {"os-getConsoleOutput": {"length": lines}}
+        return self._action(session, body).json()["output"]
+
 
 class ServerDetail(Server):
     base_path = '/servers/detail'
@@ -378,3 +419,105 @@ class ServerDetail(Server):
     allow_update = False
     allow_delete = False
     allow_list = True
+
+
+class ServerAction(resource2.Resource):
+    base_path = "/servers/%(server_id)s/os-instance-actions"
+    allow_list = True
+    resources_key = 'instanceActions'
+    service = compute_service.ComputeService()
+
+    # Behavioral action
+    # Ranges:
+    # Create , delete , evacuate , restore , stop ,
+    # Start , reboot , rebuild , revertResize ,
+    # confirmResize , detach_volume ,
+    # Attach_volume , attach_interface ,
+    # Detach_interface , lock , unlock , resize ,
+    # Migrate , pause , unpause , suspend , resume ,
+    # Rescue , unrescue , changePassword ,
+    # Shelve , unshelve , live-migration ,
+    # Live_migration_cancel ,
+    # Live_migration_force_complete ,
+    # Trigger_crash_dump, extend_volume
+    action = resource2.Body("action")
+    # ecs id
+    instance_uuid = resource2.Body("instance_uuid")
+    # Behavior completion status information
+    message = resource2.Body("message")
+    # project id
+    project_id = resource2.Body("project_id")
+    # request id
+    request_id = resource2.Body("request_id")
+    # update at
+    updated_at = resource2.Body("updated_at")
+    # start time
+    start_time = resource2.Body("start_time")
+    # user id
+    user_id = resource2.Body("user_id")
+    # server id
+    server_id = resource2.URI("server_id")
+
+
+class ServerActionReqID(resource2.Resource):
+    base_path = "/servers/%(server_id)s/os-instance-actions"
+    allow_get = True
+    resource_key = 'instanceAction'
+    service = compute_service.ComputeService()
+
+    # Behavioral action
+    # Ranges:
+    # Create , delete , evacuate , restore , stop ,
+    # Start , reboot , rebuild , revertResize ,
+    # confirmResize , detach_volume ,
+    # Attach_volume , attach_interface ,
+    # Detach_interface , lock , unlock , resize ,
+    # Migrate , pause , unpause , suspend , resume ,
+    # Rescue , unrescue , changePassword ,
+    # Shelve , unshelve , live-migration ,
+    # Live_migration_cancel ,
+    # Live_migration_force_complete ,
+    # Trigger_crash_dump, extend_volume
+    action = resource2.Body("action")
+    # ecs id
+    instance_uuid = resource2.Body("instance_uuid")
+    # Behavior completion status information
+    message = resource2.Body("message")
+    # project id
+    project_id = resource2.Body("project_id")
+    # request id
+    id = resource2.Body("request_id")
+    # start time
+    start_time = resource2.Body("start_time")
+    # user id
+    user_id = resource2.Body("user_id")
+    # events
+    events = resource2.Body("events", type=list)
+    # server id
+    server_id = resource2.URI("server_id")
+
+
+class ServerOS(resource2.Resource):
+    base_path = "/cloudservers"
+    allow_create = True
+
+    service = compute_service.ComputeService()
+
+    # admin password
+    adminpass = resource2.Body("adminpass")
+    # key name
+    keyname = resource2.Body("keyname")
+    # user id
+    userid = resource2.Body("userid")
+    # metadata
+    metadata = resource2.Body("metadata", type=dict)
+
+    def reinstall(self, session, server_id):
+        url = utils.urljoin(self.base_path, server_id, 'reinstallos')
+        headers = {'Accept': ''}
+        endpoint_override = self.service.get_endpoint_override()
+        service = self.get_service_filter(self, session)
+        body = {"os-reinstall": self._body.dirty}
+        return session.post(
+            url, endpoint_filter=self.service, microversion=service.microversion, json=body, headers=headers,
+            endpoint_override=endpoint_override).json()

@@ -25,12 +25,13 @@ import datetime
 import requests
 from keystoneauth1.session import  TCPKeepAliveAdapter, _JSONEncoder, _determine_user_agent
 from openstack import exceptions
-from openstack import version as openstack_version
+from openstack.session import DEFAULT_USER_AGENT
 from openstack import session as osession
 from keystoneauth1 import _utils as utils
 from openstack.session import map_exceptions
 from openstack.service_endpoint import endpoint as _endpoint
 from keystoneauth1 import exceptions
+from openstack.exceptions import MissingRequiredArgument
 
 
 EMPTYSTRING = ""
@@ -38,8 +39,6 @@ TERMINATORSTRING = "sdk_request"
 ALGORITHM = "SDK-HMAC-SHA256"
 PYTHON2 = "2"
 UTF8 = "utf-8"
-
-DEFAULT_USER_AGENT = "huaweicloud-sdk-python/%s" % openstack_version.__version__
 _logger = utils.get_logger(__name__)
 
 def construct_session(session_obj=None):
@@ -209,11 +208,6 @@ class AkSksignature(object):
                                                                         credential_scope,
                                                                         signed_header,
                                                                         signature)
-class MissingRequiredArgument(BaseException):
-    message = "ClientException"
-    def __init__(self, message=None):
-        self.message = message or self.message
-        super(MissingRequiredArgument, self).__init__(self.message)
 
 
 def check(session):
@@ -272,12 +266,13 @@ class ASKSession(osession.Session):
     @map_exceptions
     def request(self,url, method, json=None, original_ip=None,
                 user_agent=None, redirect=None, endpoint_filter=None,
-                raise_exc=True, log=True,
+                raise_exc=True, log=True, microversion = None,
                 endpoint_override=None,connect_retries=0,
                 allow=None, client_name=None, client_version=None,
                 **kwargs):
         headers = kwargs.setdefault('headers', dict())
-
+        if microversion:
+            self._set_microversion_headers(headers, microversion, None, endpoint_filter)
         if not urllib.parse.urlparse(url).netloc:
             if endpoint_override:
                 base_url = endpoint_override % {"project_id": self.project_id}

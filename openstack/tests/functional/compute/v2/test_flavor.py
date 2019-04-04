@@ -11,10 +11,12 @@
 # under the License.
 
 import six
+import  sys
 
-from openstack import exceptions
 from openstack.tests.functional import base
-
+from openstack import utils
+utils.enable_logging(debug=True,stream=sys.stdout)
+from openstack.compute.v2.flavor import ExtraSpecs
 
 class TestFlavor(base.BaseFunctionalTest):
 
@@ -24,31 +26,43 @@ class TestFlavor(base.BaseFunctionalTest):
 
         cls.one_flavor = list(cls.conn.compute.flavors())[0]
 
-    def test_flavors(self):
-        flavors = list(self.conn.compute.flavors())
-        self.assertGreater(len(flavors), 0)
+    # def test_flavors(self):
+    #     flavors = list(self.conn.compute.flavors())
+    #     self.assertGreater(len(flavors), 0)
+    #
+    #     for flavor in flavors:
+    #         self.assertIsInstance(flavor.id, six.string_types)
+    #         self.assertIsInstance(flavor.name, six.string_types)
+    #         self.assertIsInstance(flavor.disk, int)
+    #         self.assertIsInstance(flavor.ram, int)
+    #         self.assertIsInstance(flavor.vcpus, int)
+    #
+    # def test_find_flavors_by_id(self):
+    #     rslt = self.conn.compute.find_flavor(self.one_flavor.id)
+    #     self.assertEqual(rslt.id, self.one_flavor.id)
+    #
+    # def test_find_flavors_by_name(self):
+    #     rslt = self.conn.compute.find_flavor(self.one_flavor.name)
+    #     self.assertEqual(rslt.name, self.one_flavor.name)
+    #
+    # def test_find_flavors_no_match_ignore_true(self):
+    #     rslt = self.conn.compute.find_flavor("not a flavor",
+    #                                          ignore_missing=True)
+    #     self.assertIsNone(rslt)
 
-        for flavor in flavors:
-            self.assertIsInstance(flavor.id, six.string_types)
-            self.assertIsInstance(flavor.name, six.string_types)
-            self.assertIsInstance(flavor.disk, int)
-            self.assertIsInstance(flavor.ram, int)
-            self.assertIsInstance(flavor.vcpus, int)
 
-    def test_find_flavors_by_id(self):
-        rslt = self.conn.compute.find_flavor(self.one_flavor.id)
-        self.assertEqual(rslt.id, self.one_flavor.id)
 
-    def test_find_flavors_by_name(self):
-        rslt = self.conn.compute.find_flavor(self.one_flavor.name)
-        self.assertEqual(rslt.name, self.one_flavor.name)
+    # def test_find_flavors_no_match_ignore_false(self):
+    #     self.assertRaises(exceptions.ResourceNotFound,
+    #                       self.conn.compute.find_flavor,
+    #                       "not a flavor", ignore_missing=False)
 
-    def test_find_flavors_no_match_ignore_true(self):
-        rslt = self.conn.compute.find_flavor("not a flavor",
-                                             ignore_missing=True)
-        self.assertIsNone(rslt)
 
-    def test_find_flavors_no_match_ignore_false(self):
-        self.assertRaises(exceptions.ResourceNotFound,
-                          self.conn.compute.find_flavor,
-                          "not a flavor", ignore_missing=False)
+    def test_flavor_extra_specs(self):
+        res = self.conn.compute.query_flavor_extra_specs(flavor_id=self.one_flavor.id)
+        self.assertIsInstance(res, ExtraSpecs)
+
+    def test_flavor_resize(self):
+        for flv in self.conn.compute.flavor_resize_supperted(instance_uuid="faed6c66-6915-4fe4-b1e2-5c88170319ce"):
+            print(flv)
+            break

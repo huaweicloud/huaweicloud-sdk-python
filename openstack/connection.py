@@ -84,8 +84,8 @@ from openstack import profile as _profile
 from openstack import proxy
 from openstack import proxy2
 from openstack import session as _session
-from openstack import utils
 from openstack import aksksession as aksession
+from openstack.exceptions import MicroversionNotSupported
 
 _logger = logging.getLogger(__name__)
 
@@ -329,3 +329,24 @@ class Connection(object):
         headers = self.session.get_auth_headers()
 
         return headers.get('X-Auth-Token') if headers else None
+
+    def set_microversion(self, service_type, version):
+        """
+        :param service_type:  service type defined by server side,can be found in catalog
+        :type  string
+        :param version: the microversion
+        :type float
+        :return: None
+        """
+        support_microverisons = ["compute"]
+        if service_type not in support_microverisons:
+            raise MicroversionNotSupported(service_type, version)
+        self.profile._setter(service_type, "microversion", str(version))
+
+    def unset_microversion(self, service_type):
+        """
+        :param service_type:  service type defined by server side,can be found in catalog
+        :type string
+        :return: None
+        """
+        self.profile._setter(service_type, "microversion", None)

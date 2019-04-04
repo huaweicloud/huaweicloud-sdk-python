@@ -161,6 +161,25 @@ def get_volume(_conn):
     ff = _conn.evs.get_volume(volume_id)
     print(ff)
 
+def volumes(_conn):
+    generator = conn.evs.volumes(limit=2)
+    for volumes_list in generator:
+        print(volumes_list.count)
+        for volume in volumes_list.volumes:
+            print(volume.get('id'))
+        # volumes_links returned only when limit param is given
+        for volumes_link in volumes_list.volumes_links:
+            print(volumes_link.get('href'))
+            print(volumes_link.get('rel'))
+
+def get_job(_conn):
+    ff = conn.evs.get_job("ff808081695b70230169700bbd932e9b")
+    # single operation
+    print(ff.entities.get("volume_id"))
+    # batch operation
+    sub_jobs = ff.entities.get("sub_jobs")
+    for sub_job in sub_jobs:
+        print(sub_job.get("entities").get("volume_id"))
 
 if __name__ == "__main__":
     # create_volume_has_resource_key(conn)
@@ -168,4 +187,6 @@ if __name__ == "__main__":
     # create_volume_by_args(conn)
     # update_volume(conn)
     # get_volume(conn)
+    # volumes(conn)
+    # get_job(conn)
     pass

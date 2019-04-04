@@ -55,5 +55,4 @@ class Flavor(resource2.Resource):
     # type: Shortcut type
     links = resource2.Body("links", type=list)
     # Extension field for cloud server specifications
-    # For details:https://support.huaweicloud.com/api-ecs/zh-cn_topic_0020212656.html
     specs = resource2.Body("os_extra_specs", type=dict)

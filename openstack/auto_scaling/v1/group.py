@@ -33,7 +33,7 @@ class Group(resource.Resource):
 
     _query_mapping = resource.QueryParameters(
         "scaling_configuration_id", "limit",
-        "project_id", "scaling_configuration_id",
+        "project_id",
         "start_number", "enterprise_project_id",
         name="scaling_group_name",
         status="scaling_group_status",

@@ -156,7 +156,7 @@ class prop(object):
             try:
                 del instance[self.alias]
             except KeyError:
-                pass
+                print("Key Error")
 
 
 #: Key in attributes for header properties
@@ -794,7 +794,7 @@ class Resource(collections.MutableMapping):
         try:
             resp_id = resp.pop(self.id_attribute)
         except KeyError:
-            pass
+            print("Key Error")
         else:
             assert resp_id == self.id
         self._update_attrs_from_response(resp, include_headers=True)
@@ -951,7 +951,7 @@ class Resource(collections.MutableMapping):
             if cls.allow_retrieve:
                 return cls.get_by_id(session, name_or_id, path_args=path_args)
         except exceptions.NotFoundException:
-            pass
+            print("Resource Not Found")
 
         data = cls.list(session, path_args=path_args)
 

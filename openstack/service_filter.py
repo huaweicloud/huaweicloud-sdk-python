@@ -70,7 +70,6 @@ import os
 
 
 class ValidVersion(object):
-
     def __init__(self, module, path=None):
         """"Valid service version.
 
@@ -90,7 +89,8 @@ class ServiceFilter(dict):
 
     def __init__(self, service_type, interface=PUBLIC, region=None,
                  service_name=None, version=None, api_version=None,
-                 requires_project_id=False):
+                 requires_project_id=False,
+                 microversion=None):
         """Create a service identifier.
 
         :param string service_type: The desired type of service.
@@ -110,6 +110,7 @@ class ServiceFilter(dict):
         self['version'] = version
         self['api_version'] = api_version
         self['requires_project_id'] = requires_project_id
+        self['microversion'] = microversion
 
     @property
     def service_type(self):
@@ -170,6 +171,14 @@ class ServiceFilter(dict):
     @path.setter
     def path(self, value):
         self['path'] = value
+
+    @property
+    def microversion(self):
+        return self["microversion"]
+
+    @microversion.setter
+    def microversion(self, value):
+        self["microversion"] = value
 
     def get_path(self, version=None):
         if not self.version:

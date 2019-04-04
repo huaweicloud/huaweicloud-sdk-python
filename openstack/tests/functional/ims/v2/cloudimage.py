@@ -52,7 +52,8 @@ def cloudimages(_conn):
     }
     images = _conn.ims.cloudimages(**query)
     for image in images:
-        print(image)
+        print(image._CloudImage__os_bit)
+        print(image.os_bit)
 
 
 def update_cloudimage(_conn):

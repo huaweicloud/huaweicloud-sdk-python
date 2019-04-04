@@ -40,12 +40,12 @@ from openstack.compute.v2 import server_ip
 from openstack.compute.v2 import service as _service
 from openstack.compute.v2 import tag as _tag
 from openstack.compute.v2 import volume_attachment as _volume_attachment
+from openstack.compute.v2 import quota
 from openstack import proxy2
 from openstack import resource2
 
 
 class Proxy(proxy2.BaseProxy):
-
     def find_extension(self, name_or_id, ignore_missing=True):
         """Find a single extension
 
@@ -216,7 +216,7 @@ class Proxy(proxy2.BaseProxy):
         """
         res = self._get_base_resource(image, _image.Image)
         metadata = res.get_metadata(self._session)
-        result = _image.Image.existing(id=res.id, metadata=metadata)
+        result = _image.Image.existing(id=res.id, **metadata)
         return result
 
     def set_image_metadata(self, image, **metadata):
@@ -263,7 +263,15 @@ class Proxy(proxy2.BaseProxy):
                            a :class:`~openstack.compute.v2.keypair.Keypair`,
                            comprised of the properties on the Keypair class.
 
+                           * ``Required parameters:``
+                               name
+                           * ``Optional parameters:``
+                               public_key, type, user_id
+
         :returns: The results of keypair creation
+
+                    * ``Response parameters:``
+                        fingerprint, name, public_key, private_key, user_id, type
         :rtype: :class:`~openstack.compute.v2.keypair.Keypair`
         """
         return self._create(_keypair.Keypair, **attrs)
@@ -292,36 +300,48 @@ class Proxy(proxy2.BaseProxy):
                         instance.
 
         :returns: One :class:`~openstack.compute.v2.keypair.Keypair`
+
+                    * ``Response parameters:``
+                        public_key, name, fingerprint, created_at, deleted,
+                        deleted_at, id, updated_at, user_id
+        :rtype: :class:`~openstack.compute.v2.keypair.Keypair`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
         return self._get(_keypair.Keypair, keypair)
 
-    def find_keypair(self, name_or_id, ignore_missing=True):
+    def find_keypair(self, name, ignore_missing=True):
         """Find a single keypair
 
-        :param name_or_id: The name or ID of a keypair.
+        :param name: The name of a keypair.
         :param bool ignore_missing: When set to ``False``
                     :class:`~openstack.exceptions.ResourceNotFound` will be
                     raised when the resource does not exist.
                     When set to ``True``, None will be returned when
                     attempting to find a nonexistent resource.
         :returns: One :class:`~openstack.compute.v2.keypair.Keypair` or None
+
+                    * ``Response parameters:``
+                        public_key, name, fingerprint, created_at, deleted,
+                        deleted_at, id, updated_at, user_id
+        :rtype: :class:`~openstack.compute.v2.keypair.Keypair`
         """
-        return self._find(_keypair.Keypair, name_or_id,
+        return self._find(_keypair.Keypair, name,
                           ignore_missing=ignore_missing)
 
     def keypairs(self):
         """Return a generator of keypairs
 
         :returns: A generator of keypair objects
+
+                    * ``Response parameters:``
+                        fingerprint, name, type, public_key
         :rtype: :class:`~openstack.compute.v2.keypair.Keypair`
         """
         return self._list(_keypair.Keypair, paginated=False)
 
     def get_limits(self):
         """Retrieve limits that are applied to the project's account
-
         :returns: A Limits object, including both
                   :class:`~openstack.compute.v2.limits.AbsoluteLimits` and
                   :class:`~openstack.compute.v2.limits.RateLimits`
@@ -436,7 +456,17 @@ class Proxy(proxy2.BaseProxy):
         :attrs kwargs: The attributes to update on the server represented
                        by ``server``.
 
+                       * ``Required parameters:``
+                           ``None``
+                       * ``Optional parameters:``
+                           name, description
+
         :returns: The updated server
+
+                    * ``Response parameters:``
+                        project_id, image, access_ipv4, addresses, metadata, access_ipv6,
+                        created_at, host_id, flavor, disk_config, user_id, name, progress,
+                        links, id, updated_at, status
         :rtype: :class:`~openstack.compute.v2.server.Server`
         """
         return self._update(_server.Server, server, **attrs)
@@ -915,21 +945,21 @@ class Proxy(proxy2.BaseProxy):
 
         return self._list(az, paginated=False)
 
-    def get_server_metadata(self, server):
+    def get_server_metadata(self, server, key=None):
         """Return a dictionary of metadata for a server
-
         :param server: Either the ID of a server or a
                        :class:`~openstack.compute.v2.server.Server` or
                        :class:`~openstack.compute.v2.server.ServerDetail`
                        instance.
-
+        :param key: The key of the metadata to get. If ``None``, return all.
+        :type key: str or ``None``
         :returns: A :class:`~openstack.compute.v2.server.Server` with only the
                   server's metadata. All keys and values are Unicode text.
         :rtype: :class:`~openstack.compute.v2.server.Server`
         """
         res = self._get_base_resource(server, _server.Server)
-        metadata = res.get_metadata(self._session)
-        result = _server.Server.existing(id=res.id, metadata=metadata)
+        metadata = res.get_metadata(self._session, key=key)
+        result = _server.Server.existing(id=res.id, **metadata)
         return result
 
     def set_server_metadata(self, server, **metadata):
@@ -950,8 +980,25 @@ class Proxy(proxy2.BaseProxy):
         """
         res = self._get_base_resource(server, _server.Server)
         metadata = res.set_metadata(self._session, **metadata)
-        result = _server.Server.existing(id=res.id, metadata=metadata)
+        result = _server.Server.existing(id=res.id, **metadata)
         return result
+
+    # def update_server_metadata(self, server, key, value):
+    #     """Creates or replaces a metadata item, by key
+    #     :param server: Either the ID of a server or a
+    #                    :class:`~openstack.compute.v2.server.Server` or
+    #                    :class:`~openstack.compute.v2.server.ServerDetail`
+    #                    instance.
+    #     :param str key: The key of the metadata to update.
+    #     :param str value: The new value of the metadata.
+    #     :returns: A :class:`~openstack.compute.v2.server.Server` with only the
+    #               updated server's metadata.
+    #               All keys and values are Unicode text.
+    #     :rtype: :class:`~openstack.compute.v2.server.Server`
+    #     """
+    #     res = self._get_base_resource(server, _server.Server)
+    #     updated = res.update_metadata(self._session, key, value)
+    #     return _server.Server.existing(id=res.id, **updated)
 
     def delete_server_metadata(self, server, keys):
         """Delete metadata for a server
@@ -1187,7 +1234,7 @@ class Proxy(proxy2.BaseProxy):
                             attachment_id=volume_attachment,
                             server_id=server_id)
 
-    def delete_volume_attachment(self, volume_attachment, server,
+    def delete_volume_attachment(self, volume_attachment, server, force_del=False,
                                  ignore_missing=True):
         """Delete a volume attachment
 
@@ -1195,6 +1242,8 @@ class Proxy(proxy2.BaseProxy):
             The value can be either the ID of a volume attachment or a
             :class:`~openstack.compute.v2.volume_attachment.VolumeAttachment`
             instance.
+        :param force_del: Force the disk flag to be unmounted online.
+               The default is False. When it is True, it means forced uninstallation.
         :param server: This parameter need to be specified when
                        VolumeAttachment ID is given as value. It can be either
                        the ID of a server or a
@@ -1211,10 +1260,10 @@ class Proxy(proxy2.BaseProxy):
         server_id = self._get_uri_attribute(volume_attachment, server,
                                             "server_id")
         volume_attachment = resource2.Resource._get_id(volume_attachment)
-
         self._delete(_volume_attachment.VolumeAttachment,
                      attachment_id=volume_attachment,
                      server_id=server_id,
+                     params={"delete_flag": 1} if force_del else None,
                      ignore_missing=ignore_missing)
 
     def get_volume_attachment(self, volume_attachment, server,
@@ -1262,15 +1311,15 @@ class Proxy(proxy2.BaseProxy):
         """
         server_id = resource2.Resource._get_id(server)
         return self._list(_volume_attachment.VolumeAttachment, paginated=False,
-                          server_id=server_id)
+                          serverId=server_id)
 
     def tags(self, server):
         server_id = resource2.Resource._get_id(server)
-        return self._get(_tag.Tag, server=server_id,requires_id=False)
+        return self._get(_tag.Tag, server=server_id, requires_id=False)
 
     def create_tags(self, server, **data):
         server_id = resource2.Resource._get_id(server)
-        return self._create(_tag.Tag, server=server_id,requires_id=False, **data)
+        return self._create(_tag.Tag, server=server_id, requires_id=False, **data)
 
     def delete_all_tag(self, server):
         server_id = resource2.Resource._get_id(server)
@@ -1287,3 +1336,161 @@ class Proxy(proxy2.BaseProxy):
     # def delete_one_tag(self, server, tag):
     #     server_id = resource2.Resource._get_id(server)
     #     return self._delete(_tag.TagAction, server=server_id, tag=tag)
+    # def query_flavor_extra_specs(self, flavor_id):
+    #     '''
+    #     :param flavors_id: flavor id
+    #     :return: One :class:`~openstack.compute.v2.flavor.ExtraSpecs`
+    #     :raises: :class:`~openstack.exceptions.ResourceNotFound`
+    #              when no resource can be found.
+    #     '''
+    #     return self._get(_flavor.ExtraSpecs, requires_id=False, flavor_id=flavor_id)
+    #
+    # def get_server_actions(self, server_id):
+    #     '''Return a generator of serveraction
+    #     :returns: A generator of serveraction
+    #     :rtype: class: `~openstack.compute.v2.server.ServerAction`
+    #     '''
+    #     serveraction = _server.ServerAction
+    #     return self._list(serveraction, paginated=False, server_id=server_id)
+    #
+    # def get_server_action_reqid(self, server_id, request_id):
+    #     '''
+    #     :param server_id: server_id id
+    #     :param request_id: request id
+    #     :return: One :class:`~openstack.compute.v2.server.ServerActionReqID`
+    #     :raises: :class:`~openstack.exceptions.ResourceNotFound`
+    #              when no resource can be found.
+    #     '''
+    #     return self._get(_server.ServerActionReqID, server_id=server_id, request_id=request_id)
+    #
+    # def get_server_console_output(self, server_id, lines):
+    #     '''
+    #     :param server_id:  server id
+    #     :param lines: output lines to get
+    #     :return: output message
+    #     '''
+    #     server = self._get_resource(_server.Server, server_id)
+    #     return server.console_output(self._session, lines)
+
+    # def query_quota(self, project_id):
+    #     '''
+    #     :param project_id:  project id
+    #     :return: One :class:`~openstack.compute.v2.quota.Quota`
+    #     :raises: :class:`~openstack.exceptions.ResourceNotFound`
+    #              when no resource can be found.
+    #     '''
+    #     return self._get(quota.Quota, id=project_id)
+    #
+    # def query_quota_default(self, project_id):
+    #     '''
+    #     :param project_id:  project id
+    #     :return: One :class:`~openstack.compute.v2.quota.QuotaDefault`
+    #     :raises: :class:`~openstack.exceptions.ResourceNotFound`
+    #              when no resource can be found.
+    #     '''
+    #     return self._get(quota.QuotaDefault, id=project_id)
+    #
+    # def reinstall_server_os(self, server_id, **attr):
+    #     '''
+    #     :param dict attrs: Keyword arguments which will be used to create a
+    #         :class:`~openstack.compute.v2.server.ServerOS`
+    #     :return: job_id or error dict
+    #     '''
+    #     res = _server.ServerOS.new(**attr)
+    #     return res.reinstall(self._session, server_id)
+
+    # def flavor_resize_supperted(self, **attr):
+    #     '''
+    #     Return a generator of FlavorResize
+    #     :returns: A generator of FlavorResize
+    #     :rtype: class: `~openstack.compute.v2.flavor.FlavorResize`
+    #
+    #     '''
+    #     return self._list(_flavor.FlavorResize, paginated=True, **attr)
+
+    # def server_tags(self, server):
+    #     """Return a dictionary of tags for a server
+    #     :param server: Either the ID of a server or a
+    #         :class:`~openstack.compute.v2.server.Server` or
+    #         :class:`~openstack.compute.v2.server.ServerDetail` instance.
+    #     :returns: A :class:`~openstack.compute.v2.server.Server` with only the
+    #               server's tags.
+    #     :rtype: :class:`~openstack.compute.v2.server.Server`
+    #     """
+    #     res = self._get_base_resource(server, _server.Server)
+    #     tags = res.list_tags(self._session)
+    #     result = _server.Server.existing(id=res.id, tags=tags)
+    #     return result
+    #
+    # def clean_server_tags(self, server):
+    #     """Delete all tags from the server
+    #     :param server: Either the ID of a server or a
+    #         :class:`~openstack.compute.v2.server.Server` or
+    #         :class:`~openstack.compute.v2.server.ServerDetail` instance.
+    #     :returns: A :class:`~openstack.compute.v2.server.Server` with only the
+    #               server's tags.
+    #     :rtype: :class:`~openstack.compute.v2.server.Server`
+    #     """
+    #     res = self._get_base_resource(server, _server.Server)
+    #     res.delete_tags(self._session)
+    #     result = _server.Server.existing(id=res.id)
+    #     return result
+    #
+    # def add_server_tag(self, server, tag):
+    #     """Add a single tag to the server
+    #     :param server: Either the ID of a server or a
+    #         :class:`~openstack.compute.v2.server.Server` or
+    #         :class:`~openstack.compute.v2.server.ServerDetail` instance.
+    #     :param str tag: The tag to add.
+    #     :returns: A :class:`~openstack.compute.v2.server.Server` with only the
+    #               server's tags.
+    #     :rtype: :class:`~openstack.compute.v2.server.Server`
+    #     """
+    #     res = self._get_base_resource(server, _server.Server)
+    #     res.add_tag(self._session, tag)
+    #     tags = res.list_tags(self._session)
+    #     result = _server.Server.existing(id=res.id, tags=tags)
+    #     return result
+    #
+    # def delete_server_tag(self, server, tag):
+    #     """Deletes a single tag from the server
+    #     :param server: Either the ID of a server or a
+    #         :class:`~openstack.compute.v2.server.Server` or
+    #         :class:`~openstack.compute.v2.server.ServerDetail` instance.
+    #     :param str tag: The tag to delete.
+    #     :returns: A :class:`~openstack.compute.v2.server.Server` with only the
+    #               server's tags.
+    #     :rtype: :class:`~openstack.compute.v2.server.Server`
+    #     """
+    #     res = self._get_base_resource(server, _server.Server)
+    #     res.delete_tag(self._session, tag)
+    #     result = _server.Server.existing(id=res.id)
+    #     return result
+    #
+    # def check_server_tag(self, server, tag):
+    #     """Check if the server has the desired tag
+    #     :param server: Either the ID of a server or a
+    #         :class:`~openstack.compute.v2.server.Server` or
+    #         :class:`~openstack.compute.v2.server.ServerDetail` instance.
+    #     :param str tag: The tag to check.
+    #     :returns: ``True`` if existed, otherwise ``False``.
+    #     :rtype: bool
+    #     """
+    #     res = self._get_base_resource(server, _server.Server)
+    #     return res.check_tag(self._session, tag)
+    #
+    # def create_server_tag(self, server, tags):
+    #     """Create a new tag to the server
+    #     :param server: Either the ID of a server or a
+    #         :class:`~openstack.compute.v2.server.Server` or
+    #         :class:`~openstack.compute.v2.server.ServerDetail` instance.
+    #     :param tags: A list contains one or more tag.
+    #     :returns: A :class:`~openstack.compute.v2.server.Server` with only the
+    #               server's tags.
+    #     :rtype: :class:`~openstack.compute.v2.server.Server`
+    #     """
+    #     res = self._get_base_resource(server, _server.Server)
+    #     res.create_tag(self._session, tags)
+    #     tags = res.list_tags(self._session)
+    #     result = _server.Server.existing(id=res.id, tags=tags)
+    #     return result

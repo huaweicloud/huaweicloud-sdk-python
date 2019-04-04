@@ -45,12 +45,13 @@ class Port(resource.Resource):
 
     # NOTE: we skip query on list or datetime fields for now
     _query_mapping = resource.QueryParameters(
-        'description', 'device_id', 'device_owner', 'ip_address',
-        'mac_address', 'name', 'network_id', 'status', 'subnet_id',
+        'description', 'device_id', 'device_owner',
+        'mac_address', 'name', 'network_id', 'status',
         'page_reverse', 'id', 'dns_name',
         is_admin_state_up='admin_state_up',
         is_port_security_enabled='port_security_enabled',
         project_id='tenant_id',
+        fixed_ips_alias='fixed_ips'
     )
 
     # Properties
@@ -106,9 +107,9 @@ class Port(resource.Resource):
     #: down ``False``. *Type: bool*
     is_admin_state_up = resource.Body('admin_state_up', type=bool)
     #: The port security status, which is enabled ``True`` or disabled
-    #: ``False``. *Type: bool* *Default: False*
+    #: ``False``. *Type: bool* *Default: True*
     is_port_security_enabled = resource.Body('port_security_enabled',
-                                             type=bool, default=False)
+                                             type=bool, default=True)
     #: The MAC address of an allowed address pair.
     mac_address = resource.Body('mac_address')
     #: The port name.

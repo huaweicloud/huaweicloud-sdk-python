@@ -16,12 +16,13 @@ import testtools
 from openstack.compute.v2 import limits
 
 ABSOLUTE_LIMITS = {
+    "maxServerMeta":1,
     "maxImageMeta": 128,
     "maxPersonality": 5,
-    "maxPersonalitySize": 10240,
+    "totalServerGroupsUsed": 4,
+    "maxPersonalitySize": 4,
     "maxSecurityGroupRules": 20,
     "maxSecurityGroups": 10,
-    "maxServerMeta": 128,
     "maxTotalCores": 20,
     "maxTotalFloatingIps": 10,
     "maxTotalInstances": 10,
@@ -33,7 +34,6 @@ ABSOLUTE_LIMITS = {
     "totalSecurityGroupsUsed": 2,
     "totalRAMUsed": 4,
     "totalInstancesUsed": 5,
-    "totalServerGroupsUsed": 6,
     "totalCoresUsed": 7
 }
 

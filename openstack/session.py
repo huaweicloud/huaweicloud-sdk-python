@@ -52,7 +52,7 @@ from openstack import version as openstack_version
 
 from six.moves.urllib import parse
 
-DEFAULT_USER_AGENT = "openstacksdk/%s" % openstack_version.__version__
+DEFAULT_USER_AGENT = "huawei-cloud-sdk-python/%s" % openstack_version.__version__
 API_REQUEST_HEADER = "openstack-api-version"
 
 Version = namedtuple("Version", ["major", "minor"])
@@ -73,7 +73,6 @@ def map_exceptions(func):
 
 
 class Session(_session.Session):
-
     def __init__(self, profile, user_agent=None, **kwargs):
         """Create a new Keystone auth session with a profile.
 
@@ -350,6 +349,16 @@ class Session(_session.Session):
             return match
         except exceptions.EndpointNotFound:
             return sc_endpoint
+
+    @staticmethod
+    def _set_microversion_headers(headers, microversion, service_type, endpoint_filter):
+        service_type = endpoint_filter.service_type
+        if service_type.lower() == "compute":
+            if microversion <= "2.26":
+                headers.setdefault("X-OpenStack-Nova-API-Version", str(microversion))
+            else:
+                version = "compute" + " " + str(microversion)
+                headers.setdefault("Openstack-API-Version", version)
 
     @map_exceptions
     def request(self, *args, **kwargs):

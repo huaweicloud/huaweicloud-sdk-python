@@ -158,6 +158,7 @@ class Profile(object):
         self._add_service(ecs_service.EcsService(version='v1'))
         self._add_service(ecs_service.EcsServiceV1_1(version='v1.1'))
         self._add_service(vpc_service.VpcService(version='v2.0'))
+        self._add_service(vpc_service.VpcServiceV1(version='v1'))
         self._add_service(bms_service.BmsService(version='v1'))
         self._add_service(deh_service.DehService(version='v1.0'))
         self._add_service(csbs_service.CsbsService(version='v1'))

@@ -13,6 +13,7 @@
 # specific language governing permissions and limitations under the License.
 
 from openstack import resource2
+from openstack import utils
 from openstack.ecs import ecs_service
 
 
@@ -158,6 +159,40 @@ class Servers(resource2.Resource):
     # The Windows system password cannot contain the reverse order of the username or username, and cannot contain
     # more than two consecutive characters in the username.
     adminPass = resource2.Body("adminPass")
+
+    @classmethod
+    def autorecovery(cls, session, server_id, autorecovery):
+        url = utils.urljoin(cls.base_path, server_id, 'autorecovery')
+        headers = {'Accept': ''}
+        endpoint_override = cls.service.get_endpoint_override()
+        service = cls.get_service_filter(cls, session)
+        if autorecovery is None:
+            return session.get(
+                url, endpoint_filter=cls.service,
+                microversion=service.microversion,
+                headers=headers,
+                endpoint_override=endpoint_override).json()
+        else:
+            recovery = "true" if autorecovery else "false"
+            session.put(
+                url, endpoint_filter=cls.service,
+                microversion=service.microversion,
+                headers=headers,
+                json = {"support_auto_recovery": recovery},
+                endpoint_override=endpoint_override)
+
+    @classmethod
+    def register_server_to_ces(cls, session , server_id):
+        url = utils.urljoin("servers", server_id, 'action')
+        headers = {'Accept': ''}
+        endpoint_override = cls.service.get_endpoint_override()
+        service = cls.get_service_filter(cls, session)
+        session.post(
+            url, endpoint_filter=cls.service,
+            microversion=service.microversion,
+            headers=headers,
+            json={"monitorMetrics": None},
+            endpoint_override=endpoint_override)
 
 
 class ServerAction(resource2.Resource):

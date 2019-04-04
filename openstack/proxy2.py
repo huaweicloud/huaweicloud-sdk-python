@@ -235,7 +235,6 @@ class BaseProxy(object):
         :rtype: :class:`~openstack.resource2.Resource`
         """
         res = self._get_resource(resource_type, value, **attrs)
-
         try:
             return res.get(self._session, requires_id=requires_id)
         except exceptions.NotFoundException as e:

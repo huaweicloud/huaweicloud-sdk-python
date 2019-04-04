@@ -14,7 +14,7 @@ endpoint = {
   "CLOUD_EYE": {
     "public": "https://ces.%(region)s.%(domain)s/V1.0/%(project_id)s"
   },
-    "COMPUTE": {
+  "COMPUTE": {
     "public": "https://ecs.%(region)s.%(domain)s/v2/%(project_id)s"
   },
    "CTS": {
@@ -26,7 +26,7 @@ endpoint = {
   "DNS": {
     "public": "https://dns.%(domain)s/v2"
   },
-    "ECS": {
+  "ECS": {
     "public": "https://ecs.%(region)s.%(domain)s/v1/%(project_id)s"
   },
   "ECSV1.1": {
@@ -47,7 +47,7 @@ endpoint = {
   "KMS": {
      "public": "https://kms.%(region)s.%(domain)s/v1.0/%(project_id)s"
   },
-  "LOAD_BALANCER": {
+  "ELBV1": {
      "public": "https://elb.%(region)s.%(domain)s/v1.0/%(project_id)s"
   },
   "MAAS": {
@@ -73,6 +73,9 @@ endpoint = {
   },
   "VOLUME_BACKUP": {
       "public": "https://vbs.%(region)s.%(domain)s/v2/%(project_id)s"
+  },
+  "VPC": {
+      "public": "https://vpc.%(region)s.%(domain)s/v1/%(project_id)s"
   },
   "VPCV2.0": {
        "public": "https://vpc.%(region)s.%(domain)s/v2.0/%(project_id)s"

@@ -124,8 +124,7 @@ class _BaseComponent(object):
             attributes = getattr(instance, self.key)
             del attributes[self.name]
         except KeyError:
-            pass
-
+            print("Key Error")
 
 class Body(_BaseComponent):
     """Body attributes"""
@@ -280,6 +279,19 @@ class Resource(object):
     patch_update = False
     #: Use PUT for create operations on this resource.
     put_create = False
+
+    @staticmethod
+    def get_service_filter(resource, session):
+        """
+        :param sess: ~openstack.session.Session.
+        :param resource: ~openstack.resource2.Resource
+        :return: ~openstack.service_filter.ServiceFilter
+        """
+        service = session.profile.get_filter(resource.service.service_type)
+        if service:
+            return service
+        else:
+            return resource.service
 
     def __init__(self, _synchronized=False, **attrs):
         """The base resource
@@ -654,18 +666,21 @@ class Resource(object):
             raise exceptions.MethodNotSupported(self, "create")
 
         endpoint_override = self.service.get_endpoint_override()
+        service = self.get_service_filter(self, session)
         if self.put_create:
             request = self._prepare_request(requires_id=True,
                                             prepend_key=prepend_key)
             response = session.put(request.uri, endpoint_filter=self.service,
                                    endpoint_override=endpoint_override,
-                                   json=request.body, headers=request.headers)
+                                   json=request.body, headers=request.headers,
+                                   microversion = service.microversion)
         else:
             request = self._prepare_request(requires_id=False,
                                             prepend_key=prepend_key)
             response = session.post(request.uri, endpoint_filter=self.service,
                                     endpoint_override=endpoint_override,
-                                    json=request.body, headers=request.headers)
+                                    json=request.body, headers=request.headers,
+                                    microversion=service.microversion)
 
         self._translate_response(response)
         return self
@@ -686,9 +701,10 @@ class Resource(object):
 
         request = self._prepare_request(requires_id=requires_id)
         endpoint_override = self.service.get_endpoint_override()
-        response = session.get(request.uri, endpoint_filter=self.service,
+        service = self.get_service_filter(self, session)
+        response = session.get(request.uri, endpoint_filter = self.service,
+                               microversion = service.microversion,
                                endpoint_override=endpoint_override)
-
         self._translate_response(response)
         return self
 
@@ -706,9 +722,10 @@ class Resource(object):
             raise exceptions.MethodNotSupported(self, "head")
 
         request = self._prepare_request()
-
         endpoint_override = self.service.get_endpoint_override()
+        service = self.get_service_filter(self, session)
         response = session.head(request.uri, endpoint_filter=self.service,
+                                microversion=service.microversion,
                                 endpoint_override=endpoint_override,
                                 headers={"Accept": ""})
 
@@ -741,15 +758,17 @@ class Resource(object):
             raise exceptions.MethodNotSupported(self, "update")
 
         request = self._prepare_request(prepend_key=prepend_key)
-
+        service = self.get_service_filter(self, session)
         endpoint_override = self.service.get_endpoint_override()
         if self.patch_update:
             response = session.patch(request.uri, endpoint_filter=self.service,
+                                     microversion = service.microversion,
                                      endpoint_override=endpoint_override,
                                      json=request.body,
                                      headers=request.headers)
         else:
             response = session.put(request.uri, endpoint_filter=self.service,
+                                   microversion=service.microversion,
                                    endpoint_override=endpoint_override,
                                    json=request.body, headers=request.headers)
 
@@ -772,9 +791,10 @@ class Resource(object):
             raise exceptions.MethodNotSupported(self, "delete")
 
         request = self._prepare_request()
-
+        service = self.get_service_filter(self, session)
         endpoint_override = self.service.get_endpoint_override()
         response = session.delete(request.uri, endpoint_filter=self.service,
+                                  microversion = service.microversion,
                                   endpoint_override=endpoint_override,
                                   headers={"Accept": ""},
                                   params=params)
@@ -839,10 +859,11 @@ class Resource(object):
         more_data = True
         query_params = cls._query_mapping._transpose(params)
         uri = cls.get_list_uri(params)
-
+        service = cls.get_service_filter(cls, session)
         while more_data:
             endpoint_override = cls.service.get_endpoint_override()
             resp = session.get(uri, endpoint_filter=cls.service,
+                               microversion=service.microversion,
                                endpoint_override=endpoint_override,
                                headers={"Accept": "application/json"},
                                params=query_params)
@@ -1024,7 +1045,7 @@ class Resource(object):
             match = cls.existing(id=name_or_id, **params)
             return match.get(session)
         except exceptions.NotFoundException:
-            pass
+            print("Resource Not Found")
 
         data = cls.list(session, **params)
 

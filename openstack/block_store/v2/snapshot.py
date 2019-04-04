@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2019 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -29,6 +29,8 @@
 from openstack.block_store import block_store_service
 from openstack import format
 from openstack import resource2
+from openstack import utils
+from openstack import exceptions
 
 
 class Snapshot(resource2.Resource):
@@ -75,13 +77,92 @@ class Snapshot(resource2.Resource):
     display_name = resource2.Body("display_name")
     #: Same as description.
     display_description = resource2.Body("display_description")
+    #: The percentage of completeness the snapshot is currently at.
+    progress = resource2.Body("os-extended-snapshot-attributes:progress")
+    #: The project ID this snapshot is associated with.
+    project_id = resource2.Body("os-extended-snapshot-attributes:project_id")
+
 
 
 class SnapshotDetail(Snapshot):
 
     base_path = "/snapshots/detail"
 
-    #: The percentage of completeness the snapshot is currently at.
-    progress = resource2.Body("os-extended-snapshot-attributes:progress")
-    #: The project ID this snapshot is associated with.
-    project_id = resource2.Body("os-extended-snapshot-attributes:project_id")
+
+
+
+class SnapshotMetadata(resource2.Resource):
+    base_path = '/snapshots'
+    service = block_store_service.BlockStoreService()
+
+    # capabilities
+    allow_create = True
+    allow_get = True
+    allow_update = True
+    allow_delete = True
+
+    # Properties
+    #: The disk snapshot information
+    meta = resource2.Body('meta')
+    metadata = resource2.Body('metadata')
+
+    def _operate_metadata(self, method, url, has_body=True, **kwargs):
+        request = self._prepare_request(requires_id=False)
+        request.uri = url
+        endpoint_override = self.service.get_endpoint_override()
+        response = method(request.uri,
+                          endpoint_filter=self.service,
+                          endpoint_override=endpoint_override,
+                          **kwargs)
+        self._translate_response(response, has_body)
+        return self
+
+    def create_metadata(self, session, snapshot_id, metadata):
+        url = utils.urljoin(self.base_path, snapshot_id, 'metadata')
+        d = {
+            'json': metadata,
+            'headers': {},
+        }
+        return self._operate_metadata(session.post, url, **d)
+
+    def get_metadata(self, session, snapshot_id, key=None):
+        if key:
+            url = utils.urljoin(self.base_path, snapshot_id, 'metadata', key)
+        else:
+            url = utils.urljoin(self.base_path, snapshot_id, 'metadata')
+        return self._operate_metadata(session.get, url)
+
+    def update_metadata(self, session, snapshot_id, metadata, key=None):
+        if key:
+            url = utils.urljoin(self.base_path, snapshot_id, 'metadata', key)
+        else:
+            url = utils.urljoin(self.base_path, snapshot_id, 'metadata')
+        if key and metadata.get('meta'):
+            for k in list(metadata['meta'].keys()):
+                if not k == key:
+                    del metadata[k]
+        d = {
+            'json': metadata,
+            'headers': {},
+        }
+        return self._operate_metadata(session.put, url, **d)
+
+    def delete_metadata(self, session, snapshot_id, key, ignore_missing):
+        url = utils.urljoin(self.base_path, snapshot_id, 'metadata', key)
+        d = {
+            'headers': {'Accept': ''},
+            'params': None
+        }
+        try:
+            self._operate_metadata(session.delete, url, has_body=False, **d)
+        except exceptions.NotFoundException as e:
+            if ignore_missing:
+                return None
+            else:
+                # Reraise with a more specific type and message
+                raise exceptions.ResourceNotFound(
+                    message="No %s found for %s" %
+                            (self.__name__, key),
+                    details=e.details, response=e.response,
+                    request_id=e.request_id, url=e.url, method=e.method,
+                    http_status=e.http_status, cause=e.cause, code=e.code)

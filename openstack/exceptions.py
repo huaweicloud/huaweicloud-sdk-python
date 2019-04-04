@@ -37,9 +37,15 @@ import re
 
 import six
 
+class MissingRequiredArgument(BaseException):
+    message = "ClientException"
+    def __init__(self, message=None):
+        self.message = message or self.message
+        super(MissingRequiredArgument, self).__init__(self.message)
 
 class SDKException(BaseException):
     """The base exception class for all exceptions this library raises."""
+
     def __init__(self, message=None, cause=None):
         self.message = self.__class__.__name__ if message is None else message
         self.cause = cause
@@ -48,6 +54,7 @@ class SDKException(BaseException):
 
 class EndpointNotFound(SDKException):
     """A mismatch occurred between what the client and server expect."""
+
     def __init__(self, message=None):
         super(EndpointNotFound, self).__init__(message)
 
@@ -97,6 +104,7 @@ class NotFoundException(HttpException):
 
 class MethodNotSupported(SDKException):
     """The resource does not support this operation type."""
+
     def __init__(self, resource, method):
         # This needs to work with both classes and instances.
         try:
@@ -107,6 +115,13 @@ class MethodNotSupported(SDKException):
         message = ('The %s method is not supported for %s.%s' %
                    (method, resource.__module__, name))
         super(MethodNotSupported, self).__init__(message=message)
+
+class MicroversionNotSupported(SDKException):
+    """The service does not support microversion."""
+    def __init__(self, service_type, version):
+        message = ('The %s service is not support microversion' %
+                   (service_type))
+        super(MicroversionNotSupported, self).__init__(message=message)
 
 
 class DuplicateResource(SDKException):
@@ -129,26 +144,38 @@ class ResourceFailure(SDKException):
     pass
 
 
-code_key_list = ["code", "errorCode", "errCode"]
-message_ley_list = ["message", "error_message", "externalMessage", "details",
-                    "NeutronError", "computeFault", "TackerError"]
+code_key_list = ["code", "errorCode", "errCode", "error_code"]
+
+message_key_list = ["message", "error_message", "externalMessage",
+                    "error_msg", "details", "NeutronError",
+                    "computeFault", "TackerError", "error"]
 
 
 def auto_detect_errors(obj):
     code = ""
     message = ""
-    for key in code_key_list:
-        if key in obj.keys():
-            # code = "[" + str(obj.get(key)) + "] "
-            code = str(obj.get(key))
-            break
-
-    for key in message_ley_list:
-        if key in obj.keys():
-            message = obj.get(key)
-            break
-            # return code + message if code != "" else message
-
+    if isinstance(obj, dict):
+        que = [obj]
+        while que:
+            node = que.pop()
+            keys = list(node.keys())
+            for key in keys:
+                if key in code_key_list:
+                    codevalue = node.get(key)
+                    if isinstance(codevalue, dict):
+                        que.append(codevalue)
+                    elif code == "":
+                        code = str(codevalue)
+                if key in message_key_list:
+                    msgvalue = node.get(key)
+                    if isinstance(msgvalue, dict):
+                        que.append(msgvalue)
+                    elif message == "":
+                        message = str(msgvalue)
+                if key not in code_key_list and key not in message_key_list and isinstance(node.get(key), dict):
+                    que.append(node.get(key))
+            if code and message:
+                break
     return [code, message]
 
 
@@ -172,7 +199,7 @@ def from_exception(exc):
         message = exec_data[1]
         details = "[" + code + "]" + message if code != "" else message
 
-        if code =="" and message == "":
+        if code == "" and message == "":
             for obj in resp.json().values():
                 if isinstance(obj, dict):
                     exec_data = auto_detect_errors(obj)

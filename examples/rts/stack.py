@@ -118,8 +118,8 @@ def stack_resources(conn, stack_id_or_name):
 if __name__ == '__main__':
     stack_list(conn)
     stack_id = stack_create(conn)
-    stack_check(conn, stack_id)
     stack_update(conn, stack_id)
+    stack_check(conn, stack_id)
     stack_resources(conn, stack_id)
     stack_find(conn, stack_id)
     stack_get(conn, stack_id)

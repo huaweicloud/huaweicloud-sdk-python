@@ -11,3 +11,38 @@
 # under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 # CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations under the License.
+
+from openstack import resource2 as resource
+from openstack.vpc import vpc_service
+
+
+class Version(resource.Resource):
+    resource_key = 'version'
+    resources_key = 'versions'
+    base_path = '/'
+    service = vpc_service.VpcService(
+        version=vpc_service.VpcService.UNVERSIONED
+    )
+
+    # capabilities
+    allow_list = True
+
+    # Properties
+    links = resource.Body('links')
+    status = resource.Body('status')
+
+
+class VersionV1(resource.Resource):
+    resource_key = 'version'
+    resources_key = 'versions'
+    base_path = '/'
+    service = vpc_service.VpcServiceV1(
+        version=vpc_service.VpcServiceV1.UNVERSIONED
+    )
+
+    # capabilities
+    allow_list = True
+
+    # Properties
+    links = resource.Body('links')
+    status = resource.Body('status')

@@ -11,7 +11,7 @@
 # under the License.
 
 import os
-import os_client_config
+#import os_client_config
 import time
 import unittest
 
@@ -22,50 +22,50 @@ from openstack import connection
 #: file, typically in $HOME/.config/openstack/clouds.yaml. That configuration
 #: will determine where the functional tests will be run and what resource
 #: defaults will be used to run the functional tests.
-TEST_CLOUD = os.getenv('OS_CLOUD', 'devstack-admin')
+#TEST_CLOUD = os.getenv('OS_CLOUD', 'devstack-admin')
+
+#
+# class Opts(object):
+#     def __init__(self, cloud_name='devstack-admin', debug=False):
+#         self.cloud = cloud_name
+#         self.debug = debug
+#
+#
+# def _get_resource_value(resource_key, default):
+#     try:
+#         return cloud.config['functional'][resource_key]
+#     except KeyError:
+#         return default
 
 
-class Opts(object):
-    def __init__(self, cloud_name='devstack-admin', debug=False):
-        self.cloud = cloud_name
-        self.debug = debug
+# opts = Opts(cloud_name=TEST_CLOUD)
+# #occ = os_client_config.OpenStackConfig()
+# cloud = occ.get_one_cloud(opts.cloud, argparse=opts)
+#
+# IMAGE_NAME = _get_resource_value('image_name',
+#                                  'Community_Ubuntu_16.04_TSI_latest')
+#FLAVOR_NAME = _get_resource_value('flavor_name', 's1.medium')
 
 
-def _get_resource_value(resource_key, default):
-    try:
-        return cloud.config['functional'][resource_key]
-    except KeyError:
-        return default
-
-
-opts = Opts(cloud_name=TEST_CLOUD)
-occ = os_client_config.OpenStackConfig()
-cloud = occ.get_one_cloud(opts.cloud, argparse=opts)
-
-IMAGE_NAME = _get_resource_value('image_name',
-                                 'Community_Ubuntu_16.04_TSI_latest')
-FLAVOR_NAME = _get_resource_value('flavor_name', 's1.medium')
-
-
-def service_exists(**kwargs):
-    """Decorator function to check whether a service exists
-
-    Usage:
-    @unittest.skipUnless(base.service_exists(service_type="metering"),
-                         "Metering service does not exist")
-    class TestMeter(base.BaseFunctionalTest):
-        ...
-
-    :param kwargs: The kwargs needed to filter an endpoint.
-    :returns: True if the service exists, otherwise False.
-    """
-    try:
-        conn = connection.from_config(cloud_name=TEST_CLOUD)
-        conn.session.get_endpoint(**kwargs)
-
-        return True
-    except _exceptions.EndpointNotFound:
-        return False
+# def service_exists(**kwargs):
+#     """Decorator function to check whether a service exists
+#
+#     Usage:
+#     @unittest.skipUnless(base.service_exists(service_type="metering"),
+#                          "Metering service does not exist")
+#     class TestMeter(base.BaseFunctionalTest):
+#         ...
+#
+#     :param kwargs: The kwargs needed to filter an endpoint.
+#     :returns: True if the service exists, otherwise False.
+#     """
+#     try:
+#         conn = connection.from_config(cloud_name=TEST_CLOUD)
+#         conn.session.get_endpoint(**kwargs)
+#
+#         return True
+#     except _exceptions.EndpointNotFound:
+#         return False
 
 
 class BaseFunctionalTest(unittest.TestCase):
@@ -100,7 +100,31 @@ class BaseFunctionalTest(unittest.TestCase):
             'OS_MAP_REDUCE_ENDPOINT_OVERRIDE',
             'https://mrs.eu-de.otc.t-systems.com/v1.1/%(project_id)s'
         )
-        cls.conn = connection.from_config(cloud_name=TEST_CLOUD)
+
+        # hec
+        username_hec = "***"
+        password_hec = "***"
+        project_id_hec = "***"
+        userDomainId_hec = "***"
+        auth_url_hec = "https://xxx.yyy.com/v3"
+
+        domain_hec = 'myhuaweicloud.com'
+        region_hec = 'cn-north-1'
+        AK_hec = '***'
+        SK_hec = '***'
+
+        cls.conn = connection.Connection(
+            verify=False,
+            ak= AK_hec,
+            sk= SK_hec,
+            domain= domain_hec,
+            region= region_hec,
+            project_id=project_id_hec,
+            # auth_url=auth_url_hec,
+            # user_domain_id=userDomainId_hec,
+            # username=username_hec,
+            # password=password_hec
+        )
 
     @classmethod
     def assertIs(cls, expected, actual):

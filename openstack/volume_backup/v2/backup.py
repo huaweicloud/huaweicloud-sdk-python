@@ -38,7 +38,7 @@ class CloudBackup(resource.Resource):
     #: Volume backup description
     description = resource.Body("description")
     #: The sync cloud backup job id
-    job_id = resource.Body("id")
+    job_id = resource.Body("job_id")
     # tag
     tags = resource.Body("tags", type=list)
     # key. The maximum length is 36 characters. Character set: Cannot contain non-printing characters

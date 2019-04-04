@@ -15,7 +15,6 @@ import testtools
 
 from openstack.compute.v2 import server
 
-
 EXAMPLE = {
     "addresses": {
         "68269e6e-4a27-441b-8029-35373ad50bd9": [
@@ -80,8 +79,8 @@ EXAMPLE = {
     "networks": {},
     "adminPass": '123',
     "personality": "ddd",
-    "block_device_mapping_v2":{},
-    "tags":[],
+    "block_device_mapping_v2": {},
+    "tags": [],
     "os:scheduler_hints": {},
     "reservation_id": "",
     "description": ""
@@ -109,28 +108,28 @@ class TestServer(testtools.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_list)
         self.assertDictEqual({
-                "limit": "limit",
-                "marker": "marker",
-                "image": "image",
-                "flavor": "flavor",
-                "name": "name",
-                "status": "status",
-                "all_tenants": "all_tenants",
-                "sort_key": "sort_key",
-                "sort_dir": "sort_dir",
-                "reservation_id": "reservation_id",
-                "tags": "tags",
-                "changes_since": "changes_since",
-                "not_tags": "not_tags",
-                "project_id": "project_id",
-                "host":"host",
-                "tags_any": "tags-any",
-                "not_tags_any": "not-tags-any",
-                "is_deleted": "deleted",
-                "ipv4_address": "ip",
-                "ipv6_address": "ip6"
-                },
-                sot._query_mapping._mapping)
+            "limit": "limit",
+            "marker": "marker",
+            "image": "image",
+            "flavor": "flavor",
+            "name": "name",
+            "status": "status",
+            "all_tenants": "all_tenants",
+            "sort_key": "sort_key",
+            "sort_dir": "sort_dir",
+            "reservation_id": "reservation_id",
+            "tags": "tags",
+            "changes_since": "changes_since",
+            "not_tags": "not_tags",
+            "project_id": "project_id",
+            "host": "host",
+            "tags_any": "tags-any",
+            "not_tags_any": "not-tags-any",
+            "is_deleted": "deleted",
+            "ipv4_address": "ip",
+            "ipv6_address": "ip6"
+        },
+            sot._query_mapping._mapping)
 
     def test_make_it(self):
         sot = server.Server(**EXAMPLE)
@@ -178,8 +177,8 @@ class TestServer(testtools.TestCase):
         self.assertEqual(EXAMPLE['os:scheduler_hints'],
                          sot.scheduler_hints)
         self.assertEqual(EXAMPLE["tags"], sot.tags)
-        self.assertEqual(EXAMPLE["reservation_id"], sot.reservation_id )
-        self.assertEqual(EXAMPLE["description"], sot.description )
+        self.assertEqual(EXAMPLE["reservation_id"], sot.reservation_id)
+        self.assertEqual(EXAMPLE["description"], sot.description)
 
     def test_detail(self):
         sot = server.ServerDetail()
@@ -220,12 +219,11 @@ class TestServer(testtools.TestCase):
         sot = server.Server(**EXAMPLE)
 
         self.assertIsNone(sot.change_password(self.sess, 'a'))
-
-        url = 'servers/05184ba3-00ba-4fbc-b7a2-03b62b884931/action'
-        body = {"changePassword": {"adminPass": "a"}}
+        url = 'servers/IDENTIFIER/action'
+        body = {"changePassword": {"***": "***"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_reboot(self):
         sot = server.Server(**EXAMPLE)
@@ -236,7 +234,7 @@ class TestServer(testtools.TestCase):
         body = {"reboot": {"type": "HARD"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_force_delete(self):
         sot = server.Server(**EXAMPLE)
@@ -247,7 +245,7 @@ class TestServer(testtools.TestCase):
         body = {'forceDelete': None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_rebuild(self):
         sot = server.Server(**EXAMPLE)
@@ -278,7 +276,7 @@ class TestServer(testtools.TestCase):
         }
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_rebuild_minimal(self):
         sot = server.Server(**EXAMPLE)
@@ -302,7 +300,7 @@ class TestServer(testtools.TestCase):
         }
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_resize(self):
         sot = server.Server(**EXAMPLE)
@@ -313,7 +311,7 @@ class TestServer(testtools.TestCase):
         body = {"resize": {"flavorRef": "2"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_confirm_resize(self):
         sot = server.Server(**EXAMPLE)
@@ -324,7 +322,7 @@ class TestServer(testtools.TestCase):
         body = {"confirmResize": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_revert_resize(self):
         sot = server.Server(**EXAMPLE)
@@ -335,7 +333,7 @@ class TestServer(testtools.TestCase):
         body = {"revertResize": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_create_image(self):
         sot = server.Server(**EXAMPLE)
@@ -348,7 +346,7 @@ class TestServer(testtools.TestCase):
         body = {"createImage": {'name': name, 'metadata': metadata}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_create_image_minimal(self):
         sot = server.Server(**EXAMPLE)
@@ -360,7 +358,7 @@ class TestServer(testtools.TestCase):
         body = {"createImage": {'name': name}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=dict(sot.service), endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=dict(sot.service), endpoint_override=None, json=body, headers=headers)
 
     def test_add_security_group(self):
         sot = server.Server(**EXAMPLE)
@@ -371,7 +369,7 @@ class TestServer(testtools.TestCase):
         body = {"addSecurityGroup": {"name": "group"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_remove_security_group(self):
         sot = server.Server(**EXAMPLE)
@@ -382,7 +380,7 @@ class TestServer(testtools.TestCase):
         body = {"removeSecurityGroup": {"name": "group"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_reset_state(self):
         sot = server.Server(**EXAMPLE)
@@ -393,7 +391,7 @@ class TestServer(testtools.TestCase):
         body = {"os-resetState": {"state": 'active'}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_add_fixed_ip(self):
         sot = server.Server(**EXAMPLE)
@@ -405,7 +403,7 @@ class TestServer(testtools.TestCase):
         body = {"addFixedIp": {"networkId": "NETWORK-ID"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_remove_fixed_ip(self):
         sot = server.Server(**EXAMPLE)
@@ -417,7 +415,7 @@ class TestServer(testtools.TestCase):
         body = {"removeFixedIp": {"address": "ADDRESS"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_add_floating_ip(self):
         sot = server.Server(**EXAMPLE)
@@ -429,7 +427,7 @@ class TestServer(testtools.TestCase):
         body = {"addFloatingIp": {"address": "FLOATING-IP"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_add_floating_ip_with_fixed_addr(self):
         sot = server.Server(**EXAMPLE)
@@ -442,7 +440,7 @@ class TestServer(testtools.TestCase):
                                   "fixed_address": "FIXED-ADDR"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_remove_floating_ip(self):
         sot = server.Server(**EXAMPLE)
@@ -454,7 +452,7 @@ class TestServer(testtools.TestCase):
         body = {"removeFloatingIp": {"address": "I-AM-FLOATING"}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_pause(self):
         sot = server.Server(**EXAMPLE)
@@ -466,7 +464,7 @@ class TestServer(testtools.TestCase):
         body = {"pause": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_unpause(self):
         sot = server.Server(**EXAMPLE)
@@ -478,7 +476,7 @@ class TestServer(testtools.TestCase):
         body = {"unpause": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_suspend(self):
         sot = server.Server(**EXAMPLE)
@@ -490,7 +488,7 @@ class TestServer(testtools.TestCase):
         body = {"suspend": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_resume(self):
         sot = server.Server(**EXAMPLE)
@@ -502,7 +500,7 @@ class TestServer(testtools.TestCase):
         body = {"resume": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_lock(self):
         sot = server.Server(**EXAMPLE)
@@ -514,7 +512,7 @@ class TestServer(testtools.TestCase):
         body = {"lock": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_unlock(self):
         sot = server.Server(**EXAMPLE)
@@ -526,7 +524,7 @@ class TestServer(testtools.TestCase):
         body = {"unlock": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_rescue(self):
         sot = server.Server(**EXAMPLE)
@@ -538,7 +536,7 @@ class TestServer(testtools.TestCase):
         body = {"rescue": {}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_rescue_with_options(self):
         sot = server.Server(**EXAMPLE)
@@ -551,7 +549,7 @@ class TestServer(testtools.TestCase):
                            'rescue_image_ref': 'IMG-ID'}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_unrescue(self):
         sot = server.Server(**EXAMPLE)
@@ -563,7 +561,7 @@ class TestServer(testtools.TestCase):
         body = {"unrescue": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_evacuate(self):
         sot = server.Server(**EXAMPLE)
@@ -575,7 +573,7 @@ class TestServer(testtools.TestCase):
         body = {"evacuate": {}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_evacuate_with_options(self):
         sot = server.Server(**EXAMPLE)
@@ -589,7 +587,7 @@ class TestServer(testtools.TestCase):
                              'force': True}}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_start(self):
         sot = server.Server(**EXAMPLE)
@@ -601,7 +599,7 @@ class TestServer(testtools.TestCase):
         body = {"os-start": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_stop(self):
         sot = server.Server(**EXAMPLE)
@@ -613,7 +611,7 @@ class TestServer(testtools.TestCase):
         body = {"os-stop": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_shelve(self):
         sot = server.Server(**EXAMPLE)
@@ -625,7 +623,7 @@ class TestServer(testtools.TestCase):
         body = {"shelve": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)
 
     def test_unshelve(self):
         sot = server.Server(**EXAMPLE)
@@ -637,4 +635,4 @@ class TestServer(testtools.TestCase):
         body = {"unshelve": None}
         headers = {'Accept': ''}
         self.sess.post.assert_called_with(
-            url, endpoint_filter=sot.service, endpoint_override=None,json=body, headers=headers)
+            url, endpoint_filter=sot.service, endpoint_override=None, json=body, headers=headers)

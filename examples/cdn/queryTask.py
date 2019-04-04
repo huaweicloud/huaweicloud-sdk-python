@@ -17,13 +17,13 @@ import sys
 import time
 from openstack import connection
 
-os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'https://cdn.myhwclouds.com/v1.0')
+os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'https://cdn.yyy.com/v1.0')
 
 username = "xxxxxxxxxxx"
 password = "xxxxxxxxxxx"
 projectId = "xxxxxxxxxxx"
 userDomainId = "xxxxxxxxxxx"
-auth_url = "https://iam.cn-north-1.myhuaweicloud.com/v3"
+auth_url = "https://iam.xxx.yyy.com/v3"
 
 conn = connection.Connection(
     auth_url=auth_url,

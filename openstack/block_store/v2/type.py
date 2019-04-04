@@ -50,7 +50,7 @@ class Type(resource2.Resource):
     #: A dict of extra specifications. "capabilities" is a usual key.
     extra_specs = resource2.Body("extra_specs", type=dict)
     #: List of cloud disk types returned by the query request
-    volume_types = resource2.Body("volue_types", type = list)
+    #volume_types = resource2.Body("volue_types", type = list)
     #: Cinder backend cloud drive type name
     volume_backend_name = resource2.Body("volume_backend_name")
     #: Available partition

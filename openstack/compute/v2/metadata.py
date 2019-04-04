@@ -67,17 +67,19 @@ class MetadataMixin(object):
         # DELETE doesn't return a JSON body while everything else does.
         return response.json() if not delete else None
 
-    def get_metadata(self, session):
+    def get_metadata(self, session, key=None):
         """Retrieve metadata
 
         :param session: The session to use for this request.
+        :type session: :class:`~openstack.session.Session`
+        :param key: The key of the metadata to get, if None, return all.
+        :type key: str or None
 
-        :returns: A dictionary of the requested metadata. All keys and values
+        :returns: The requested metadata. All keys and values
                   are Unicode text.
-        :rtype: dict
         """
-        result = self._metadata(session.get)
-        return result["metadata"]
+        result = self._metadata(session.get, key=key)
+        return result
 
     def set_metadata(self, session, **metadata):
         """Update metadata
@@ -98,7 +100,24 @@ class MetadataMixin(object):
             return dict()
 
         result = self._metadata(session.post, **metadata)
-        return result["metadata"]
+        return result
+
+    def update_metadata(self, session, key, value):
+        """Creates or replaces a metadata item, by key
+
+        :param session: The session to use for this request.
+        :type session: :class:`~openstack.session.Session`
+        :param str key: The key of the metadata to update.
+        :param str value: The new value of the metadata.
+
+        :returns: The metadata after being updated.
+                  All keys and values are Unicode text.
+        """
+        if not key:
+            return {'meta': {}}
+
+        result = self._metadata(session.put, key=key, **{key: value})
+        return result
 
     def delete_metadata(self, session, keys):
         """Delete metadata

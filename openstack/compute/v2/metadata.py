@@ -114,7 +114,7 @@ class MetadataMixin(object):
                   All keys and values are Unicode text.
         """
         if not key:
-            return {'meta': {}}
+            raise Exception("The key is empty!")
 
         result = self._metadata(session.put, key=key, **{key: value})
         return result

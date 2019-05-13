@@ -21,7 +21,6 @@ from openstack.vpc.v1 import security_group as _security_group
 from openstack.vpc.v1 import security_group_rule as _security_group_rule
 from openstack.vpc.v1 import subnet as _subnet
 from openstack.vpc.v1 import vpc as _vpc
-from openstack.vpc.v1 import public_ip as _public_ip
 
 
 class Proxy(proxy2.BaseProxy):

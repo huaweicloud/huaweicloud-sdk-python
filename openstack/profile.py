@@ -112,6 +112,7 @@ from openstack.rds import rds_service
 # from openstack.telemetry.alarm import alarm_service
 # from openstack.telemetry import telemetry_service
 # from openstack.workflow import workflow_service
+from openstack.iam import iam_service
 
 _logger = logging.getLogger(__name__)
 
@@ -157,7 +158,6 @@ class Profile(object):
         self._add_service(evs_service.EvsService(version='v2'))
         self._add_service(ecs_service.EcsService(version='v1'))
         self._add_service(ecs_service.EcsServiceV1_1(version='v1.1'))
-        self._add_service(vpc_service.VpcServiceV1(version="v1"))
         self._add_service(vpc_service.VpcService(version='v2.0'))
         self._add_service(vpc_service.VpcServiceV1(version='v1'))
         self._add_service(bms_service.BmsService(version='v1'))
@@ -178,6 +178,7 @@ class Profile(object):
 
         self._add_service(rds_service.RDSService(version="v1"))
         self._add_service(cdn_service.CDNService(version='v1'))
+        self._add_service(iam_service.IamService(version='v3.0'))
 
         # self._add_service(rds_os_service.RDSService(version="v1"))
         # self._add_service(telemetry_service.TelemetryService(version="v2"))

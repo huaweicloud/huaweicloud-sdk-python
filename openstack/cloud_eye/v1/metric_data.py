@@ -64,6 +64,8 @@ class MetricAggregation(resource.Resource):
     average = resource.Body('average')
     #: Metric Data variance
     variance = resource.Body('variance')
+    #: Metric Data sum
+    sum = resource.Body('sum')
     #: Metric Data min
     min = resource.Body('min')
     #: Metric Data max

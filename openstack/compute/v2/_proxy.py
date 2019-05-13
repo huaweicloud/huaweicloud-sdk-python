@@ -1389,7 +1389,7 @@ class Proxy(proxy2.BaseProxy):
     #              when no resource can be found.
     #     '''
     #     return self._get(quota.QuotaDefault, id=project_id)
-    #
+
     # def reinstall_server_os(self, server_id, **attr):
     #     '''
     #     :param dict attrs: Keyword arguments which will be used to create a

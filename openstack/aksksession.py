@@ -18,12 +18,11 @@ import hmac
 import six
 from six.moves import urllib
 
-
 import sys
 import datetime
 
 import requests
-from keystoneauth1.session import  TCPKeepAliveAdapter, _JSONEncoder, _determine_user_agent
+from keystoneauth1.session import TCPKeepAliveAdapter, _JSONEncoder, _determine_user_agent
 from openstack import exceptions
 from openstack.session import DEFAULT_USER_AGENT
 from openstack import session as osession
@@ -33,13 +32,13 @@ from openstack.service_endpoint import endpoint as _endpoint
 from keystoneauth1 import exceptions
 from openstack.exceptions import MissingRequiredArgument
 
-
 EMPTYSTRING = ""
 TERMINATORSTRING = "sdk_request"
 ALGORITHM = "SDK-HMAC-SHA256"
 PYTHON2 = "2"
 UTF8 = "utf-8"
 _logger = utils.get_logger(__name__)
+
 
 def construct_session(session_obj=None):
     # NOTE(morganfainberg): if the logic in this function changes be sure to
@@ -51,6 +50,7 @@ def construct_session(session_obj=None):
         for scheme in list(session_obj.adapters):
             session_obj.mount(scheme, TCPKeepAliveAdapter())
     return session_obj
+
 
 def get_utf8_bytes(message):
     """
@@ -73,7 +73,7 @@ def get_utf8_bytes(message):
 
 
 class AkSksignature(object):
-    def __init__(self, accesskey = None, secretkey = None, region = None):
+    def __init__(self, accesskey=None, secretkey=None, region=None):
         """
         This class is used to sign the request header.
         The use method is to construct the class object and
@@ -95,7 +95,7 @@ class AkSksignature(object):
         self.region = region
         self.headtosign = ['Host', 'X-Sdk-Date']
 
-    def _make_canonical_request(self,method = None, url = None, headers = None, params = None, body = EMPTYSTRING ):
+    def _make_canonical_request(self, method=None, url=None, headers=None, params=None, body=EMPTYSTRING):
         """
         Create a canonical request string
         :param method : the request's http method, get/post OR other
@@ -126,22 +126,24 @@ class AkSksignature(object):
                             (k.encode('utf-8') if isinstance(k, str) else k,
                              v.encode('utf-8') if isinstance(v, str) else v))
             result.sort(key= lambda item: item[0])
-            canonical_querystring  = urllib.parse.urlencode(result, doseq=True)
-            #canonical_querystring = 'image' + '=' +  urllib.quote(json.dumps(params.get('image')).replace(' ',''))
+            canonical_querystring = urllib.parse.urlencode(result, doseq=True)
+            canonical_querystring = canonical_querystring.replace("+", "%20")
         else:
             canonical_querystring = EMPTYSTRING
-        #print "query string ", canonical_querystring
-        canonical_header =  [k.lower() + ':' + headers.get(k).strip() for k  in self.headtosign] if all([k in headers for k in self.headtosign]) else []
-        #canonical_header_partb = [k.lower() + ':' + str(v).strip() for k, v in body.items()] if body else []
+        # print "query string ", canonical_querystring
+        canonical_header = [k.lower() + ':' + headers.get(k).strip() for k in self.headtosign] if all(
+            [k in headers for k in self.headtosign]) else []
+        # canonical_header_partb = [k.lower() + ':' + str(v).strip() for k, v in body.items()] if body else []
         canonical_header = '\n'.join(canonical_header)
         canonical_header += '\n'
-        signed_header = ';'.join([k.lower()  for k in self.headtosign])
+        signed_header = ';'.join([k.lower() for k in self.headtosign])
 
         body = body if body  else ""
-        #print body
+        # print body
         request_payload = hashlib.sha256(get_utf8_bytes(body)).hexdigest()
-        #print request_payload
-        return '\n'.join([canonical_method,canonical_uri,canonical_querystring, canonical_header, signed_header, request_payload])
+        # print request_payload
+        return '\n'.join(
+            [canonical_method, canonical_uri, canonical_querystring, canonical_header, signed_header, request_payload])
 
     def _make_string_to_sign(self, canonical_req, dtstamp, svr):
         """
@@ -157,15 +159,15 @@ class AkSksignature(object):
         request_datetime = dtstamp
         request_date = dtstamp.split('T')[0]
         credential_scope = '/'.join([
-                                     request_date,
-                                     self.region,
-                                     svr,
-                                     TERMINATORSTRING
-                                     ])
+            request_date,
+            self.region,
+            svr,
+            TERMINATORSTRING
+        ])
         hashed_request = hashlib.sha256(get_utf8_bytes(canonical_req)).hexdigest()
-        return "\n".join([algorithm, request_datetime, credential_scope, hashed_request]),credential_scope
+        return "\n".join([algorithm, request_datetime, credential_scope, hashed_request]), credential_scope
 
-    def _make_signing_key(self , dtstamp, svr):
+    def _make_signing_key(self, dtstamp, svr):
         """
         :param dtstamp: datetime stamp of UTC
         :type dtstamp : string
@@ -173,7 +175,7 @@ class AkSksignature(object):
         :type svr :string
         :return: A string to be used as the key when encry the request string
         """
-        ksecret =  "SDK" + self.sk
+        ksecret = "SDK" + self.sk
         kdate = hmac.new(get_utf8_bytes(ksecret),
                          get_utf8_bytes(dtstamp[0:8]),
                          digestmod=hashlib.sha256)
@@ -181,7 +183,7 @@ class AkSksignature(object):
         kservice = hmac.new(kregion.digest(), get_utf8_bytes(svr), digestmod=hashlib.sha256)
         return hmac.new(kservice.digest(), get_utf8_bytes(TERMINATORSTRING), digestmod=hashlib.sha256).digest()
 
-    def signature(self, url = None, method = None, headers = None, data = None, params = None, svr = None):
+    def signature(self, url=None, method=None, headers=None, data=None, params=None, svr=None):
         """
         :param method : the request's http method, get/post OR other
         :type method : string
@@ -197,35 +199,39 @@ class AkSksignature(object):
         :type svr :string
         :return: A string of signature
         """
-        canonical_request = self._make_canonical_request(method = method, url = url, params = params, headers = headers, body= data)
-        #print canonical_request
+        canonical_request = self._make_canonical_request(method=method, url=url, params=params, headers=headers,
+                                                         body=data)
+        # print canonical_request
         signing_key = self._make_signing_key(headers.get("X-Sdk-Date"), svr)
         string_to_sign, credential_scope = self._make_string_to_sign(canonical_request, headers.get("X-Sdk-Date"), svr)
-        signature =  hmac.new(signing_key, get_utf8_bytes(string_to_sign), digestmod=hashlib.sha256).hexdigest()
+        signature = hmac.new(signing_key, get_utf8_bytes(string_to_sign), digestmod=hashlib.sha256).hexdigest()
         signed_header = ';'.join([k.lower() for k in self.headtosign])
-        return   "%s Credential=%s/%s, SignedHeaders=%s, Signature=%s"%(ALGORITHM,
+        return "%s Credential=%s/%s, SignedHeaders=%s, Signature=%s" % (ALGORITHM,
                                                                         self.ak,
                                                                         credential_scope,
                                                                         signed_header,
                                                                         signature)
 
 
+
 def check(session):
     def oninit(*pargs, **kwargs):
-        for arg in ['ak','sk', 'project_id', 'region', 'domain']:
-            if kwargs.get(arg) == None:
+        for arg in ['ak', 'sk', 'project_id', 'region', 'domain']:
+            if kwargs.get(arg) is None:
+                if arg == "domain":
+                    arg = "cloud"
                 raise MissingRequiredArgument("miss required argument: %s" % arg)
             if not kwargs.get(arg):
-                raise  MissingRequiredArgument("the argument: %s is empty"%arg)
-
+                if arg == "domain":
+                    arg = "cloud"
+                raise MissingRequiredArgument("the argument: %s is empty" % arg)
         return session(*pargs, **kwargs)
     return oninit
 
 
-
 @check
 class ASKSession(osession.Session):
-    def __init__(self, profile ,
+    def __init__(self, profile,
                  original_ip=None, verify=True,
                  cert=None, timeout=None,
                  user_agent=None,
@@ -235,11 +241,12 @@ class ASKSession(osession.Session):
                  **kwargs
                  ):
         self.project_id = kwargs.get("project_id")
+        self.domain_id = kwargs.get("domain_id", None)
         self.domain = kwargs.get("domain")
         self.region = kwargs.get("region")
-        self.signer = AkSksignature(accesskey= kwargs.get("ak"),
+        self.signer = AkSksignature(accesskey=kwargs.get("ak"),
                                     secretkey=kwargs.get("sk"),
-                                    region= kwargs.get("region"))
+                                    region=kwargs.get("region"))
         if user_agent is not None:
             self.user_agent = "%s %s" % (user_agent, DEFAULT_USER_AGENT)
         else:
@@ -257,22 +264,26 @@ class ASKSession(osession.Session):
         self.additional_user_agent = additional_user_agent or []
         self._determined_user_agent = None
         self._json = _JSONEncoder()
-
+        self._securitytoken = kwargs.get("securitytoken", None)
 
         if timeout is not None:
             self.timeout = float(timeout)
         self.endpoint = _endpoint
 
     @map_exceptions
-    def request(self,url, method, json=None, original_ip=None,
+    def request(self, url, method, json=None, original_ip=None,
                 user_agent=None, redirect=None, endpoint_filter=None,
-                raise_exc=True, log=True, microversion = None,
-                endpoint_override=None,connect_retries=0,
+                raise_exc=True, log=True, microversion=None,
+                endpoint_override=None, connect_retries=0,
                 allow=None, client_name=None, client_version=None,
                 **kwargs):
         headers = kwargs.setdefault('headers', dict())
+        
         if microversion:
             self._set_microversion_headers(headers, microversion, None, endpoint_filter)
+        if self._securitytoken:
+            headers.setdefault("X-Security-Token", self._securitytoken)
+
         if not urllib.parse.urlparse(url).netloc:
             if endpoint_override:
                 base_url = endpoint_override % {"project_id": self.project_id}
@@ -338,8 +349,12 @@ class ASKSession(osession.Session):
             kwargs['data'] = self._json.encode(json)
         # surpport  maas,map_reduce when without request body
         headers.setdefault('Content-Type', 'application/json')
+        if self.domain_id:
+            headers.setdefault('X-Domain-Id', self.domain_id)
         # surpport sub-project id for some service the endpoint contain project id
-        headers.setdefault('X-Project-Id', self.project_id)
+        elif self.project_id:
+            headers.setdefault('X-Project-Id', self.project_id)
+
         if self.additional_headers:
             for k, v in self.additional_headers.items():
                 headers.setdefault(k, v)
@@ -354,14 +369,14 @@ class ASKSession(osession.Session):
         # (which the requests library handles) need to be explicitly
         # picked out so they can be included in the URL that gets loggged.
         query_params = kwargs.get('params', dict())
-        headers.setdefault("X-Sdk-Date", datetime.datetime.strftime(datetime.datetime.utcnow(),"%Y%m%dT%H%M%SZ"))
-        signedstring = self.signer.signature(method = method,
-                                             url = url,
-                                             headers = headers,
-                                             svr = endpoint_filter.service_type,
-                                             params= query_params,
-                                             data= kwargs.get("data", None))
-        #print signedstring
+        headers.setdefault("X-Sdk-Date", datetime.datetime.strftime(datetime.datetime.utcnow(), "%Y%m%dT%H%M%SZ"))
+        signedstring = self.signer.signature(method=method,
+                                             url=url,
+                                             headers=headers,
+                                             svr=endpoint_filter.service_type,
+                                             params=query_params,
+                                             data=kwargs.get("data", None))
+        # print signedstring
         headers.setdefault("Authorization", signedstring)
         if log:
             self._http_log_request(url, method=method,
@@ -399,18 +414,17 @@ class ASKSession(osession.Session):
                           resp.headers.get('x-compute-request-id'))
             if request_id:
                 _logger.debug('%(method)s call to %(service_name)s for '
-                             '%(url)s used request id '
-                             '%(response_request_id)s',
-                             {'method': resp.request.method,
-                              'service_name': service_name,
-                              'url': resp.url,
-                              'response_request_id': request_id})
+                              '%(url)s used request id '
+                              '%(response_request_id)s',
+                              {'method': resp.request.method,
+                               'service_name': service_name,
+                               'url': resp.url,
+                               'response_request_id': request_id})
 
         if raise_exc and resp.status_code >= 400:
             _logger.debug('Request returned failure status: %s',
-                         resp.status_code)
+                          resp.status_code)
             raise exceptions.from_response(resp, method, url)
-
         return resp
 
     def get_endpoint(self, auth=None, interface=None, service_type=None,
@@ -421,4 +435,4 @@ class ASKSession(osession.Session):
             endpoint = self.endpoint.get(service_type).get(interface, '')
             map = {"project_id": self.project_id, "region": self.region, "domain": self.domain}
             base_url = endpoint % map
-        return  base_url
+        return base_url

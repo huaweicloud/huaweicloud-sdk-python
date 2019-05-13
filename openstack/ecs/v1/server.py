@@ -166,20 +166,12 @@ class Servers(resource2.Resource):
         headers = {'Accept': ''}
         endpoint_override = cls.service.get_endpoint_override()
         service = cls.get_service_filter(cls, session)
-        if autorecovery is None:
-            return session.get(
-                url, endpoint_filter=cls.service,
-                microversion=service.microversion,
-                headers=headers,
-                endpoint_override=endpoint_override).json()
-        else:
-            recovery = "true" if autorecovery else "false"
-            session.put(
-                url, endpoint_filter=cls.service,
-                microversion=service.microversion,
-                headers=headers,
-                json = {"support_auto_recovery": recovery},
-                endpoint_override=endpoint_override)
+        session.put(
+            url, endpoint_filter=cls.service,
+            microversion=service.microversion,
+            headers=headers,
+            json = {"support_auto_recovery": autorecovery},
+            endpoint_override=endpoint_override)
 
     @classmethod
     def register_server_to_ces(cls, session , server_id):

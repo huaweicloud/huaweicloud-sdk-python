@@ -77,7 +77,7 @@ import logging
 import sys
 
 import os
-#import os_client_config
+# import os_client_config
 from keystoneauth1.loading import base as ksa_loader
 from openstack import exceptions
 from openstack import profile as _profile
@@ -226,7 +226,8 @@ class Connection(object):
             authentication arguments that are used by the authentication
             plugin.
         """
-
+        if "cloud" in auth_args:
+            auth_args["domain"] = auth_args.get("cloud")
         self.profile = profile if profile else _profile.Profile()
         if session:
             # Make sure it is the right kind of session. A keystoneauth1
@@ -255,16 +256,17 @@ class Connection(object):
             # ak = None, sk = None, project_id = None,
             # region = None, domain = None
             self.session = aksession.ASKSession(self.profile,
-                                                verify = verify,
+                                                verify=verify,
                                                 timeout=timeout,
                                                 cert=cert,
                                                 user_agent=user_agent,
-                                                ak = auth_args.get('ak',None),
-                                                sk = auth_args.get('sk',None),
-                                                project_id = auth_args.get('project_id',None),
-                                                region= auth_args.get("region",None),
-                                                domain = auth_args.get('domain',None)
-                                                #endpoint_file= endpointfile
+                                                ak=auth_args.get('ak', None),
+                                                sk=auth_args.get('sk', None),
+                                                project_id=auth_args.get('project_id', None),
+                                                region=auth_args.get("region", None),
+                                                domain=auth_args.get('domain', None),
+                                                securitytoken=auth_args.get("securitytoken", None),
+                                                domain_id=auth_args.get("domain_id", None)
                                                 )
         else:
             self.authenticator = self._create_authenticator(authenticator,
@@ -273,8 +275,8 @@ class Connection(object):
             self.session = _session.Session(
                 self.profile, auth=self.authenticator, verify=verify, timeout=timeout,
                 cert=cert, user_agent=user_agent)
-
         self._open()
+
 
     def _create_authenticator(self, authenticator, auth_plugin, **args):
         if authenticator:
@@ -299,7 +301,7 @@ class Connection(object):
 
     def _load(self, service):
         attr_name = service.get_service_module()
-        #print attr_name
+        # print attr_name
         module = service.get_module() + "._proxy"
         try:
             __import__(module)

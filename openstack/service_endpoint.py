@@ -82,5 +82,8 @@ endpoint = {
   },
   "DEH": {
        "public": "https://deh.%(region)s.%(domain)s/v1.0/%(project_id)s"
+  },
+  "IAM": {
+       "public": "https://iam.%(region)s.%(domain)s/v3.0"
   }
 }

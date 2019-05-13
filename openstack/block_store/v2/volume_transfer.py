@@ -50,6 +50,7 @@ class VolumeTransfer(resource.Resource):
 class VolumeTransferDetail(VolumeTransfer):
     resource_key = None
     resources_key = 'transfers'
+    base_path = '/os-volume-transfer/detail'
 
     # capabilities
     allow_create = False

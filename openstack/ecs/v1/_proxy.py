@@ -141,7 +141,7 @@ class Proxy(proxy2.BaseProxy):
     # def config_autorecovery(self, server_id, autorecovery):
     #     '''
     #     :param server_id: server id
-    #     :param autorecovery: true/false
+    #     :param autorecovery: "true"/"false"
     #     :return: None
     #     '''
     #     _server.Servers.autorecovery(self._session,server_id, autorecovery)
@@ -151,4 +151,4 @@ class Proxy(proxy2.BaseProxy):
     #     :param server_id: server id
     #     :return: None
     #     '''
-    #     _server.Servers.register_server_ces(self._session, server_id)
+    #     _server.Servers.register_server_to_ces(self._session, server_id)

@@ -53,7 +53,7 @@ def cloudimages(_conn):
     images = _conn.ims.cloudimages(**query)
     for image in images:
         print(image._CloudImage__os_bit)
-        print(image.os_bit)
+        print(image.name)
 
 
 def update_cloudimage(_conn):
@@ -125,10 +125,16 @@ def create_cloudimage_by_outer_image_from_obs(_conn):
     print(image)
 
 
+def get_job(_conn):
+    job_id = 'ff8080816b6a1240016b79543eb72831'
+    job = _conn.ims.get_job(job_id)
+    print(job)
+
 if __name__ == '__main__':
     # cloudimages(conn)
     # update_cloudimage(conn)
     # create_cloudimage_by_ecs(conn)
     # create_cloudimage_by_data_disk(conn)
     # create_cloudimage_by_outer_image_from_obs(conn)
+    # get_job(conn)
     pass

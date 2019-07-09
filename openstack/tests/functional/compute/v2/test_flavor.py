@@ -58,9 +58,9 @@ class TestFlavor(base.BaseFunctionalTest):
     #                       "not a flavor", ignore_missing=False)
 
 
-    def test_flavor_extra_specs(self):
-        res = self.conn.compute.query_flavor_extra_specs(flavor_id=self.one_flavor.id)
-        self.assertIsInstance(res, ExtraSpecs)
+    # def test_flavor_extra_specs(self):
+    #     res = self.conn.compute.query_flavor_extra_specs(flavor_id=self.one_flavor.id)
+    #     self.assertIsInstance(res, ExtraSpecs)
 
     def test_flavor_resize(self):
         for flv in self.conn.compute.flavor_resize_supperted(instance_uuid="faed6c66-6915-4fe4-b1e2-5c88170319ce"):

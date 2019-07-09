@@ -64,6 +64,16 @@ def create_server():
                 }
             }
         },
+        "server_tags": [
+            {
+                "key": "key1",
+                "value": "value1"
+            },
+            {
+                "key": "key2",
+                "value": "value2"
+            }
+        ],
         "key_name": "KeyPair-ccad",
         "count": 1,
         "metadata": {

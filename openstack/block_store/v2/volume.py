@@ -25,6 +25,7 @@
 #         WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #         License for the specific language governing permissions and limitations under
 #         the License.
+from openstack.resource2 import _Request
 
 from openstack.block_store import block_store_service
 from openstack import format
@@ -180,10 +181,13 @@ class VolumeDetail(Volume):
     # and you can continue to use this url to query the remaining list information.
     volumes_links = resource2.Body("volumes_links", type=list)
 
+class VolumeBaseDSS(Volume):
+    volume = resource2.Body("volume", type=Volume)
+    scheduler_hints = resource2.Body("OS-SCH-HNT:scheduler_hints",type=dict)
 
 class QuotaSet(resource2.Resource):
     resource_key = 'quota_set'
-    base_path = '/os-quota-sets/%(tenant_id)s?usage=True'
+    base_path = '/os-quota-sets/%(tenant_id)s'
     service = block_store_service.BlockStoreService()
 
     # capabilities
@@ -217,6 +221,27 @@ class QuotaSet(resource2.Resource):
     backups = resource2.Body('backups', type=dict)
     #: The backup size (GB)
     backup_gigabytes = resource2.Body('backup_gigabytes', type=dict)
+
+    def get_quotas(self, session, requires_id=True, params=None):
+
+        if not self.allow_get:
+            raise exceptions.MethodNotSupported(self, "get")
+        try:
+            request = self._prepare_request(requires_id=requires_id)
+            endpoint_override = self.service.get_endpoint_override()
+            service = self.get_service_filter(self, session)
+            response = session.get(request.uri, endpoint_filter=self.service,
+                                microversion=service.microversion,
+                                endpoint_override=endpoint_override, params=params)
+            self._translate_response(response)
+            return self
+        except exceptions.NotFoundException as e:
+            raise exceptions.ResourceNotFound(
+                message="No %s found for %s" %
+                        ("Quota", self.tenant_id),
+                details=e.details, response=e.response,
+                request_id=e.request_id, url=e.url, method=e.method,
+                http_status=e.http_status, cause=e.cause, code=e.code)
 
 
 class VolumeMetadata(resource2.Resource):
@@ -283,7 +308,7 @@ class VolumeMetadata(resource2.Resource):
                 # Reraise with a more specific type and message
                 raise exceptions.ResourceNotFound(
                     message="No %s found for %s" %
-                            (self.__name__, key),
+                            (volume_id, key),
                     details=e.details, response=e.response,
                     request_id=e.request_id, url=e.url, method=e.method,
                     http_status=e.http_status, cause=e.cause, code=e.code)

@@ -30,25 +30,21 @@ conn = connection.Connection(
     password=password
 )
 
-os.environ.setdefault(
-    'OS_VPCV2.0_ENDPOINT_OVERRIDE',
-    'https://******/v2.0/%(project_id)s'
-)
-print('endpoint: ' + os.environ.get('OS_VPCV2.0_ENDPOINT_OVERRIDE'))
 
-
+# Create a BandWidth
 def create_sharebandwidth(_conn):
     data = {
-        "name": "sharebandwidth-sdk-20191012",
+        "name": "xxxxxx",
         "size": 8
     }
     obj = _conn.vpc.create_sharebandwidth(**data)
     print(obj)
 
 
+# Batch Create BandWidth
 def create_batch_sharebandwidth(_conn):
     data = {
-        "name": "batct-sharebandwidth-sdk-20191012",
+        "name": "xxxxxx",
         "size": 9,
         "count": 2
     }
@@ -56,21 +52,23 @@ def create_batch_sharebandwidth(_conn):
     print(obj)
 
 
+# Delete a BandWidth
 def delete_sharebandwidth(_conn):
-    bandwidth_id = 'b4f056b6-c9ff-4844-8cb3-1102b36dc42e'
+    bandwidth_id = 'xxxxxx'
     obj = _conn.vpc.delete_sharebandwidth(bandwidth_id)
     print(obj)
 
 
+# Insert ip into BandWidth
 def insert_ip_to_bandwidth(_conn):
-    bandwidth_id = 'dbf2ac49-b2f0-4257-ab92-c668837f1342'
+    bandwidth_id = 'xxxxxx'
     data = {
         "publicip_info": [
             {
-                "publicip_id": "f01a9741-baee-41a6-b973-dcb6b2c22b26"
+                "publicip_id": "xxxxxx"
             },
             {
-                "publicip_id": "8a25dc1d-2e7e-417c-804a-1d153b25badc"
+                "publicip_id": "xxxxxx"
             }
         ]
     }
@@ -78,15 +76,16 @@ def insert_ip_to_bandwidth(_conn):
     print(obj)
 
 
+# Remove ip into BandWidth
 def remove_ip_from_bandwidth(_conn):
-    bandwidth_id = 'dbf2ac49-b2f0-4257-ab92-c668837f1342'
+    bandwidth_id = 'xxxxxx'
     data = {
         "publicip_info": [
             {
-                "publicip_id": "f01a9741-baee-41a6-b973-dcb6b2c22b26"
+                "publicip_id": "xxxxxx"
             },
             {
-                "publicip_id": "8a25dc1d-2e7e-417c-804a-1d153b25badc"
+                "publicip_id": "xxxxxx"
             }
         ],
         "charge_mode": "bandwidth",
@@ -96,9 +95,29 @@ def remove_ip_from_bandwidth(_conn):
     print(obj)
 
 
+# Update a BandWidth
+def modify_bandwidth(_conn):
+    bandwidth_id = 'xxxxxx'
+    data = {
+        "bandwidth":
+            {
+                "name": "xxxxxx",
+                "size": 100
+            },
+        "extendParam":
+            {
+                "is_auto_pay": "false"
+            }
+    }
+
+    obj = conn.vpc.update_bandwidth_ext(bandwidth_id=bandwidth_id, **data)
+    print(obj)
+
+
 if __name__ == '__main__':
     create_sharebandwidth(conn)
     create_batch_sharebandwidth(conn)
     delete_sharebandwidth(conn)
     insert_ip_to_bandwidth(conn)
     remove_ip_from_bandwidth(conn)
+    modify_bandwidth(conn)

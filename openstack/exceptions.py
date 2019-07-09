@@ -101,6 +101,10 @@ class NotFoundException(HttpException):
     """HTTP 404 Not Found."""
     pass
 
+class BadRequestException(HttpException):
+    """HTTP 400 Bad Request."""
+    pass
+
 
 class MethodNotSupported(SDKException):
     """The resource does not support this operation type."""
@@ -183,6 +187,8 @@ def from_exception(exc):
     """Return an instance of an HTTPException based on httplib response."""
     if exc.response.status_code == 404:
         cls = NotFoundException
+    elif exc.response.status_code == 400:
+        cls = BadRequestException
     else:
         cls = HttpException
 

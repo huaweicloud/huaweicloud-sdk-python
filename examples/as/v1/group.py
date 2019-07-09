@@ -19,7 +19,6 @@ conn = connection.Connection(
     password=password,
 )
 
-
 #get list group
 def list_group():
     query = {
@@ -106,7 +105,12 @@ def pause_group(groupId):
 
 #delete group
 def delete_group(groupId):
-    conn.auto_scaling.delete_group(groupId)
+    _attrs = {
+        # 'force_delete' : 'dsa',
+        # 'force_delete': 'yes',
+        'force_delete': 'no'
+    }
+    conn.auto_scaling.delete_group(groupId, **_attrs)
     print("delete_ok")
 
 if __name__ == "__main__":

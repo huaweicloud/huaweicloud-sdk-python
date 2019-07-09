@@ -46,3 +46,5 @@ class Bandwidth(resource.Resource):
     billing_info = resource.Body('billing_info')
     #: The enterprise project id of the VPC.
     enterprise_project_id = resource.Body('enterprise_project_id')
+    # Status of bandwidth
+    status = resource.Body('status')

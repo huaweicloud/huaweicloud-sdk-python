@@ -71,9 +71,15 @@ def update_cloudimage(_conn):
     )
     print(image)
 
+def get_job(_conn):
+    job_id = 'ff8080816b6a1240016b79543eb72831'
+    job = conn.ims.get_job(job_id)
+    print(job)
+
 
 if __name__ == '__main__':
     # create_cloudimage_by_instance(conn)
     # create_cloudimage_by_file(conn)
     # update_cloudimage(conn)
+    # get_job(conn)
     pass

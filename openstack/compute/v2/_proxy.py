@@ -326,7 +326,7 @@ class Proxy(proxy2.BaseProxy):
                         deleted_at, id, updated_at, user_id
         :rtype: :class:`~openstack.compute.v2.keypair.Keypair`
         """
-        return self._find(_keypair.Keypair, name,
+        return self._find(_keypair.Keypair, name, paging=False,
                           ignore_missing=ignore_missing)
 
     def keypairs(self):
@@ -983,22 +983,22 @@ class Proxy(proxy2.BaseProxy):
         result = _server.Server.existing(id=res.id, **metadata)
         return result
 
-    # def update_server_metadata(self, server, key, value):
-    #     """Creates or replaces a metadata item, by key
-    #     :param server: Either the ID of a server or a
-    #                    :class:`~openstack.compute.v2.server.Server` or
-    #                    :class:`~openstack.compute.v2.server.ServerDetail`
-    #                    instance.
-    #     :param str key: The key of the metadata to update.
-    #     :param str value: The new value of the metadata.
-    #     :returns: A :class:`~openstack.compute.v2.server.Server` with only the
-    #               updated server's metadata.
-    #               All keys and values are Unicode text.
-    #     :rtype: :class:`~openstack.compute.v2.server.Server`
-    #     """
-    #     res = self._get_base_resource(server, _server.Server)
-    #     updated = res.update_metadata(self._session, key, value)
-    #     return _server.Server.existing(id=res.id, **updated)
+    def update_server_metadata(self, server, key, value):
+        """Creates or replaces a metadata item, by key
+        :param server: Either the ID of a server or a
+                       :class:`~openstack.compute.v2.server.Server` or
+                       :class:`~openstack.compute.v2.server.ServerDetail`
+                       instance.
+        :param str key: The key of the metadata to update.
+        :param str value: The new value of the metadata.
+        :returns: A :class:`~openstack.compute.v2.server.Server` with only the
+                  updated server's metadata.
+                  All keys and values are Unicode text.
+        :rtype: :class:`~openstack.compute.v2.server.Server`
+        """
+        res = self._get_base_resource(server, _server.Server)
+        updated = res.update_metadata(self._session, key, value)
+        return _server.Server.existing(id=res.id, **updated)
 
     def delete_server_metadata(self, server, keys):
         """Delete metadata for a server
@@ -1058,7 +1058,7 @@ class Proxy(proxy2.BaseProxy):
             One :class:`~openstack.compute.v2.server_group.ServerGroup` object
             or None
         """
-        return self._find(_server_group.ServerGroup, name_or_id,
+        return self._find(_server_group.ServerGroup, name_or_id, paging=False,
                           ignore_missing=ignore_missing)
 
     def get_server_group(self, server_group):
@@ -1266,8 +1266,7 @@ class Proxy(proxy2.BaseProxy):
                      params={"delete_flag": 1} if force_del else None,
                      ignore_missing=ignore_missing)
 
-    def get_volume_attachment(self, volume_attachment, server,
-                              ignore_missing=True):
+    def get_volume_attachment(self, volume_attachment, server):
         """Get a single volume attachment
 
         :param volume_attachment:
@@ -1279,11 +1278,6 @@ class Proxy(proxy2.BaseProxy):
                        the ID of a server or a
                        :class:`~openstack.compute.v2.server.Server`
                        instance that the attachment belongs to.
-        :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the volume attachment does not exist.
-                    When set to ``True``, no exception will be set when
-                    attempting to delete a nonexistent volume attachment.
 
         :returns: One
             :class:`~openstack.compute.v2.volume_attachment.VolumeAttachment`
@@ -1296,8 +1290,7 @@ class Proxy(proxy2.BaseProxy):
 
         return self._get(_volume_attachment.VolumeAttachment,
                          server_id=server_id,
-                         attachment_id=volume_attachment,
-                         ignore_missing=ignore_missing)
+                         attachment_id=volume_attachment)
 
     def volume_attachments(self, server):
         """Return a generator of volume attachments
@@ -1344,51 +1337,51 @@ class Proxy(proxy2.BaseProxy):
     #              when no resource can be found.
     #     '''
     #     return self._get(_flavor.ExtraSpecs, requires_id=False, flavor_id=flavor_id)
-    #
-    # def get_server_actions(self, server_id):
-    #     '''Return a generator of serveraction
-    #     :returns: A generator of serveraction
-    #     :rtype: class: `~openstack.compute.v2.server.ServerAction`
-    #     '''
-    #     serveraction = _server.ServerAction
-    #     return self._list(serveraction, paginated=False, server_id=server_id)
-    #
-    # def get_server_action_reqid(self, server_id, request_id):
-    #     '''
-    #     :param server_id: server_id id
-    #     :param request_id: request id
-    #     :return: One :class:`~openstack.compute.v2.server.ServerActionReqID`
-    #     :raises: :class:`~openstack.exceptions.ResourceNotFound`
-    #              when no resource can be found.
-    #     '''
-    #     return self._get(_server.ServerActionReqID, server_id=server_id, request_id=request_id)
-    #
-    # def get_server_console_output(self, server_id, lines):
-    #     '''
-    #     :param server_id:  server id
-    #     :param lines: output lines to get
-    #     :return: output message
-    #     '''
-    #     server = self._get_resource(_server.Server, server_id)
-    #     return server.console_output(self._session, lines)
 
-    # def query_quota(self, project_id):
-    #     '''
-    #     :param project_id:  project id
-    #     :return: One :class:`~openstack.compute.v2.quota.Quota`
-    #     :raises: :class:`~openstack.exceptions.ResourceNotFound`
-    #              when no resource can be found.
-    #     '''
-    #     return self._get(quota.Quota, id=project_id)
-    #
-    # def query_quota_default(self, project_id):
-    #     '''
-    #     :param project_id:  project id
-    #     :return: One :class:`~openstack.compute.v2.quota.QuotaDefault`
-    #     :raises: :class:`~openstack.exceptions.ResourceNotFound`
-    #              when no resource can be found.
-    #     '''
-    #     return self._get(quota.QuotaDefault, id=project_id)
+    def instance_actions(self, server_id):
+        '''Return a generator of serveraction
+        :returns: A generator of serveraction
+        :rtype: class: `~openstack.compute.v2.server.ServerAction`
+        '''
+        serveraction = _server.ServerAction
+        return self._list(serveraction, paginated=False, server_id=server_id)
+
+    def get_instance_action(self, server_id, request_id):
+        '''
+        :param server_id: server_id id
+        :param request_id: request id
+        :return: One :class:`~openstack.compute.v2.server.ServerActionReqID`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        '''
+        return self._get(_server.ServerActionReqID, server_id=server_id, request_id=request_id)
+
+    def get_server_console_output(self, server_id, lines):
+        '''
+        :param server_id:  server id
+        :param lines: output lines to get
+        :return: output message
+        '''
+        server = self._get_resource(_server.Server, server_id)
+        return server.console_output(self._session, lines)
+
+    def query_quota(self, project_id):
+        '''
+        :param project_id:  project id
+        :return: One :class:`~openstack.compute.v2.quota.Quota`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        '''
+        return self._get(quota.Quota, id=project_id)
+
+    def query_quota_default(self, project_id):
+        '''
+        :param project_id:  project id
+        :return: One :class:`~openstack.compute.v2.quota.QuotaDefault`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        '''
+        return self._get(quota.QuotaDefault, id=project_id)
 
     # def reinstall_server_os(self, server_id, **attr):
     #     '''

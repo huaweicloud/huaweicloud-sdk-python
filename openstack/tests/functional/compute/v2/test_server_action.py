@@ -34,12 +34,12 @@ class TestServerAction(base.BaseFunctionalTest):
 
     def test_list(self):
         obj = None
-        for o in self.conn.compute.get_server_actions("7be6ff3a-ac95-490f-aeff-fdd0eb982d5d"):
+        for o in self.conn.compute.instance_actions("7be6ff3a-ac95-490f-aeff-fdd0eb982d5d"):
             obj = o
         self.assertIsInstance(obj, _server.ServerAction)
 
-    def test_get_action_reqid(self):
-        sot = self.conn.compute.get_server_action_reqid("7be6ff3a-ac95-490f-aeff-fdd0eb982d5d", "req-783116f0-c984-4e6c-a8b1-72358a273744")
+    def test_get_instance_action(self):
+        sot = self.conn.compute.get_instance_action("7be6ff3a-ac95-490f-aeff-fdd0eb982d5d", "req-783116f0-c984-4e6c-a8b1-72358a273744")
         self.assertIsInstance(sot, _server.ServerActionReqID)
 
     def test_get_console_output(self):

@@ -131,20 +131,20 @@ class Proxy(proxy2.BaseProxy):
         res = self._get_resource(_server.ServerDetail, value=None, **query)
         return res.list_by_offset(self._session, paginated=True, **query)
 
-    # def get_autorecovery(self, server_id):
-    #     '''
-    #     :param server_id: server id
-    #     :return: {"support_auto_recovery": "true/false"}
-    #     '''
-    #     return _server.Servers.autorecovery(self._session,server_id, None)
-    #
-    # def config_autorecovery(self, server_id, autorecovery):
-    #     '''
-    #     :param server_id: server id
-    #     :param autorecovery: "true"/"false"
-    #     :return: None
-    #     '''
-    #     _server.Servers.autorecovery(self._session,server_id, autorecovery)
+    def get_autorecovery(self, server_id):
+        '''
+        :param server_id: server id
+        :return: {"support_auto_recovery": "true/false"}
+        '''
+        return _server.Servers.get_autorecovery(self._session, server_id)
+
+    def config_autorecovery(self, server_id, autorecovery):
+        '''
+        :param server_id: server id
+        :param autorecovery: "true"/"false"
+        :return: None
+        '''
+        _server.Servers.config_autorecovery(self._session, server_id, autorecovery)
 
     # def register_server_to_ces(self, server_id):
     #     '''

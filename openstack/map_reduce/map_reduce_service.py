@@ -22,5 +22,5 @@ class MapReduceService(service_filter.ServiceFilter):
 
     def __init__(self, version=None):
         """Create MapReduce service."""
-        super(MapReduceService, self).__init__(service_type='map-reduce',
+        super(MapReduceService, self).__init__(service_type='mrsv1.1',
                                                version=version)

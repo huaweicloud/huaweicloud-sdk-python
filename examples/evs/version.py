@@ -28,9 +28,9 @@ conn = connection.Connection(auth_url=auth_url,
 
 # versions
 def versions():
-    for index in conn.block_store.versions():
+    for index in conn.evs.versions():
         print(index)
-    for index in conn.block_store.versions(True):
+    for index in conn.evs.get_version("v2"):
         print(index)
 
 if __name__ == '__main__':

@@ -68,6 +68,13 @@ The resulting output from the code::
 """
 import os
 
+SERVICE_MAP = {
+    "asv1": "auto-scaling",
+    "cesv1": "cloud-eye",
+    "mrsv1.1": "map-reduce",
+    "smnv2": "smn",
+    "vbsv2": "volume-backup"
+}
 
 class ValidVersion(object):
     def __init__(self, module, path=None):
@@ -224,7 +231,8 @@ class ServiceFilter(dict):
         use it as {service_type}'s endpoint override value
         :return: endpoint override url
         """
-        service_type = self.service_type.upper().replace('-', '_')
+        service_type = SERVICE_MAP.get(self.service_type, self.service_type)
+        service_type = service_type.upper().replace('-', '_')
         env_key = 'OS_{service_type}_ENDPOINT_OVERRIDE'.format(
             service_type=service_type
         )

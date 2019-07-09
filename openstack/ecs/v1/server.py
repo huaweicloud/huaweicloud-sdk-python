@@ -69,6 +69,7 @@ class Servers(resource2.Resource):
     tags = resource2.Body('tags', type=list)
     # task id
     job_id = resource2.Body('job_id')
+    server_ids = resource2.Body('serverIds', type=list)
     # order id
     order_id = resource2.Body('order_id')
     error = resource2.Body('error')
@@ -161,7 +162,19 @@ class Servers(resource2.Resource):
     adminPass = resource2.Body("adminPass")
 
     @classmethod
-    def autorecovery(cls, session, server_id, autorecovery):
+    def get_autorecovery(cls, session, server_id):
+        url = utils.urljoin(cls.base_path, server_id, 'autorecovery')
+        headers = {'Accept': ''}
+        endpoint_override = cls.service.get_endpoint_override()
+        service = cls.get_service_filter(cls, session)
+        return session.get(
+            url, endpoint_filter=cls.service,
+            microversion=service.microversion,
+            headers=headers,
+            endpoint_override=endpoint_override).json()
+
+    @classmethod
+    def config_autorecovery(cls, session, server_id, autorecovery):
         url = utils.urljoin(cls.base_path, server_id, 'autorecovery')
         headers = {'Accept': ''}
         endpoint_override = cls.service.get_endpoint_override()
@@ -170,7 +183,7 @@ class Servers(resource2.Resource):
             url, endpoint_filter=cls.service,
             microversion=service.microversion,
             headers=headers,
-            json = {"support_auto_recovery": autorecovery},
+            json={"support_auto_recovery": autorecovery},
             endpoint_override=endpoint_override)
 
     @classmethod

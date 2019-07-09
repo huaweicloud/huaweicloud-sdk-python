@@ -132,6 +132,23 @@ def test_get_volume(_conn):
     volume = _conn.block_store.get_volume(volume_id)
     print(volume)
 
+def test_create_volume_by_dss(_conn):
+    data = {
+        "volume":{
+        "name": "volume_name",
+        "availability_zone": "az1.dc1",
+        "description": "volume_description",
+        "volume_type": "SAS",
+        "size": 100,
+        "metadata": {},
+        },
+        "OS-SCH-HNT:scheduler_hints": {
+            "dedicated_storage_id": "xxx"
+        }
+    }
+    volume = _conn.block_store.create_volume_by_dss(**data)
+    print(volume)
+
 
 if __name__ == '__main__':
     # test_update_volume(conn)
@@ -146,4 +163,5 @@ if __name__ == '__main__':
     # test_export_image_by_volume(conn)
     # test_volumes(conn)
     # test_get_volume(conn)
+    # test_create_volume_by_dss(conn)
     pass

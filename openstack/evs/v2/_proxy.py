@@ -15,8 +15,9 @@
 from openstack import proxy2
 from openstack.evs.v2 import volume as _volume
 from openstack.evs.v2 import volume_ext as _volume_ext
-# from openstack.evs.v2 import snapshot as _snapshot
+from openstack.evs.v2 import snapshot as _snapshot
 from openstack.evs.v2 import job as _job
+from openstack.evs import version as _version
 
 class Proxy(proxy2.BaseProxy):
 
@@ -26,8 +27,7 @@ class Proxy(proxy2.BaseProxy):
         :param job_id: id of job, that from a response
         :return: :class:`~openstack.evs.v2.job.Job`
         """
-        _job.Job =  self._get(_job.Job, job_id)
-        return _job.Job
+        return self._get(_job.Job, job_id)
 
     def create_volume(self, **attrs):
         """Create a new volume from attributes
@@ -164,11 +164,26 @@ class Proxy(proxy2.BaseProxy):
         res = self._get_resource(volume, value=None, **query)
         return res.list_by_offset(self._session, paginated=True, **query)
 
-    # def rollback_snapshot(self, snapshot_id, **data):
-    #     """Rolling back a snapshot to a volume.
-    #
-    #     :param snapshot_id: The id of snapshot.
-    #     :param data: Keyword arguments which will be used to rolling back.
-    #     :return: class:`~openstack.evs.v2.snapshot.SnapshotRollback`
-    #     """
-    #     return self._create(_snapshot.SnapshotRollback, snapshot_id=snapshot_id, **data)
+    def rollback_snapshot(self, snapshot_id, **data):
+        """Rolling back a snapshot to a volume.
+
+        :param snapshot_id: The id of snapshot.
+        :param data: Keyword arguments which will be used to rolling back.
+        :return: class:`~openstack.evs.v2.snapshot.SnapshotRollback`
+        """
+        return self._create(_snapshot.SnapshotRollback, snapshot_id=snapshot_id, **data)
+
+    def versions(self):
+        """Retrieve a generator of API versions
+
+        :returns: A generator of version objects.
+        """
+        return self._list(_version.Version)
+
+    def get_version(self, version):
+        """Retrieve a generator of API versions
+
+        :param version: version.
+        :returns: A generator of version objects.
+        """
+        return self._list(_version.VersionGiven, version = version)

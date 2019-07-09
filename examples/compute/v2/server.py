@@ -52,9 +52,10 @@ def show_server(server_id):
     print(server)
 
 
-# get list of server
+# get list of server(details=False)
+# if details is not set,default True
 def list_servers():
-    servers = conn.compute.servers(limit=1)
+    servers = conn.compute.servers(details=False, limit=2)
     for server in servers:
         print(server)
 
@@ -184,15 +185,48 @@ def delete_server(server_id):
     print(server)
 
 
+# get instance action list of a server
+def instance_actions(server_id):
+    actions = conn.compute.instance_actions(server_id)
+    print ("Instance actions:")
+    for act in actions:
+        print (act)
+        print ("request id:", act.request_id)
+        print ("action:", act.action)
+
+
+# get instance action by request ID
+def get_instance_action(server_id, req_id):
+    instance_action = conn.compute.get_instance_action(server_id, req_id)
+    print (instance_action)
+    print ("events:", instance_action.events)
+
+
+# update server specified metadata
+def update_server_metadata(serverId, key, value):
+    msg = conn.compute.update_server_metadata(serverId, key, value)
+    print (msg)
+    print("metadata:", msg.meta)
+
+
+# get console log
+def get_server_console_output(server_id, length):
+    log = conn.compute.get_server_console_output(server_id, length)
+    print ("log: ", log)
+
+
 if __name__ == "__main__":
     newflavor_id = "c2.medium"
-    newimage_id = "228b642c-7538-4364-99b4-a88f271234a4"
+    newimage_id = "newimage_id"
     newserver_name = "name_test2"
     admin_password = None
     status = "VERIFY_RESIZE"
     address = "10.154.118.136"
     image_name = "image_name"
     key = "test_key"
+    request_id = "request_id"
+    value = "test_value"
+    length = "10"
     list_servers()
     server = create_server()
     find_server(server.id)
@@ -216,3 +250,7 @@ if __name__ == "__main__":
     delete_server_metadata(server.id)
     wait_for_server(server, status)
     delete_server(server.id)
+    instance_actions(server.id)
+    get_instance_action(server.id, request_id)
+    update_server_metadata(server.id, key, value)
+    get_server_console_output(server.id, length)

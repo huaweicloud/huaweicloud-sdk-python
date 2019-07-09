@@ -17,7 +17,7 @@ import sys
 import time
 from openstack import connection
 
-# os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
+os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
 
 # token认证
 # username = "xxxxxxxxxxx"
@@ -36,14 +36,14 @@ from openstack import connection
 
 # AKSK认证
 projectId = "xxxxxxxxxxx"
-domain = "xxxxxxxxxxx"   # cdn use: domain = "myhwclouds.com"
+cloud = "xxxxxxxxxxx"   # cdn use: cloud = "myhwclouds.com"
 region= "xxxxxxxxxxx"    # example: region = "cn-north-1"
 AK = "xxxxxxxxxxx"
 SK = "xxxxxxxxxxx"
 
 conn = connection.Connection(
               project_id=projectId,
-              domain=domain,
+              cloud=cloud,
               region=region,
               ak=AK,
               sk=SK)

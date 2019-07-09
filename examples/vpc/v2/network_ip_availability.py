@@ -31,20 +31,11 @@ conn = connection.Connection(
 )
 
 
-# Create a publicIp
-def create_publicip_ext(_conn):
-    data = {
-        "publicip": {
-            "type": "5_bgp"
-        },
-        "bandwidth": {
-            "name": "xxxxxx",
-            "size": 10,
-            "share_type": "PER"
-        }
-    }
-    print(_conn.vpc.create_publicip_ext(**data))
+# Get a NetworkIpAvailability
+def get_network_ip_availability(_conn):
+    network_id = 'xxxxxx'
+    print(_conn.vpc.get_network_ip_availability(network_id))
 
 
 if __name__ == '__main__':
-    create_publicip_ext(conn)
+    get_network_ip_availability(conn)

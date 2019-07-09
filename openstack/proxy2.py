@@ -101,7 +101,7 @@ class BaseProxy(object):
             value = resource2.Resource._get_id(parent)
         return value
 
-    def _find(self, resource_type, name_or_id, ignore_missing=True,
+    def _find(self, resource_type, name_or_id, ignore_missing=True, paging=True,
               **attrs):
         """Find a resource
 
@@ -111,6 +111,7 @@ class BaseProxy(object):
                     raised when the resource does not exist.
                     When set to ``True``, None will be returned when
                     attempting to find a nonexistent resource2.
+        :param bool paging:  Whether paging mark
         :param dict attrs: Attributes to be passed onto the
                            :meth:`~openstack.resource2.Resource.find`
                            method, such as query parameters.
@@ -119,6 +120,7 @@ class BaseProxy(object):
         """
         return resource_type.find(self._session, name_or_id,
                                   ignore_missing=ignore_missing,
+                                  paging=paging,
                                   **attrs)
 
     @_check_resource(strict=False)

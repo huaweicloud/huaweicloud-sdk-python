@@ -14,6 +14,7 @@
 
 from openstack import proxy2
 from openstack.ims.v2 import cloudimage as _cloudimage
+from openstack.ims.v2 import job as _job
 
 
 class Proxy(proxy2.BaseProxy):
@@ -45,3 +46,11 @@ class Proxy(proxy2.BaseProxy):
         :return: :class:`~openstack.ims.v2.cloudimage.CloudImageAction`
         """
         return self._create(_cloudimage.CloudImageAction, **data)
+
+    def get_job(self, job_id):
+        """
+        get method to retrieve a task(job)
+        :param job_id: id of job, that from a response
+        :return: :class:`~openstack.ims.v2.job.Job`
+        """
+        return self._get(_job.Job, job_id)

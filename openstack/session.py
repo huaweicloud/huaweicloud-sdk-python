@@ -238,7 +238,7 @@ class Session(_session.Session):
         If the version was given with a leading "v", e.g., "v3", strip
         that off to just numerals.
         """
-        version_num = version[version.find("v") + 1:]
+        version_num = version[version.find("v") + 1:] if version.startswith("v") else version[version.find("V") + 1:]
         components = version_num.split(".")
         if len(components) == 1:
             # The minor version of a v2 ends up being -1 so that we can

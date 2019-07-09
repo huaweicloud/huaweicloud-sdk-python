@@ -23,5 +23,5 @@ class VolumeBackupService(service_filter.ServiceFilter):
 
     def __init__(self, version=None):
         """Create Volume Backup service."""
-        super(VolumeBackupService, self).__init__(service_type='volume-backup',
+        super(VolumeBackupService, self).__init__(service_type='vbsv2',
                                                   version=version)

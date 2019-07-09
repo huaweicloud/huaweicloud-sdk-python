@@ -17,13 +17,13 @@ import sys
 import time
 from openstack import connection
 
-os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxxxxxxx')
+os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
 
 username = "xxxxxxxxxxxxxxxx"
 password = "xxxxxxxxxxxxxxxx"
 projectId = "xxxxxxxxxxxxxxxx"
 userDomainId = "xxxxxxxxxxxxxxxx"
-auth_url = "xxxxxxxxxxxxxxxx"
+auth_url = "xxxxxxxxxxx"
 
 conn = connection.Connection(
     auth_url=auth_url,
@@ -37,14 +37,14 @@ conn = connection.Connection(
 # AKSK
 # os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxxxxxxx')
 # projectId = "xxxxxxxxxxxxxxxx"
-# domain = "xxxxxxxxxxxxxxxx"
+#cloud = "myhwclouds.com"   # cdn use: cloud = "myhwclouds.com"
 # region= "xxxxxxxxxxxxxxxx"
 # AK = "xxxxxxxxxxxxxxxx"
 # SK = "xxxxxxxxxxxxxxxx"
 #
 # conn = connection.Connection(
 #               project_id=projectId,
-#               domain=domain,
+#               cloud=cloud,
 #               region=region,
 #               ak = AK,
 #               sk = SK)

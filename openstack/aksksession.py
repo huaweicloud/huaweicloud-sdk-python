@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 # Copyright 2018 Huawei Technologies Co.,Ltd.
-# 
+# Copyright (c) 2009 Jacob Kaplan-Moss - initial codebase (< v2.1)
+# Copyright (c) 2011 Rackspace - OpenStack extensions (>= v2.1)
+# Copyright (c) 2011 Nebula, Inc - Keystone refactor (>= v2.7)
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 # this file except in compliance with the License.  You may obtain a copy of the
 # License at
@@ -17,7 +19,6 @@ import hashlib
 import hmac
 import six
 from six.moves import urllib
-
 import sys
 import datetime
 
@@ -113,7 +114,15 @@ class AkSksignature(object):
         """
         canonical_method = method.upper() if method else EMPTYSTRING
         uri = urllib.parse.urlparse(url).path
-        uri = uri.replace(":", "%3A")
+        if ":" in uri:
+            comsplits = uri.split(":")
+            res = []
+            for seg in comsplits:
+                urlseg = urllib.request.pathname2url(seg)
+                res.append(urlseg)
+            uri = "%3A".join(res)
+        else:
+            uri = urllib.request.pathname2url(uri)
         canonical_uri = uri if uri.endswith('/') else uri + '/'
         if params:
             result = []
@@ -376,7 +385,7 @@ class ASKSession(osession.Session):
                                              svr=endpoint_filter.service_type,
                                              params=query_params,
                                              data=kwargs.get("data", None))
-        # print signedstring
+        # print(signedstring)
         headers.setdefault("Authorization", signedstring)
         if log:
             self._http_log_request(url, method=method,

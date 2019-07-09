@@ -28,7 +28,7 @@ class Trace(ctsresource.Resource):
     _query_mapping = resource.QueryParameters('service_type',
                                               'resource_type',
                                               'resource_id',
-                                              'resource_name'
+                                              'resource_name',
                                               'trace_name',
                                               'limit',
                                               'next',

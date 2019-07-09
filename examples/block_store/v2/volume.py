@@ -18,14 +18,15 @@ from openstack import connection
 # create connection
 username = "xxxxxx"
 password = os.getenv('get_secret_code')
-projectId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # tenant ID
-userDomainId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # user account ID
-auth_url = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # endpoint url
+projectId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # tenant ID
+userDomainId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # user account ID
+auth_url = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # endpoint url
 conn = connection.Connection(auth_url=auth_url,
                              user_domain_id=userDomainId,
                              project_id=projectId,
                              username=username,
                              password=password)
+
 
 # create volume
 def create_volume():
@@ -41,12 +42,33 @@ def create_volume():
 
     }
     volume = conn.block_store.create_volume(**data)
-    print volume
+    print(volume)
+
+
+# create volume by dss
+def create_volume_by_dss():
+    data = {
+        "volume": {
+            "name": "volume_name",
+            "availability_zone": "az1.dc1",
+            "description": "volume_description",
+            "volume_type": "SAS",
+            "size": 100,
+            "metadata": {},
+        },
+        "OS-SCH-HNT:scheduler_hints": {
+            "dedicated_storage_id": "xxx"
+        }
+    }
+    volume = conn.block_store.create_volume_by_dss(**data)
+    print(volume)
+
 
 # delete volume
 def delete_volume():
     volume_id = "xxx"
     conn.block_store.delete_volume(volume_id)
+
 
 # update volume
 def update_volume():
@@ -56,6 +78,7 @@ def update_volume():
     }
     print(conn.block_store.update_volume(volume_id, **data))
 
+
 # expand volume
 def expand_volume():
     volume_id = 'xxx'
@@ -63,10 +86,12 @@ def expand_volume():
     new_vloume = conn.block_store.expand_volume(volume_id, new_size)
     print(new_vloume)
 
+
 # volumes
 def volumes():
     for index in conn.block_store.volumes(details=False):
         print(index)
+
 
 # get volume
 def get_volume():
@@ -74,9 +99,11 @@ def get_volume():
     volume = conn.block_store.get_volume(volume_id)
     print(volume)
 
+
 # get quota set
 def get_quota_set():
     print(conn.block_store.get_quota_set(projectId))
+
 
 # create volume metadata
 def create_volume_metadata():
@@ -91,11 +118,13 @@ def create_volume_metadata():
     volume_metadata = conn.block_store.create_volume_metadata(volume_id, **data)
     print(volume_metadata)
 
+
 # get volume metadata
 def get_volume_metadata():
     volume_id = 'xxx'
     volume_metadata = conn.block_store.get_volume_metadata(volume_id, key=None)
     print(volume_metadata)
+
 
 # update volume metadata
 def update_volume_metadata():
@@ -109,11 +138,13 @@ def update_volume_metadata():
     volume_metadata = conn.block_store.update_volume_metadata(volume_id, key=None, **data_all)
     print(volume_metadata)
 
+
 # delete volume metadata
 def delete_volume_metadata():
     volume_id = 'xxx'
     volume_metadata = conn.block_store.delete_volume_metadata(volume_id, key='delete_key')
     print(volume_metadata)
+
 
 # set volume bootable
 def set_volume_bootable():
@@ -121,11 +152,13 @@ def set_volume_bootable():
     bootable = conn.block_store.set_volume_bootable(volume_id, True)
     print(bootable)
 
+
 # set volume readonly
 def set_volume_readonly():
     volume_id = 'xxx'
     readonly = conn.block_store.set_volume_readonly(volume_id, True)
     print(readonly)
+
 
 # export image by volume
 def export_image_by_volume():
@@ -139,6 +172,7 @@ def export_image_by_volume():
 
 if __name__ == '__main__':
     create_volume()
+    create_volume_by_dss()
     delete_volume()
     update_volume()
     expand_volume()

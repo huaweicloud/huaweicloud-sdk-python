@@ -50,11 +50,13 @@ and then returned to the caller.
 import collections
 import itertools
 import time
+import logging
 
 from openstack import exceptions
 from openstack import format
 from openstack import utils
 
+_logger = logging.getLogger(__name__)
 
 class _BaseComponent(object):
     # The name this component is being tracked as in the Resource
@@ -1016,7 +1018,7 @@ class Resource(object):
         return the_result
 
     @classmethod
-    def find(cls, session, name_or_id, ignore_missing=True, **params):
+    def find(cls, session, name_or_id, ignore_missing=True, paging=True, **params):
         """Find a resource by its name or id.
 
         :param session: The session to use for making this request.
@@ -1032,7 +1034,7 @@ class Resource(object):
                             underlying methods, such as to
                             :meth:`~openstack.resource2.Resource.existing`
                             in order to pass on URI parameters.
-
+        :param bool paging :  Whether paging mark
         :return: The :class:`Resource` object matching the given name or id
                  or None if nothing matches.
         :raises: :class:`openstack.exceptions.DuplicateResource` if more
@@ -1045,9 +1047,11 @@ class Resource(object):
             match = cls.existing(id=name_or_id, **params)
             return match.get(session)
         except exceptions.NotFoundException:
-            print("Resource Not Found")
+            _logger.debug("The resource is not found by %s, then other methods will be tried"%name_or_id)
+        except exceptions.BadRequestException as e:
+            _logger.debug(e)
 
-        data = cls.list(session, **params)
+        data = cls.list(session, paginated=paging, **params)
 
         result = cls._get_one_match(name_or_id, data)
         if result is not None:

@@ -31,20 +31,37 @@ conn = connection.Connection(
 )
 
 
-# Create a publicIp
-def create_publicip_ext(_conn):
+# Create a Route
+def create_route(_conn):
     data = {
-        "publicip": {
-            "type": "5_bgp"
-        },
-        "bandwidth": {
-            "name": "xxxxxx",
-            "size": 10,
-            "share_type": "PER"
-        }
+        "destination": "xxx.xxx.xxx.xxx/xx",
+        "nexthop": "xxxxxx",
+        "type": "peering",
+        "vpc_id": "xxxxxx",
     }
-    print(_conn.vpc.create_publicip_ext(**data))
+    print(_conn.vpc.create_route(**data))
+
+
+# Delete a Route
+def delete_route(_conn):
+    route_id = 'xxxxxx'
+    print(_conn.vpc.delete_route(route_id))
+
+
+# Get a Route
+def get_route(_conn):
+    route_id = 'xxxxxx'
+    print(_conn.vpc.get_route(route_id))
+
+
+# List all Route
+def routes(_conn):
+    for index in _conn.vpc.routes():
+        print(index)
 
 
 if __name__ == '__main__':
-    create_publicip_ext(conn)
+    create_route(conn)
+    delete_route(conn)
+    get_route(conn)
+    routes(conn)

@@ -69,8 +69,8 @@ class Servers(resource2.Resource):
     tags = resource2.Body('tags')
     # # task id
     # job_id = resource2.Body('job_id')
-    # # order id
-    # order_id = resource2.Body('order_id')
+    # order id
+    order_id = resource2.Body('order_id')
     # error = resource2.Body('error')
     # message = resource2.Body('message')
     # code = resource2.Body('code')

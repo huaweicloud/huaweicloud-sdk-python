@@ -65,6 +65,7 @@ EXAMPLE = {
     "OS-EXT-STS:vm_state": "vm_state",
     "OS-SRV-USG:launched_at": "launched_at",
     "OS-SRV-USG:terminated_at": "terminated_at",
+    "OS-EXT-SRV-ATTR:reservation_id": "reservation_id",
     "os-extended-volumes:volumes_attached": [],
     "accessIPv4": "accessIPv4",
     "accessIPv6": "accessIPv6",
@@ -179,6 +180,7 @@ class TestServer(testtools.TestCase):
         self.assertEqual(EXAMPLE["tags"], sot.tags)
         self.assertEqual(EXAMPLE["reservation_id"], sot.reservation_id)
         self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["OS-EXT-SRV-ATTR:reservation_id"], sot.reservation_id_ext)
 
     def test_detail(self):
         sot = server.ServerDetail()

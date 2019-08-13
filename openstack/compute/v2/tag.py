@@ -16,7 +16,7 @@ from openstack.compute import compute_service
 from openstack import resource2 as resource
 from openstack import exceptions
 import six
-from keystoneauth1 import exceptions
+from keystoneauth1 import exceptions as keystone_exceptions
 from openstack import utils
 
 
@@ -183,7 +183,7 @@ class TagMixin(object):
         try:
             self._tag(session.get, key=tag, session=session)
             return True
-        except exceptions.NotFound:
+        except keystone_exceptions.NotFound:
             return False
 
     def add_tag(self, session, tag):

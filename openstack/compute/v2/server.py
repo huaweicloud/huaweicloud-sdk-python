@@ -27,13 +27,13 @@
 #         the License.
 
 from openstack.compute import compute_service
-from openstack.compute.v2 import metadata
+from openstack.compute.v2 import metadata as _metadata
 from openstack.compute.v2 import tag
 from openstack import resource2
 from openstack import utils
 
 
-class Server(resource2.Resource, metadata.MetadataMixin, tag.TagMixin):
+class Server(resource2.Resource, _metadata.MetadataMixin, tag.TagMixin):
     resource_key = 'server'
     resources_key = 'servers'
     base_path = '/servers'
@@ -94,6 +94,8 @@ class Server(resource2.Resource, metadata.MetadataMixin, tag.TagMixin):
     image_id = resource2.Body('imageRef')
     #: The image property as returned from server.
     image = resource2.Body('image', type=dict)
+    #: Since microversion 2.3.
+    reservation_id_ext = resource2.Body('OS-EXT-SRV-ATTR:reservation_id')
     #: The UUID of the kernel image when using AMI format image.
     #: Since microversion 2.3.
     kernel_id = resource2.Body('OS-EXT-SRV-ATTR:kernel_id')

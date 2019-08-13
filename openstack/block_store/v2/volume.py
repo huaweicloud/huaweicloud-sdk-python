@@ -28,7 +28,7 @@
 from openstack.resource2 import _Request
 
 from openstack.block_store import block_store_service
-from openstack import format
+from openstack import format as _format
 from openstack import resource2
 from openstack import utils
 from openstack import exceptions
@@ -91,7 +91,7 @@ class Volume(resource2.Resource):
     volume_type = resource2.Body("volume_type")
     #: Enables or disables the bootable attribute. You can boot an
     #: instance from a bootable volume. *Type: bool*
-    is_bootable = resource2.Body("bootable", type=format.BoolStr)
+    is_bootable = resource2.Body("bootable", type=_format.BoolStr)
     #: One or more metadata key and value pairs to associate with the volume.
     metadata = resource2.Body("metadata", type=dict)
     #: One of the following values: creating, available, attaching, in-use
@@ -173,7 +173,7 @@ class VolumeDetail(Volume):
         "os-volume-replication:driver_data")
     #: ``True`` if this volume is encrypted, ``False`` if not.
     #: *Type: bool*
-    is_encrypted = resource2.Body("encrypted", type=format.BoolStr)
+    is_encrypted = resource2.Body("encrypted", type=_format.BoolStr)
     # If the cloud drive is created from the image, this field will be available, otherwise the field is empty.
     volume_image_metadata = resource2.Body("volume_image_metadata", type=dict)
     # The cloud disk list queries the location tag, which is the same level as the volume in the response body.

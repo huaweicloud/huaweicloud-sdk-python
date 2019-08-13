@@ -28,9 +28,6 @@
 
 from openstack.compute import compute_service
 from openstack import resource2
-from openstack import exceptions
-from openstack.resource2 import _Request
-from openstack import utils
 
 class AbsoluteLimits(resource2.Resource):
 

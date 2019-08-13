@@ -125,3 +125,7 @@ class TestServer(base.BaseFunctionalTest):
             test_server, test_server.metadata.keys())
         test_server = self.conn.compute.get_server_metadata(test_server)
         self.assertFalse(test_server.metadata)
+
+    def test_get_server(self):
+        test_server = self.conn.compute.get_server(self.server)
+        self.assertEqual("r-vp8dokfr",test_server.reservation_id_ext)

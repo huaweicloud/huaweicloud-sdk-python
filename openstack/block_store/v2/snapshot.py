@@ -27,7 +27,7 @@
 #         the License.
 
 from openstack.block_store import block_store_service
-from openstack import format
+from openstack import format as _format
 from openstack import resource2
 from openstack import utils
 from openstack import exceptions
@@ -70,7 +70,7 @@ class Snapshot(resource2.Resource):
     size = resource2.Body("size", type=int)
     #: Indicate whether to create snapshot, even if the volume is attached.
     #: Default is ``False``. *Type: bool*
-    is_forced = resource2.Body("force", type=format.BoolStr)
+    is_forced = resource2.Body("force", type=_format.BoolStr)
     #: Update time.
     updated_at = resource2.Body("updated_at")
     #: Same as name.

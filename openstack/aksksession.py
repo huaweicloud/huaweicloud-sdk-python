@@ -17,14 +17,13 @@
 import functools
 import hashlib
 import hmac
-import six
 from six.moves import urllib
 import sys
+import itertools
 import datetime
-
 import requests
 from keystoneauth1.session import TCPKeepAliveAdapter, _JSONEncoder, _determine_user_agent
-from openstack import exceptions
+from openstack.exceptions import EndpointNotFound, SDKException
 from openstack.session import DEFAULT_USER_AGENT
 from openstack import session as osession
 from keystoneauth1 import _utils as utils
@@ -32,19 +31,24 @@ from openstack.session import map_exceptions
 from openstack.service_endpoint import endpoint as _endpoint
 from keystoneauth1 import exceptions
 from openstack.exceptions import MissingRequiredArgument
+from openstack.identity import identity_service
 
 EMPTYSTRING = ""
 TERMINATORSTRING = "sdk_request"
 ALGORITHM = "SDK-HMAC-SHA256"
 PYTHON2 = "2"
 UTF8 = "utf-8"
+IAMURL = "https://iam.%s.%s/v3/%s"
+
 _logger = utils.get_logger(__name__)
 
 
 def construct_session(session_obj=None):
+    """
     # NOTE(morganfainberg): if the logic in this function changes be sure to
     # update the betamax fixture's '_construct_session_with_betamax" function
     # as well.
+    """
     if not session_obj:
         session_obj = requests.Session()
         # Use TCPKeepAliveAdapter to fix bug 1323862
@@ -60,12 +64,12 @@ def get_utf8_bytes(message):
     :type message: string
     """
 
-    codename = 'cp936' if sys.stdin.encoding is None  else sys.stdin.encoding
+    codename = 'cp936' if sys.stdin.encoding is None else sys.stdin.encoding
     if sys.version.startswith(PYTHON2):
         if type(message) == str:
             return message.decode(codename).encode(UTF8)
-        if type(message) == type(u""):
-            return message
+        if isinstance(message, type(u"")):
+            return message.encode("utf-8")
     else:
         if type(message) == str:
             return message.encode(UTF8)
@@ -74,6 +78,10 @@ def get_utf8_bytes(message):
 
 
 class AkSksignature(object):
+    """
+    aksk signature class
+    """
+
     def __init__(self, accesskey=None, secretkey=None, region=None):
         """
         This class is used to sign the request header.
@@ -139,18 +147,13 @@ class AkSksignature(object):
             canonical_querystring = canonical_querystring.replace("+", "%20")
         else:
             canonical_querystring = EMPTYSTRING
-        # print "query string ", canonical_querystring
         canonical_header = [k.lower() + ':' + headers.get(k).strip() for k in self.headtosign] if all(
             [k in headers for k in self.headtosign]) else []
-        # canonical_header_partb = [k.lower() + ':' + str(v).strip() for k, v in body.items()] if body else []
         canonical_header = '\n'.join(canonical_header)
         canonical_header += '\n'
         signed_header = ';'.join([k.lower() for k in self.headtosign])
-
         body = body if body  else ""
-        # print body
         request_payload = hashlib.sha256(get_utf8_bytes(body)).hexdigest()
-        # print request_payload
         return '\n'.join(
             [canonical_method, canonical_uri, canonical_querystring, canonical_header, signed_header, request_payload])
 
@@ -221,8 +224,6 @@ class AkSksignature(object):
                                                                         signed_header,
                                                                         signature)
 
-
-
 def check(session):
     def oninit(*pargs, **kwargs):
         for arg in ['ak', 'sk', 'project_id', 'region', 'domain']:
@@ -236,7 +237,6 @@ def check(session):
                 raise MissingRequiredArgument("the argument: %s is empty" % arg)
         return session(*pargs, **kwargs)
     return oninit
-
 
 @check
 class ASKSession(osession.Session):
@@ -274,10 +274,11 @@ class ASKSession(osession.Session):
         self._determined_user_agent = None
         self._json = _JSONEncoder()
         self._securitytoken = kwargs.get("securitytoken", None)
-
         if timeout is not None:
             self.timeout = float(timeout)
-        self.endpoint = _endpoint
+        self.__endpoint = _endpoint
+        self.__iam_endpoint = None
+        self.__endpoint_cache = {}
 
     @map_exceptions
     def request(self, url, method, json=None, original_ip=None,
@@ -292,25 +293,20 @@ class ASKSession(osession.Session):
             self._set_microversion_headers(headers, microversion, None, endpoint_filter)
         if self._securitytoken:
             headers.setdefault("X-Security-Token", self._securitytoken)
-
         if not urllib.parse.urlparse(url).netloc:
             if endpoint_override:
                 base_url = endpoint_override % {"project_id": self.project_id}
             elif endpoint_filter:
                 base_url = self.get_endpoint(interface=endpoint_filter.interface,
                                              service_type=endpoint_filter.service_type)
-
             if not urllib.parse.urlparse(base_url).netloc:
                 raise exceptions.EndpointNotFound()
-
             url = '%s/%s' % (base_url.rstrip('/'), url.lstrip('/'))
         headers.setdefault("Host", urllib.parse.urlparse(url).netloc)
         if self.cert:
             kwargs.setdefault('cert', self.cert)
-
         if self.timeout is not None:
             kwargs.setdefault('timeout', self.timeout)
-
         if user_agent:
             headers['User-Agent'] = user_agent
         elif self.user_agent:
@@ -382,7 +378,7 @@ class ASKSession(osession.Session):
         signedstring = self.signer.signature(method=method,
                                              url=url,
                                              headers=headers,
-                                             svr=endpoint_filter.service_type,
+                                             svr=endpoint_filter.service_type if endpoint_filter else '',
                                              params=query_params,
                                              data=kwargs.get("data", None))
         # print(signedstring)
@@ -438,10 +434,83 @@ class ASKSession(osession.Session):
 
     def get_endpoint(self, auth=None, interface=None, service_type=None,
                      **kwargs):
-        base_url = ""
+        base_url = self._get_endpoint_from_iamdata(service_type)
+        if base_url:
+            _logger.debug("Get endpoint from Iam success,the endpoint is:%s" % base_url)
+            return base_url
+        base_url = self._get_endpoint_from_configdata(service_type, interface)
+        if base_url:
+            _logger.debug("Get endpoint from Config success,the endpoint is:%s" % base_url)
+            return base_url
+        return ""
+
+    def _get_endpoint_from_iamdata(self, service_type):
+        service_type_iam = service_type.replace('-', '_')
+        if self.__endpoint_cache.get(service_type_iam, ""):
+            return self.__endpoint_cache.get(service_type_iam)
+        if not self.__iam_endpoint:
+            self.__iam_endpoint = self.__fetch_all_endpoint_service()
+        filt = self.profile.get_filter(service_type)
+        sc_endpoint = self.__iam_endpoint.get(service_type_iam, "")
+        if not sc_endpoint:
+            return sc_endpoint
+        if service_type == "object-store":
+            self.endpoint_cache[service_type_iam] = sc_endpoint
+            return sc_endpoint
+        try:
+            endpoint = self._get_endpoint_versions(service_type,
+                                                   sc_endpoint)
+            profile_version = self._parse_version(filt.version)
+            match = self._get_version_match(endpoint, profile_version,
+                                            service_type)
+
+            _logger.debug("Using %s as %s %s endpoint",
+                          match, "public", service_type)
+
+            self.__endpoint_cache[service_type_iam] = match
+            return match
+        except (EndpointNotFound, SDKException):
+            self.__endpoint_cache[service_type_iam] = sc_endpoint
+            return sc_endpoint
+
+    def _get_endpoint_from_configdata(self, service_type, interface):
         service_type = service_type.upper().replace('-', '_')
-        if self.endpoint and service_type in self.endpoint:
-            endpoint = self.endpoint.get(service_type).get(interface, '')
+        base_url = ""
+        if self.__endpoint and service_type in self.__endpoint:
+            endpoint = self.__endpoint.get(service_type).get(interface, '')
             map = {"project_id": self.project_id, "region": self.region, "domain": self.domain}
             base_url = endpoint % map
         return base_url
+
+    def __fetch_all_endpoint_service(self):
+        kvendpoints = {}
+        resp = self.request(IAMURL % (self.region, self.domain, "endpoints"), "GET",
+                            endpoint_filter=identity_service.AdminService())
+        endpoints = resp.json().get("endpoints", [])
+        resp = self.request(IAMURL % (self.region, self.domain, "services"), "GET",
+                            endpoint_filter=identity_service.AdminService())
+        services = resp.json().get("services", [])
+        id_endpoint_map, servicetype_id_map = {}, {}
+        lzip = itertools.izip_longest if hasattr(itertools, "izip_longest")  else itertools.zip_longest
+        for endpoint, service in lzip(endpoints, services):
+            if endpoint and endpoint.get("enabled"):
+                id_endpoint_map.setdefault(endpoint.get("service_id"), [])
+                id_endpoint_map[endpoint.get("service_id")].append(endpoint.get("url"))
+            if service and service.get("enabled"):
+                servicetype_id_map.setdefault(service.get("type"), [])
+                servicetype_id_map[service.get("type")].append(service.get("id"))
+        for k, v in servicetype_id_map.items():
+            for serviceid in v:
+                for url in id_endpoint_map.get(serviceid, []):
+                    if self.region in url:
+                        kvendpoints[k] = url.replace("$(tenant_id)s", self.project_id)
+                        break
+                if kvendpoints.get(k, ""):
+                    break
+        return kvendpoints
+
+    def get_project_id(self):
+        """
+        :return: project id
+        """
+        return self.project_id

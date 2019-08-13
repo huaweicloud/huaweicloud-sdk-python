@@ -155,8 +155,8 @@ class Proxy(proxy2.BaseProxy):
                 )
 
             ids_str = "["
-            for id in ids:
-                ids_str = ids_str + "'" + id + "'" + ","
+            for index in ids:
+                ids_str = ids_str + "'" + index + "'" + ","
             ids_str = ids_str[:-1] + "]"
             query["ids"] = ids_str
 

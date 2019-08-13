@@ -69,7 +69,7 @@ from openstack.network.v2 import whitelist
 from openstack.network.v2 import certificate
 from openstack.network.v2 import healthmonitor
 from openstack.network.v2 import statuses
-from openstack import proxy2, resource2
+from openstack import resource2
 
 
 class Proxy(proxy2.BaseProxy):
@@ -1557,9 +1557,9 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_bandwidth_limit_rule.
                     QoSBandwidthLimitRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._create(_qos_bandwidth_limit_rule.QoSBandwidthLimitRule,
-                            qos_policy_id=policy.id, **attrs)
+                            qos_policy_id=res.id, **attrs)
 
     def delete_qos_bandwidth_limit_rule(self, qos_rule, qos_policy,
                                         ignore_missing=True):
@@ -1580,10 +1580,10 @@ class Proxy(proxy2.BaseProxy):
 
         :returns: ``None``
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         self._delete(_qos_bandwidth_limit_rule.QoSBandwidthLimitRule,
                      qos_rule, ignore_missing=ignore_missing,
-                     qos_policy_id=policy.id)
+                     qos_policy_id=res.id)
 
     def find_qos_bandwidth_limit_rule(self, qos_rule_id, qos_policy,
                                       ignore_missing=True):
@@ -1601,10 +1601,10 @@ class Proxy(proxy2.BaseProxy):
         :returns: One :class:`~openstack.network.v2.qos_bandwidth_limit_rule.
                     QoSBandwidthLimitRule` or None
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._find(_qos_bandwidth_limit_rule.QoSBandwidthLimitRule,
                           qos_rule_id, ignore_missing=ignore_missing,
-                          qos_policy_id=policy.id)
+                          qos_policy_id=res.id)
 
     def get_qos_bandwidth_limit_rule(self, qos_rule, qos_policy):
         """Get a single bandwidth limit rule
@@ -1621,9 +1621,9 @@ class Proxy(proxy2.BaseProxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                        when no resource can be found.
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._get(_qos_bandwidth_limit_rule.QoSBandwidthLimitRule,
-                         qos_rule, qos_policy_id=policy.id)
+                         qos_rule, qos_policy_id=res.id)
 
     def qos_bandwidth_limit_rules(self, qos_policy, **query):
         """Return a generator of bandwidth limit rules
@@ -1637,9 +1637,9 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_bandwidth_limit_rule.
                        QoSBandwidthLimitRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._list(_qos_bandwidth_limit_rule.QoSBandwidthLimitRule,
-                          paginated=False, qos_policy_id=policy.id, **query)
+                          paginated=False, qos_policy_id=res.id, **query)
 
     def update_qos_bandwidth_limit_rule(self, qos_rule, qos_policy,
                                         **attrs):
@@ -1659,9 +1659,9 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_bandwidth_limit_rule.
                        QoSBandwidthLimitRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._update(_qos_bandwidth_limit_rule.QoSBandwidthLimitRule,
-                            qos_rule, qos_policy_id=policy.id, **attrs)
+                            qos_rule, qos_policy_id=res.id, **attrs)
 
     def create_qos_dscp_marking_rule(self, qos_policy, **attrs):
         """Create a new QoS DSCP marking rule
@@ -1679,9 +1679,9 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_dscp_marking_rule.
                     QoSDSCPMarkingRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._create(_qos_dscp_marking_rule.QoSDSCPMarkingRule,
-                            qos_policy_id=policy.id, **attrs)
+                            qos_policy_id=res.id, **attrs)
 
     def delete_qos_dscp_marking_rule(self, qos_rule, qos_policy,
                                      ignore_missing=True):
@@ -1702,10 +1702,10 @@ class Proxy(proxy2.BaseProxy):
 
         :returns: ``None``
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         self._delete(_qos_dscp_marking_rule.QoSDSCPMarkingRule,
                      qos_rule, ignore_missing=ignore_missing,
-                     qos_policy_id=policy.id)
+                     qos_policy_id=res.id)
 
     def find_qos_dscp_marking_rule(self, qos_rule_id, qos_policy,
                                    ignore_missing=True):
@@ -1723,10 +1723,10 @@ class Proxy(proxy2.BaseProxy):
         :returns: One :class:`~openstack.network.v2.qos_dscp_marking_rule.
                     QoSDSCPMarkingRule` or None
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._find(_qos_dscp_marking_rule.QoSDSCPMarkingRule,
                           qos_rule_id, ignore_missing=ignore_missing,
-                          qos_policy_id=policy.id)
+                          qos_policy_id=res.id)
 
     def get_qos_dscp_marking_rule(self, qos_rule, qos_policy):
         """Get a single QoS DSCP marking rule
@@ -1742,9 +1742,9 @@ class Proxy(proxy2.BaseProxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                        when no resource can be found.
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._get(_qos_dscp_marking_rule.QoSDSCPMarkingRule,
-                         qos_rule, qos_policy_id=policy.id)
+                         qos_rule, qos_policy_id=res.id)
 
     def qos_dscp_marking_rules(self, qos_policy, **query):
         """Return a generator of QoS DSCP marking rules
@@ -1758,9 +1758,9 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_dscp_marking_rule.
                        QoSDSCPMarkingRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._list(_qos_dscp_marking_rule.QoSDSCPMarkingRule,
-                          paginated=False, qos_policy_id=policy.id, **query)
+                          paginated=False, qos_policy_id=res.id, **query)
 
     def update_qos_dscp_marking_rule(self, qos_rule, qos_policy, **attrs):
         """Update a QoS DSCP marking rule
@@ -1778,9 +1778,9 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_dscp_marking_rule.
                        QoSDSCPMarkingRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._update(_qos_dscp_marking_rule.QoSDSCPMarkingRule,
-                            qos_rule, qos_policy_id=policy.id, **attrs)
+                            qos_rule, qos_policy_id=res.id, **attrs)
 
     def create_qos_minimum_bandwidth_rule(self, qos_policy, **attrs):
         """Create a new minimum bandwidth rule
@@ -1798,10 +1798,10 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_minimum_bandwidth_rule.
                     QoSMinimumBandwidthRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._create(
             _qos_minimum_bandwidth_rule.QoSMinimumBandwidthRule,
-            qos_policy_id=policy.id, **attrs)
+            qos_policy_id=res.id, **attrs)
 
     def delete_qos_minimum_bandwidth_rule(self, qos_rule, qos_policy,
                                           ignore_missing=True):
@@ -1822,10 +1822,10 @@ class Proxy(proxy2.BaseProxy):
 
         :returns: ``None``
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         self._delete(_qos_minimum_bandwidth_rule.QoSMinimumBandwidthRule,
                      qos_rule, ignore_missing=ignore_missing,
-                     qos_policy_id=policy.id)
+                     qos_policy_id=res.id)
 
     def find_qos_minimum_bandwidth_rule(self, qos_rule_id, qos_policy,
                                         ignore_missing=True):
@@ -1843,10 +1843,10 @@ class Proxy(proxy2.BaseProxy):
         :returns: One :class:`~openstack.network.v2.qos_minimum_bandwidth_rule.
                     QoSMinimumBandwidthRule` or None
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._find(_qos_minimum_bandwidth_rule.QoSMinimumBandwidthRule,
                           qos_rule_id, ignore_missing=ignore_missing,
-                          qos_policy_id=policy.id)
+                          qos_policy_id=res.id)
 
     def get_qos_minimum_bandwidth_rule(self, qos_rule, qos_policy):
         """Get a single minimum bandwidth rule
@@ -1863,9 +1863,9 @@ class Proxy(proxy2.BaseProxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                        when no resource can be found.
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._get(_qos_minimum_bandwidth_rule.QoSMinimumBandwidthRule,
-                         qos_rule, qos_policy_id=policy.id)
+                         qos_rule, qos_policy_id=res.id)
 
     def qos_minimum_bandwidth_rules(self, qos_policy, **query):
         """Return a generator of minimum bandwidth rules
@@ -1879,9 +1879,9 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_minimum_bandwidth_rule.
                        QoSMinimumBandwidthRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._list(_qos_minimum_bandwidth_rule.QoSMinimumBandwidthRule,
-                          paginated=False, qos_policy_id=policy.id, **query)
+                          paginated=False, qos_policy_id=res.id, **query)
 
     def update_qos_minimum_bandwidth_rule(self, qos_rule, qos_policy,
                                           **attrs):
@@ -1901,10 +1901,10 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.network.v2.qos_minimum_bandwidth_rule.
                        QoSMinimumBandwidthRule`
         """
-        policy = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
+        res = self._get_resource(_qos_policy.QoSPolicy, qos_policy)
         return self._update(_qos_minimum_bandwidth_rule.
                             QoSMinimumBandwidthRule, qos_rule,
-                            qos_policy_id=policy.id, **attrs)
+                            qos_policy_id=res.id, **attrs)
 
     def create_qos_policy(self, **attrs):
         """Create a new QoS policy from attributes
@@ -2466,7 +2466,7 @@ class Proxy(proxy2.BaseProxy):
     @utils.deprecated(deprecated_in="0.9.14", removed_in="1.0",
                       details="See the Network user guide for an example")
     def security_group_open_port(self, sgid, port, protocol='tcp'):
-        rule = {
+        attrs = {
             'direction': 'ingress',
             'remote_ip_prefix': '0.0.0.0/0',
             'protocol': protocol,
@@ -2475,12 +2475,12 @@ class Proxy(proxy2.BaseProxy):
             'security_group_id': sgid,
             'ethertype': 'IPv4'
         }
-        return self.create_security_group_rule(**rule)
+        return self.create_security_group_rule(**attrs)
 
     @utils.deprecated(deprecated_in="0.9.14", removed_in="1.0",
                       details="See the Network user guide for an example")
     def security_group_allow_ping(self, sgid):
-        rule = {
+        attrs = {
             'direction': 'ingress',
             'remote_ip_prefix': '0.0.0.0/0',
             'protocol': 'icmp',
@@ -2489,7 +2489,7 @@ class Proxy(proxy2.BaseProxy):
             'security_group_id': sgid,
             'ethertype': 'IPv4'
         }
-        return self.create_security_group_rule(**rule)
+        return self.create_security_group_rule(**attrs)
 
     def create_security_group_rule(self, **attrs):
         """Create a new security group rule from attributes

@@ -38,7 +38,9 @@ conn = connection.Connection(
 
 
 def test_versions(_conn):
-    for index in _conn.block_store.versions(v2=False):
+    for index in _conn.evs.versions():
+        print(index)
+    for index in _conn.evs.get_version("v2"):
         print(index)
 
 

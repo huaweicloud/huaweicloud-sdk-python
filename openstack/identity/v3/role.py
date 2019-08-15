@@ -28,6 +28,7 @@
 
 from openstack.identity import identity_service
 from openstack import resource2 as resource
+from openstack import utils
 
 
 class Role(resource.Resource):
@@ -50,4 +51,61 @@ class Role(resource.Resource):
     #: Unique role name, within the owning domain. *Type: string*
     name = resource.Body('name')
     #: The links for the service resource.
-    links = resource.Body('links')
+    links = resource.Body('links', type=dict)
+    #: The id of the domain that the role belongs to. *Type: string*
+    domain_id = resource.Body('domain_id')
+    #: The display type of the role. *Type: string*
+    type = resource.Body('type')
+    #: The display name of the role. *Type: string*
+    display_name = resource.Body('display_name')
+    #: The catalog of the role. *Type: string*
+    catalog = resource.Body('catalog')
+    #: The policy of the role.
+    policy = resource.Body('policy', type=dict)
+    #: The description of the role. *Type: string*
+    description = resource.Body('description')
+
+    def grant_domain_group_role(self, session, domain_id, group_id, role_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin('domains', domain_id, 'groups',group_id, 'roles', role_id)
+        response = session.put(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        return response.status_code == 204
+
+    def grant_project_group_role(self, session, project_id, group_id, role_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin('projects', project_id, 'groups',group_id, 'roles', role_id)
+        response = session.put(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        return response.status_code == 204
+
+    def delete_domain_group_role(self, session, domain_id, group_id, role_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin('domains', domain_id, 'groups',group_id, 'roles', role_id)
+        response = session.delete(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        return response.status_code == 204
+
+    def delete_project_group_role(self, session, project_id, group_id, role_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin('projects', project_id, 'groups',group_id, 'roles', role_id)
+        response = session.delete(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        return response.status_code == 204
+
+    def check_domain_group_role(self, session, domain_id, group_id, role_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin('domains', domain_id, 'groups',group_id, 'roles', role_id)
+        response = session.head(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        return response.status_code == 204
+
+    def check_project_group_role(self, session, project_id, group_id, role_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin('projects', project_id, 'groups', group_id, 'roles', role_id)
+        response = session.head(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        return response.status_code == 204
+
+
+class DomainGroupRole(Role):
+    base_path = "/domains/%(domain_id)s/groups/%(group_id)s/roles"
+
+
+class ProjectGroupRole(Role):
+    base_path = "/projects/%(project_id)s/groups/%(group_id)s/roles"
+

@@ -7,11 +7,11 @@ from openstack import utils
 utils.enable_logging(debug=True, stream=sys.stdout)
 
 # create connection
-# username = "xxxxxx"
-# password = "xxxxxx"
-# projectId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # tenant ID
-# userDomainId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # user account ID
-# auth_url = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # endpoint url
+username = "xxxxxx"
+password = "xxxxxx"
+projectId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # tenant ID
+userDomainId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # user account ID
+auth_url = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # endpoint url
 
 conn = connection.Connection(auth_url=auth_url,
                              user_domain_id=userDomainId,
@@ -22,7 +22,7 @@ conn = connection.Connection(auth_url=auth_url,
 
 # use user_data to create linux server
 def create_server_with_user_data():
-    user_date_org = "#!/bin/bash \r\n echo 'root:P@ssWr0d123' | chpasswd ;"
+    user_date_org = "#!/bin/bash \r\n echo 'root:xxxxx' | chpasswd ;"
     user_data = base64.b64encode(user_date_org)
 
     data = {
@@ -73,7 +73,7 @@ def create_windows_server_with_adminpass():
             "group": "ae089094-087b-4c39-ba98-f1862d5e45b1"
         },
         "metadata": {
-            "admin_pass": "cloud.1234"
+            "admin_pass": "xxxxx"
         }
     }
     ff = conn.compute.create_server(**data)

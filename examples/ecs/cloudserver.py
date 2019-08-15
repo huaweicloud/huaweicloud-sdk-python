@@ -70,7 +70,7 @@ def create_server():
             "ss": "ss"
         },
         "extendparam": {
-            "chargingMode": "postPaid",
+            "chargingMode": "prePaid",
             "periodType": "month",
             "periodNum": 1,
             "isAutoRenew": "true",

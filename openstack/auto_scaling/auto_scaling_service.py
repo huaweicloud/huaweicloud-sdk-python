@@ -22,5 +22,5 @@ class AutoScalingService(service_filter.ServiceFilter):
 
     def __init__(self, version=None):
         """Create AutoScaling service."""
-        super(AutoScalingService, self).__init__(service_type='auto-scaling',
+        super(AutoScalingService, self).__init__(service_type='asv1',
                                                  version=version)

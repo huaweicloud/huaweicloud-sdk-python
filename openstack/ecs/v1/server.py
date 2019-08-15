@@ -13,6 +13,7 @@
 # specific language governing permissions and limitations under the License.
 
 from openstack import resource2
+from openstack import utils
 from openstack.ecs import ecs_service
 
 
@@ -68,6 +69,7 @@ class Servers(resource2.Resource):
     tags = resource2.Body('tags', type=list)
     # task id
     job_id = resource2.Body('job_id')
+    server_ids = resource2.Body('serverIds', type=list)
     # order id
     order_id = resource2.Body('order_id')
     error = resource2.Body('error')
@@ -159,6 +161,44 @@ class Servers(resource2.Resource):
     # more than two consecutive characters in the username.
     adminPass = resource2.Body("adminPass")
 
+    @classmethod
+    def get_autorecovery(cls, session, server_id):
+        url = utils.urljoin(cls.base_path, server_id, 'autorecovery')
+        headers = {'Accept': ''}
+        endpoint_override = cls.service.get_endpoint_override()
+        service = cls.get_service_filter(cls, session)
+        return session.get(
+            url, endpoint_filter=cls.service,
+            microversion=service.microversion,
+            headers=headers,
+            endpoint_override=endpoint_override).json()
+
+    @classmethod
+    def config_autorecovery(cls, session, server_id, autorecovery):
+        url = utils.urljoin(cls.base_path, server_id, 'autorecovery')
+        headers = {'Accept': ''}
+        endpoint_override = cls.service.get_endpoint_override()
+        service = cls.get_service_filter(cls, session)
+        session.put(
+            url, endpoint_filter=cls.service,
+            microversion=service.microversion,
+            headers=headers,
+            json={"support_auto_recovery": autorecovery},
+            endpoint_override=endpoint_override)
+
+    @classmethod
+    def register_server_to_ces(cls, session , server_id):
+        url = utils.urljoin("servers", server_id, 'action')
+        headers = {'Accept': ''}
+        endpoint_override = cls.service.get_endpoint_override()
+        service = cls.get_service_filter(cls, session)
+        session.post(
+            url, endpoint_filter=cls.service,
+            microversion=service.microversion,
+            headers=headers,
+            json={"monitorMetrics": None},
+            endpoint_override=endpoint_override)
+
 
 class ServerAction(resource2.Resource):
     base_path = "/cloudservers/action"
@@ -247,11 +287,11 @@ class ServerDetail(Servers):
         'status',
         'limit',
         'offset',
-        'not-tags',
         'reservation_id',
         'enterprise_project_id',
         'tags',
-        flavor_id = 'flavor'
+        not_tags='not-tags',
+        flavor_id='flavor'
     )
 
     # The total number of lists of elastic cloud servers.

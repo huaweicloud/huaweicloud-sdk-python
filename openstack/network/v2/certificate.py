@@ -28,6 +28,20 @@ class Certificate(resource2.Resource):
     allow_update = True
     allow_delete = True
     allow_list = True
+
+    _query_mapping = resource2.QueryParameters(
+        'page_reverse',
+        'id',
+        'name',
+        'description',
+        'type',
+        'domain',
+        'private_key',
+        'certificate',
+        'create_time',
+        'update_time'
+    )
+
     # SSL certificate ID
     id = resource2.Body("id")
     # SSL certificate name.

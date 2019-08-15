@@ -2,7 +2,7 @@ endpoint = {
   "ANTI_DDOS": {
     "public": "https://antiddos.%(region)s.%(domain)s/v1/%(project_id)s"
   },
-  "AUTO_SCALING": {
+  "ASV1": {
     "public": "https://as.%(region)s.%(domain)s/autoscaling-api/v1/%(project_id)s"
   },
   "VOLUME": {
@@ -11,10 +11,10 @@ endpoint = {
   "BMS": {
     "public": "https://bms.%(region)s.%(domain)s/v1/%(project_id)s"
   },
-  "CLOUD_EYE": {
+  "CESV1": {
     "public": "https://ces.%(region)s.%(domain)s/V1.0/%(project_id)s"
   },
-    "COMPUTE": {
+  "COMPUTE": {
     "public": "https://ecs.%(region)s.%(domain)s/v2/%(project_id)s"
   },
    "CTS": {
@@ -26,7 +26,7 @@ endpoint = {
   "DNS": {
     "public": "https://dns.%(domain)s/v2"
   },
-    "ECS": {
+  "ECS": {
     "public": "https://ecs.%(region)s.%(domain)s/v1/%(project_id)s"
   },
   "ECSV1.1": {
@@ -44,16 +44,19 @@ endpoint = {
   "IMAGE": {
      "public": "https://ims.%(region)s.%(domain)s/v2"
   },
+  "IMS": {
+     "public": "https://ims.%(region)s.%(domain)s/v2"
+  },
   "KMS": {
      "public": "https://kms.%(region)s.%(domain)s/v1.0/%(project_id)s"
   },
-  "LOAD_BALANCER": {
+  "ELBV1": {
      "public": "https://elb.%(region)s.%(domain)s/v1.0/%(project_id)s"
   },
   "MAAS": {
      "public":  "https://maas.%(region)s.%(domain)s/v1/%(project_id)s"
   },
-  "MAP_REDUCE":{
+  "MRSV1.1":{
       "public": "https://mrs.%(region)s.%(domain)s/v1.1/%(project_id)s"
   },
   "NAT":{
@@ -68,16 +71,22 @@ endpoint = {
   "RDSV1": {
      "public": "https://rds.%(region)s.%(domain)s/rds/v1/%(project_id)s"
   },
-  "SMN": {
+  "SMNV2": {
       "public": "https://smn.%(region)s.%(domain)s/v2/%(project_id)s"
   },
-  "VOLUME_BACKUP": {
+  "VBSV2": {
       "public": "https://vbs.%(region)s.%(domain)s/v2/%(project_id)s"
+  },
+  "VPC": {
+      "public": "https://vpc.%(region)s.%(domain)s/v1/%(project_id)s"
   },
   "VPCV2.0": {
        "public": "https://vpc.%(region)s.%(domain)s/v2.0/%(project_id)s"
   },
   "DEH": {
        "public": "https://deh.%(region)s.%(domain)s/v1.0/%(project_id)s"
+  },
+  "IAM": {
+       "public": "https://iam.%(region)s.%(domain)s/v3.0"
   }
 }

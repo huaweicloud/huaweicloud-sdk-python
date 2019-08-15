@@ -29,7 +29,6 @@
 from openstack.compute import compute_service
 from openstack import resource2
 
-
 class AbsoluteLimits(resource2.Resource):
 
     #: The number of key-value pairs that can be set as image metadata.

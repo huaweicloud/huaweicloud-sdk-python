@@ -70,6 +70,29 @@ class Flavor(resource2.Resource):
     #: The bandwidth scaling factor this flavor receives on the network.
     rxtx_factor = resource2.Body('rxtx_factor', type=float)
 
+class FlavorResize(Flavor):
+    allow_list = True
+    allow_create = False
+    allow_get = False
+    allow_delete = False
+
+    base_path = '/resize_flavors'
+
+    _query_mapping = resource2.QueryParameters("instance_uuid",
+                                               "source_flavor_id",
+                                               "source_flavor_name",
+                                               "sort_key",
+                                               "sort_dir",
+                                               )
+
+    # Properties
+    #: Links pertaining to this flavor. This is a list of dictionaries,
+    #: each including keys ``href`` and ``rel``.
+    links = resource2.Body('links', type=list)
+    # Extension field for cloud server specifications
+    extra_specs = resource2.Body("extra_specs", type=list)
+
+
 
 class FlavorDetail(Flavor):
     base_path = '/flavors/detail'
@@ -79,3 +102,43 @@ class FlavorDetail(Flavor):
     allow_update = False
     allow_delete = False
     allow_list = True
+
+
+class ExtraSpecs(resource2.Resource):
+    resource_key = 'extra_specs'
+    resources_key = 'extra_specss'
+    base_path = '/flavors/%(flavor_id)s/os-extra_specs'
+
+    service = compute_service.ComputeService()
+    # capabilities
+    allow_get = True
+
+    # This parameter is a Region level configuration. When an AZ is not configured in the cond:operation:az parameter,
+    # the value of this parameter is used by default. Not configured or without this parameter is equivalent to "normal". Ranges:
+    # Normal: normal commercial
+    # Abandon: offline (ie not displayed)
+    # Sellout: sold out
+    # Obt: public beta
+    # Promotion: recommended (equivalent to normal, also commercial)
+    status = resource2.Body("cond:operation:status")
+    # This parameter is an AZ level configuration. When an AZ is not configured in this parameter,
+    # the value of the cond:operation:status parameter is used by default.
+    # The configuration format of this parameter is "az(xx)". () is the flavor state of a certain AZ.
+    # () must be filled with the status, not filled in as invalid configuration.
+    # The range of values is the same as the cond:operation:status parameter.
+    # For example, if the flavor is sold out in a region of az0, az1 is not displayed,
+    # and other az is displayed normally, which can be configured as:
+    # "cond:operation:status" is set to "normal"
+    # "cond:operation:az" is set to "az0(sellout), az1(abandon)"
+    # Description:
+    # This parameter must be configured if the state of the flavor under a certain AZ is different from the state of the cond:operation:status configuration.
+    az = resource2.Body("cond:operation:az")
+    # This parameter is used to configure the beta tag of the flavor.
+    # If there is a beta AZ in a region, this property must be configured.
+    # For example: flavor only starts beta at az1, other az is not visible, can be configured as:
+    # "cond:operation:status" is configured as "abandon"
+    # "cond:operation:az" is configured as "az1(obt)"
+    # "cond:operation:roles" is configured as "op_gated_ecs_c3ne"
+    roles = resource2.Body("cond:operation:roles")
+    # flavor id used in the uri
+    flavor_id = resource2.URI("flavor_id")

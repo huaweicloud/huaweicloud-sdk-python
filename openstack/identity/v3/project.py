@@ -127,3 +127,11 @@ class Project(resource.Resource):
         if resp.status_code == 204:
             return True
         return False
+
+
+class UserProject(Project):
+    base_path = "/users/%(user_id)s/projects"
+
+
+class AuthProject(Project):
+    base_path = "/auth/projects"

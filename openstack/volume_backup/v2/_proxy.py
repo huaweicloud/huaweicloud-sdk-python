@@ -72,12 +72,9 @@ class Proxy(proxy2.BaseProxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent zone.
 
-        :returns: rsync job
-        :rtype: :class:`~openstack.volume_backup.v2.backup.Backup`
+        :returns: None
         """
-        return self._delete(_backup.Backup,
-                            backup,
-                            ignore_missing=ignore_missing)
+        self._delete(_backup.Backup, backup, ignore_missing=ignore_missing)
 
     def restore_backup(self, backup, volume_id):
         """Restore a CloudBackup to volume

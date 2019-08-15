@@ -114,3 +114,7 @@ class Domain(resource.Resource):
         if resp.status_code == 204:
             return True
         return False
+
+
+class AuthDomain(Domain):
+    base_path = "/auth/domains"

@@ -55,6 +55,8 @@ class ShareBandwidth(resource2.Resource):
     charge_mode = resource2.Body('charge_mode')
     # Infomation of billing.
     billing_info = resource2.Body('billing_info')
+    # Status of bandwidth
+    status = resource2.Body('status')
 
 
 class BatchShareBandwidth(resource2.Resource):

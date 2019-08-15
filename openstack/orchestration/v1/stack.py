@@ -92,12 +92,12 @@ class Stack(resource.Resource):
     #: The ID of the user project created for this stack.
     user_project_id = resource.Body('stack_user_project_id')
 
-    def create(self, session):
+    def create(self, session, prepend_key):
         # This overrides the default behavior of resource creation because
         # heat doesn't accept resource_key in its request.
         return super(Stack, self).create(session, prepend_key=False)
 
-    def update(self, session):
+    def update(self, session, prepend_key, has_body):
         # This overrides the default behavior of resource creation because
         # heat doesn't accept resource_key in its request.
         return super(Stack, self).update(session, prepend_key=False,

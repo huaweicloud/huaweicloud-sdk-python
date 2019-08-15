@@ -102,7 +102,10 @@ class Volume(resource2.Resource):
     # If this query only returns part of the list information, it will return the url of the current disk mark tag,
     # and you can continue to use this url to query the remaining list information.
     volumes_links = resource2.Body("volumes_links", type=list)
-
+    # reserved
+    os_volume_replication_extended_status = resource2.Body("os-volume-replication:extended_status")
+    # reserved
+    os_vol_mig_status_attr_name_id = resource2.Body("os-vol-mig-status-attr:name_id")
 
 class ResizeVolume(Volume):
     base_path = "/cloudvolumes/%(volume_id)s/action"
@@ -113,3 +116,42 @@ class ResizeVolume(Volume):
     extend = resource2.Body('os-extend', type=dict)
     # volume new  size
     new_size = resource2.Body('new_size', type=int)
+
+class VolumeDetail(Volume):
+    base_path = "/cloudvolumes/detail"
+
+    _query_mapping = resource2.QueryParameters(
+            'marker',
+            'name',
+            'limit',
+            'sort_key',
+            'sort_dir',
+            'offset',
+            'status',
+            'availability_zone',
+            'multiattach',
+            'service_type',
+            'dedicated_storage_id',
+            'dedicated_storage_name',
+            'volume_type_id',
+            'id',
+            'ids',
+            'enterprise_project_id',
+            changes_since='changes-since',
+            metadata_alias='metadata'
+    )
+
+    allow_list = True
+
+    # The total number of lists of elastic cloud volumes.
+    count = resource2.Body('count', type=int)
+    # Elastic cloud volume details list.
+    volumes = resource2.Body('volumes', type=list)
+    # The cloud disk list queries the location tag, which is the same level as
+    # the volume in the response body.If this query only returns part of the
+    # list information, it will return the url of the current disk mark tag,and
+    # you can continue to use this url to query the remaining list information.
+    volumes_links = resource2.Body('volumes_links', type=list)
+
+
+

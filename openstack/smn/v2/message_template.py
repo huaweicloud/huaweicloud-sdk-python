@@ -23,8 +23,8 @@ class MessageTemplate(_smnresource.Resource):
     resources_key = 'message_templates'
     service = smn_service.SMNService()
 
-    _query_mapping = resource.QueryParameters('offset', 'limit'
-                                              'message_template_name'
+    _query_mapping = resource.QueryParameters('offset', 'limit',
+                                              'message_template_name',
                                               'protocol',
                                               'locale')
 

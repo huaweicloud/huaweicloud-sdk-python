@@ -35,14 +35,14 @@ os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
 
 # AKSK认证
 projectId = "xxxxxxxxxxx"
-domain = "xxxxxxxxxxx"   # cdn use: domain = "myhwclouds.com"
+cloud = "xxxxxxxxxxx"   # cdn use: cloud = "myhwclouds.com"
 region= "xxxxxxxxxxx"    # example: region = "cn-north-1"
 AK = "xxxxxxxxxxx"
 SK = "xxxxxxxxxxx"
 
 conn = connection.Connection(
               project_id=projectId,
-              domain=domain,
+              cloud=cloud,
               region=region,
               ak=AK,
               sk=SK)

@@ -65,8 +65,11 @@ class Servers(resource2.Resource):
     scheduler_hints = resource2.Body('os:scheduler_hints', type=dict)
     # tags for identify ecs servers
     tags = resource2.Body('tags')
+    # server_tags
+    server_tags = resource2.Body("server_tags", type=list)
     # task id
     job_id = resource2.Body('job_id')
+    server_ids = resource2.Body('serverIds', type=list)
     # order id
     order_id = resource2.Body('order_id')
     error = resource2.Body('error')

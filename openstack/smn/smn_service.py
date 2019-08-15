@@ -23,7 +23,7 @@ class SMNService(service_filter.ServiceFilter):
     def __init__(self, version=None):
         """Create a SMN service."""
         super(SMNService, self).__init__(
-            service_type='smn',
+            service_type='smnv2',
             version=version,
             requires_project_id=True,
         )

@@ -37,8 +37,10 @@ class Zone(resource.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        "offset", "tags",
-        zone_type='type')
+        "offset",
+        tags_alias='tags',
+        zone_type='type'
+        )
 
     # The id of zone
     id  = resource.Body("id")

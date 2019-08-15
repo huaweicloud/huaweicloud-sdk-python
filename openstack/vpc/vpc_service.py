@@ -25,3 +25,23 @@ class VpcService(service_filter.ServiceFilter):
         super(VpcService, self).__init__(service_type='vpcv2.0',
                                          requires_project_id=True,
                                          version=version)
+
+
+class VpcServiceV1(service_filter.ServiceFilter):
+    """The VPC service v1."""
+
+    valid_versions = [service_filter.ValidVersion('v1')]
+
+    def __init__(self, version=None):
+        """Create a VPC service."""
+        super(VpcServiceV1, self).__init__(
+            service_type='vpc',
+            version=version,
+            requires_project_id=True
+        )
+
+    def get_service_module(self):
+        # Note: This value will be used as the attribute name in connection
+        # for the _proxy instance. We need to override the method to avoid
+        # the conflict with vpc version v2.
+        return 'vpcv1'

@@ -60,6 +60,18 @@ class Keypair(resource2.Resource):
     private_key = resource2.Body('private_key')
     #: The SSH public key that is paired with the server.
     public_key = resource2.Body('public_key')
+    #: The type of keypair.
+    type = resource2.Body('type')
+    #: Create time of the keypair.
+    created_at = resource2.Body('created_at')
+    #: Keypair deletion tag.*Type: bool*.
+    deleted = resource2.Body('deleted', type=bool)
+    #: Delete time of the keypair.
+    deleted_at = resource2.Body('deleted_at')
+    #: Update time of the keypair.
+    updated_at = resource2.Body('updated_at')
+    #: User information to which the keypair belongs.
+    user_id = resource2.Body('user_id')
 
     @classmethod
     def list(cls, session, paginated=False):

@@ -1,5 +1,6 @@
 # -*-coding:utf-8 -*-
 
+from openstack import exceptions
 from openstack import connection
 
 # create connection
@@ -15,8 +16,8 @@ conn = connection.Connection(auth_url=auth_url,
                              password=password)
 
 
-#create server
-def createserver():
+# create server
+def create_server():
     data = {
         "availability_zone": "az1.dc1",
         "name": "test-name",
@@ -153,6 +154,12 @@ def get_server_metadata(server_id):
     print(server_metadata)
 
 
+# get server metadata with specified key
+def get_server_metadata_with_key(server_id, key):
+    server_metadata = conn.compute.get_server_metadata(server_id, key)
+    print(server_metadata)
+
+
 # delete server metadata
 def delete_server_metadata(server_id):
     keys = ["metadata_key"]
@@ -185,8 +192,9 @@ if __name__ == "__main__":
     status = "VERIFY_RESIZE"
     address = "10.154.118.136"
     image_name = "image_name"
+    key = "test_key"
     list_servers()
-    server = createserver()
+    server = create_server()
     find_server(server.id)
     show_server(server.id)
     update_server(server.id, newserver_name)
@@ -202,7 +210,8 @@ if __name__ == "__main__":
     unlock_server(server.id)
     start_server(server.id)
     stop_server(server.id)
-    set_server_metadata(server.id)
+    get_server_metadata(server.id)
+    get_server_metadata_with_key(server.id, key)
     set_server_metadata(server.id)
     delete_server_metadata(server.id)
     wait_for_server(server, status)

@@ -157,7 +157,7 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_group.Group, group)
 
-    def delete_group(self, group, ignore_missing=True):
+    def delete_group(self, group, ignore_missing=True, **attrs):
         """Delete a group
 
         :param group: The value can be the ID of a group
@@ -168,7 +168,8 @@ class Proxy(proxy2.BaseProxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent group.
         """
-        return self._delete(_group.Group, group, ignore_missing=ignore_missing)
+
+        return self._delete(_group.Group, group, ignore_missing=ignore_missing, params=attrs)
 
     def find_group(self, name_or_id, ignore_missing=True):
         """Find a single group

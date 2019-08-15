@@ -47,6 +47,7 @@ from openstack.identity.v3 import role_project_user_assignment \
 from openstack.identity.v3 import service as _service
 from openstack.identity.v3 import trust as _trust
 from openstack.identity.v3 import user as _user
+from openstack.identity.v3 import password_config as _password_config
 from openstack import proxy2 as proxy
 
 
@@ -972,3 +973,207 @@ class Proxy(proxy.BaseProxy):
         """
         return self._list(_role_assignment.RoleAssignment,
                           paginated=False, **query)
+
+    def add_user_to_group(self, group_id, user_id):
+        """Add user to group.
+
+        :param group_id: the id of the group.
+        :param user_id: the id of the user.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_group.Group, None)
+        return res.add_user_to_group(self._session, group_id, user_id)
+
+    def check_group_user(self, group_id, user_id):
+        """Querying whether a user belongs to a user group.
+
+        :param group_id: the id of the group.
+        :param user_id: the id of the user.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_group.Group, None)
+        return res.check_group_user(self._session, group_id, user_id)
+
+    def list_domain_user_group_role(self, domain_id, group_id):
+        """Querying permissions of a user group under a domain.
+
+        :param domain_id: the id of the domain.
+        :param group_id: the id of the group.
+
+        :return: A generator of role instances.
+        """
+        return self._list(_role.DomainGroupRole, domain_id=domain_id, group_id=group_id)
+
+    def list_project_user_group_role(self, project_id, group_id):
+        """Querying permissions of a user group under a project.
+
+        :param project_id: the id of the project.
+        :param group_id: the id of the group.
+
+        :return: A generator of role instances.
+        """
+        return self._list(_role.ProjectGroupRole, project_id=project_id, group_id=group_id)
+
+    def grant_domain_group_role(self, domain_id, group_id, role_id):
+        """Granting permissions to a user group of a domain.
+
+        :param domain_id: the id of the domain.
+        :param group_id: the id of the group.
+        :param role_id: the id of the role.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_role.Role, None)
+        return res.grant_domain_group_role(self._session, domain_id, group_id, role_id)
+
+    def grant_project_group_role(self, project_id, group_id, role_id):
+        """Granting permissions to a user group of a project.
+
+        :param project_id: the id of the project.
+        :param group_id: the id of the group.
+        :param role_id: the id of the role.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_role.Role, None)
+        return res.grant_project_group_role(self._session, project_id, group_id, role_id)
+
+    def delete_domain_group_role(self, domain_id, group_id, role_id):
+        """Deleting Permissions of a User Group of a Domain.
+
+        :param domain_id: the id of the domain.
+        :param group_id: the id of the group.
+        :param role_id: the id of the role.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_role.Role, None)
+        return res.delete_domain_group_role(self._session, domain_id, group_id, role_id)
+
+    def delete_project_group_role(self, project_id, group_id, role_id):
+        """Deleting permissions to a user group of a project.
+
+        :param project_id: the id of the project.
+        :param group_id: the id of the group.
+        :param role_id: the id of the role.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_role.Role, None)
+        return res.delete_project_group_role(self._session, project_id, group_id, role_id)
+
+    def check_domain_group_role(self, domain_id, group_id, role_id):
+        """Querying whether a user group under a domain has specific permissions.
+
+        :param domain_id: the id of the domain.
+        :param group_id: the id of the group.
+        :param role_id: the id of the role.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_role.Role, None)
+        return res.check_domain_group_role(self._session, domain_id, group_id, role_id)
+
+    def check_project_group_role(self, project_id, group_id, role_id):
+        """Querying whether a user group under a project has specific permissions.
+
+        :param project_id: the id of the project.
+        :param group_id: the id of the group.
+        :param role_id: the id of the role.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_role.Role, None)
+        return res.check_project_group_role(self._session, project_id, group_id, role_id)
+
+    def list_user_groups(self, user_id):
+        """Querying the user group to which a user belongs
+
+        :param user_id: the id of the user.
+
+        :return: A generator of group instances.
+        """
+        return self._list(_group.UserGroup, user_id=user_id)
+
+    def list_group_users(self, group_id):
+        """Querying the user group to which a user belongs
+
+        :param group_id: the id of the group.
+
+        :return: A generator of group instances.
+        """
+        return self._list(_user.GroupUser, group_id=group_id)
+
+    def change_password(self, user_id, **attrs):
+        """Changing a Password.
+
+        :param user_id: the id of the user.
+        :param attrs: a dict like:
+        {
+            "user": {
+                "password": "********",
+                "original_password": "********"
+            }
+        }
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_user.User, None)
+        return res.change_password(self._session, user_id=user_id, **attrs)
+
+    def remove_user_from_group(self, group_id, user_id):
+        """Deleting a user from a user group.
+
+        :param group_id: the id of the group.
+        :param user_id: the id of the user.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_user.User, None)
+        return res.remove_user_from_group(self._session, group_id, user_id)
+
+    def list_user_projects(self, user_id):
+        """Querying a user project list
+
+        :param user_id: the id of the user.
+
+        :return: A generator of project instances.
+        """
+        return self._list(_project.UserProject, user_id=user_id)
+
+    def get_project_scopes(self):
+        """Querying the list of projects accessible to users
+
+        :return: A generator of project instances.
+        """
+        return self._list(_project.AuthProject)
+
+    def get_domain_scopes(self):
+        """Querying the list of domains accessible to users
+
+        :return: A generator of project instances.
+        """
+        return self._list(_domain.AuthDomain)
+
+    def get_password_config(self, domain_id):
+        """Query domain password strength config
+
+        :param domain_id: the id of the domain.
+
+        :return:class:`~openstack.identity.v3.password_config.PasswordConfig`
+        """
+        res = self._get_resource(_password_config.PasswordConfig, None)
+        return res.get(self._session, domain_id)
+
+    def get_password_config_by_option(self, domain_id, option):
+        """Query domain password strength config by option
+
+        :param domain_id: the id of the domain.
+        :param option: should be 'password_regex' or 'password_regex_description'
+
+        :return:class:`~openstack.identity.v3.password_config.PasswordConfig`
+        """
+        res = self._get_resource(_password_config.PasswordConfig, None)
+        return res.get_by_option(self._session, domain_id, option)

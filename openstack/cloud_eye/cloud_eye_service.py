@@ -22,5 +22,5 @@ class CloudEyeService(service_filter.ServiceFilter):
 
     def __init__(self, version=None):
         """Create a Cloud Eye service."""
-        super(CloudEyeService, self).__init__(service_type='cloud-eye',
+        super(CloudEyeService, self).__init__(service_type='cesv1',
                                               version=version)

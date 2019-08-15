@@ -22,7 +22,7 @@ class Job(resource.Resource):
     service = volume_backup_service.VolumeBackupService()
 
     # capabilities
-    allow_list = True
+    allow_get = True
 
     #: Properties
     id = resource.Body("job_id")

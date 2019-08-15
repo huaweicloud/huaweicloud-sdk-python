@@ -110,6 +110,7 @@ DATA = {
     "server_tags": [],
     "OS-EXT-STS:task_state": 'test',
     "OS-SRV-USG:terminated_at": "test",
+    "server_ids": ["2b3a8fa3-61e7-44f7-a1f4-31228ab13357"]
 }
 
 
@@ -182,4 +183,5 @@ class TestServer(testtools.TestCase):
         self.assertEqual(DATA["OS-EXT-STS:task_state"], obj.OS_EXT_STS_task_state)
         self.assertEqual(DATA["OS-SRV-USG:terminated_at"], obj.OS_SRV_USG_terminated_at)
         self.assertEqual(DATA["OS-EXT-SRV-ATTR:reservation_id"], obj.OS_EXT_SRV_ATTR_reservation_id)
+        self.assertEqual(DATA["server_ids"], obj.server_ids)
 

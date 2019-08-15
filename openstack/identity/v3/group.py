@@ -28,6 +28,7 @@
 
 from openstack.identity import identity_service
 from openstack import resource2 as resource
+from openstack import utils
 
 
 class Group(resource.Resource):
@@ -54,3 +55,25 @@ class Group(resource.Resource):
     domain_id = resource.Body('domain_id')
     #: Unique group name, within the owning domain. *Type: string*
     name = resource.Body('name')
+    #: The links for the service resource.
+    links = resource.Body('links', type=dict)
+    #: The time that the group created. *Type: string*
+    create_time = resource.Body('create_time')
+
+    def add_user_to_group(self, session, group_id, user_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin(self.base_path, group_id, 'users',user_id)
+        response = session.put(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        return response.status_code == 204
+
+    def check_group_user(self, session, group_id, user_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin(self.base_path, group_id, 'users', user_id)
+        response = session.head(uri, endpoint_filter=self.service, endpoint_override=endpoint_override)
+        return response.status_code == 204
+
+
+class UserGroup(Group):
+    base_path = "/users/%(user_id)s/groups"
+
+

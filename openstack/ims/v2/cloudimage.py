@@ -97,26 +97,34 @@ class CloudImage(resource2.Resource):
     updated_at = resource2.Body('updated_at')
     # The number of operating system bits.
     __os_bit = resource2.Body('__os_bit')
+    os_bit = resource2.Body('__os_bit')
     # The specific version of the operating system.
     __os_version = resource2.Body('__os_version')
+    os_version = resource2.Body('__os_version')
     # Image description information.
     __description = resource2.Body('__description')
+    description = resource2.Body('__description')
     # Mirrored format.
     disk_format = resource2.Body('disk_format')
     # Whether it is a registered image.
     __isregistered = resource2.Body('__isregistered')
+    isregistered = resource2.Body('__isregistered')
     # Mirror platform classification.
     __platform = resource2.Body('__platform')
+    platform = resource2.Body('__platform')
     # Operating system type.
     __os_type = resource2.Body('__os_type')
+    os_type = resource2.Body('__os_type')
     # The smallest disk required for mirroring to run.
     min_disk = resource2.Body('min_disk', type=int)
     # The image uses the environment type.
     virtual_env_type = resource2.Body('virtual_env_type')
     # Mirror backend storage type.
     __image_source_type = resource2.Body('__image_source_type')
+    image_source_type = resource2.Body('__image_source_type')
     # Mirror type.
     __imagetype = resource2.Body('__imagetype')
+    imagetype = resource2.Body('__imagetype')
     # Create time.
     created_at = resource2.Body('created_at')
     virtual_size = resource2.Body('virtual_size', type=int)
@@ -124,37 +132,52 @@ class CloudImage(resource2.Resource):
     deleted_at = resource2.Body('deleted_at')
     # Parent image ID.
     __originalimagename = resource2.Body('__originalimagename')
+    originalimagename = resource2.Body('__originalimagename')
     # Backup ID.
     __backup_id = resource2.Body('__backup_id')
+    backup_id = resource2.Body('__backup_id')
     # The product ID of the market image.
     __productcode = resource2.Body('__productcode')
+    productcode = resource2.Body('__productcode')
     # The size of the image file.
     __image_size = resource2.Body('__image_size')
+    image_size = resource2.Body('__image_size')
     # Mirror source.
     __data_origin = resource2.Body('__data_origin')
+    data_origin = resource2.Body('__data_origin')
     # Support kvm.
     __support_kvm = resource2.Body('__support_kvm')
+    support_kvm = resource2.Body('__support_kvm')
     # Support xen.
     __support_xen = resource2.Body('__support_xen')
+    support_xen = resource2.Body('__support_xen')
     # Support for dense storage.
     __support_diskintensive = resource2.Body('__support_diskintensive')
+    support_diskintensive = resource2.Body('__support_diskintensive')
     # Support high computing performance.
     __support_highperformance = resource2.Body('__support_highperformance')
+    support_highperformance = resource2.Body('__support_highperformance')
     # Support for GPU optimization types under the XEN virtualization platform.
     __support_xen_gpu_type = resource2.Body('__support_xen_gpu_type')
+    support_xen_gpu_type = resource2.Body('__support_xen_gpu_type')
     # support for fpga types under kvm virtualization platform
     __support_kvm_fpga_type = resource2.Body('__support_kvm_fpga_type')
+    support_kvm_fpga_type = resource2.Body('__support_kvm_fpga_type')
     # Indicates whether the current image supports publishing as a market image.
     __system_support_market = resource2.Body('__system_support_market', type=bool)
+    system_support_market = resource2.Body('__system_support_market', type=bool)
     # Indicates the enterprise project to which the current image belongs.
     enterprise_project_id = resource2.Body('enterprise_project_id')
     # Indicates that the current image source is imported from the outside.
     __root_origin = resource2.Body('__root_origin')
+    root_origin = resource2.Body('__root_origin')
     # Corresponds to the system disk slot location of the cloud server.
     __sequence_num = resource2.Body('__sequence_num')
+    sequence_num = resource2.Body('__sequence_num')
     hw_vif_multiqueue_enabled = resource2.Body('hw_vif_multiqueue_enabled')
     # lazy loading
     __lazyloading = resource2.Body("__lazyloading", type=bool)
+    lazyloading = resource2.Body("__lazyloading", type=bool)
 
     def update(self, session, prepend_key=True, has_body=True, **data):
         """Update the remote resource based on this instance.

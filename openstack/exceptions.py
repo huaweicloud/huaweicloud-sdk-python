@@ -37,13 +37,16 @@ import re
 
 import six
 
-class MissingRequiredArgument(BaseException):
+
+class MissingRequiredArgument(Exception):
     message = "ClientException"
+
     def __init__(self, message=None):
         self.message = message or self.message
         super(MissingRequiredArgument, self).__init__(self.message)
 
-class SDKException(BaseException):
+
+class SDKException(Exception):
     """The base exception class for all exceptions this library raises."""
 
     def __init__(self, message=None, cause=None):
@@ -101,6 +104,7 @@ class NotFoundException(HttpException):
     """HTTP 404 Not Found."""
     pass
 
+
 class BadRequestException(HttpException):
     """HTTP 400 Bad Request."""
     pass
@@ -120,8 +124,10 @@ class MethodNotSupported(SDKException):
                    (method, resource.__module__, name))
         super(MethodNotSupported, self).__init__(message=message)
 
+
 class MicroversionNotSupported(SDKException):
     """The service does not support microversion."""
+
     def __init__(self, service_type, version):
         message = ('The %s service is not support microversion' %
                    (service_type))

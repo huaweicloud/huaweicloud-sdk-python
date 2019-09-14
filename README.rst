@@ -46,3 +46,5 @@ The following services' SDK are included.
 - SMN
 
 - RTS
+
+- FunctionGraph

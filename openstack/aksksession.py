@@ -495,14 +495,16 @@ class ASKSession(osession.Session):
         for endpoint, service in lzip(endpoints, services):
             if endpoint and endpoint.get("enabled"):
                 id_endpoint_map.setdefault(endpoint.get("service_id"), [])
-                id_endpoint_map[endpoint.get("service_id")].append(endpoint.get("url"))
+                data_map = {endpoint.get("region"): endpoint.get("url")}
+                id_endpoint_map[endpoint.get("service_id")].append(data_map)
             if service and service.get("enabled"):
                 servicetype_id_map.setdefault(service.get("type"), [])
                 servicetype_id_map[service.get("type")].append(service.get("id"))
         for k, v in servicetype_id_map.items():
             for serviceid in v:
-                for url in id_endpoint_map.get(serviceid, []):
-                    if self.region in url:
+                for region_url_map in id_endpoint_map.get(serviceid, []):
+                    url = region_url_map.get(self.region, "")
+                    if url != "":
                         kvendpoints[k] = url.replace("$(tenant_id)s", self.project_id)
                         break
                 if kvendpoints.get(k, ""):

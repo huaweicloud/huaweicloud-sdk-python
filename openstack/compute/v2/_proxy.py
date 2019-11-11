@@ -1329,14 +1329,14 @@ class Proxy(proxy2.BaseProxy):
     # def delete_one_tag(self, server, tag):
     #     server_id = resource2.Resource._get_id(server)
     #     return self._delete(_tag.TagAction, server=server_id, tag=tag)
-    # def query_flavor_extra_specs(self, flavor_id):
-    #     '''
-    #     :param flavors_id: flavor id
-    #     :return: One :class:`~openstack.compute.v2.flavor.ExtraSpecs`
-    #     :raises: :class:`~openstack.exceptions.ResourceNotFound`
-    #              when no resource can be found.
-    #     '''
-    #     return self._get(_flavor.ExtraSpecs, requires_id=False, flavor_id=flavor_id)
+    def query_flavor_extra_specs(self, flavor_id):
+        '''
+        :param flavors_id: flavor id
+        :return: One :class:`~openstack.compute.v2.flavor.ExtraSpecs`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        '''
+        return self._get(_flavor.ExtraSpecs, requires_id=False, flavor_id=flavor_id)
 
     def instance_actions(self, server_id):
         '''Return a generator of serveraction

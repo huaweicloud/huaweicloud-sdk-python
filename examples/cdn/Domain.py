@@ -13,18 +13,18 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-import sys
 import time
 from openstack import connection
 
-os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
+os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE',
+                      'xxxxxxxxxxx')  # CDN API url,example:https://cdn.myhuaweicloud.com/v1.0/
 
-# token认证
-# username = "xxxxxxxxxxx"
-# password = "xxxxxxxxxxx"
-# projectId = "xxxxxxxxxxx"
-# userDomainId = "xxxxxxxxxxx"
-# auth_url = "xxxxxxxxxxx"
+# token Auth
+# username = "xxxxxxxxxxx"  # IAM User Name
+# password = "xxxxxxxxxxx"  # IAM User Password
+# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+# userDomainId = "xxxxxxxxxxx"  # Account ID
+# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
 #
 # conn = connection.Connection(
 #     auth_url=auth_url,
@@ -34,19 +34,20 @@ os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
 #     password=password
 # )
 
-# AKSK认证
-projectId = "xxxxxxxxxxx"
-cloud = "xxxxxxxxxxx"   # cdn use: cloud = "myhwclouds.com"
-region= "xxxxxxxxxxx"    # example: region = "cn-north-1"
+
+# AKSK Auth
+projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+cloud = "xxxxxxxxxxx"  # cdn use: cloud = "myhuaweicloud.com"
+region = "xxxxxxxxxxx"  # example: region = "cn-north-1"
 AK = "xxxxxxxxxxx"
 SK = "xxxxxxxxxxx"
 
 conn = connection.Connection(
-              project_id=projectId,
-              cloud=cloud,
-              region=region,
-              ak=AK,
-              sk=SK)
+    project_id=projectId,
+    cloud=cloud,
+    region=region,
+    ak=AK,
+    sk=SK)
 
 
 def domain_create(domain_name):
@@ -58,11 +59,13 @@ def domain_create(domain_name):
             {
                 'ip_or_domain': 'X.X.X.X',
                 'origin_type': 'xxxxxxxxxxx',
-                'active_standby': 1         # 1 means this source is active
+                'active_standby': 1  # 1 means this source is active
             }
         ]
     }
     domain = conn.cdn.create_domain(**attrs)
+    print(domain)
+
 
 def domain_create_by_enterprise_project_id(domain_name, enterprise_project_id):
     print('Create a new acceleration domain name: ')
@@ -92,13 +95,15 @@ def domains_query():
     for domain in conn.cdn.domains(domain_status='online'):
         print(domain)
 
+    print('List all domains of type "web": ')
     for domain in conn.cdn.domains(business_type='web'):
         print(domain)
 
     # You can list domains by page.
-    print('List 3rd and 4th domains: ')
+    print('List domains by page: ')
     for domain in conn.cdn.domains(page_size=2, page_number=1):
         print(domain)
+
 
 def domains_query_by_enterprise_project_id(_enterprise_project_id):
     print('List all domains:')
@@ -110,12 +115,12 @@ def domains_query_by_enterprise_project_id(_enterprise_project_id):
     for domain in conn.cdn.domains(enterprise_project_id=_enterprise_project_id, domain_status='online'):
         print(domain)
 
-    print('List domains in "web" type: ')
+    print('List all domains of type "web": ')
     for domain in conn.cdn.domains(enterprise_project_id='ALL', business_type='web'):
         print(domain)
 
     # You can list domains by page.
-    print('List 3rd and 4th domains: ')
+    print('List domains by page: ')
     for domain in conn.cdn.domains(enterprise_project_id='ALL', page_size=10, page_number=1):
         print(domain)
 
@@ -125,6 +130,7 @@ def domain_query_detail(domain_id):
     domain = conn.cdn.get_domain(domain_id)
     print(domain)
 
+
 def domain_query_detail_by_enterprise_project_id(domain_id, enterprise_project_id='ALL'):
     print('Get the domain detail:')
     domain = conn.cdn.get_domain_detail_by_enterprise_project_id(domain_id, enterprise_project_id)
@@ -132,29 +138,20 @@ def domain_query_detail_by_enterprise_project_id(domain_id, enterprise_project_i
     print(domain.sources)
 
 
-def domain_disable_and_delete(domain_id):
+def domain_disable(domain_id):
     print('Delete the domain: ')
-    # Disable the domain before deleting
     conn.cdn.disable_domain(domain_id)
-    cnt = 300
-    print('Waiting for domain disabled')
-    while cnt:
-        print('.')
-        domain = conn.cdn.get_domain(domain_id)
-        if domain.domain_status == 'offline':
-            break
-        else:
-            time.sleep(1)
-        if cnt:
-            print('Deleted the domain.')
-            conn.cdn.delete_domain(domain_id)
-        else:
-            print('Disable domain timeout')
+
 
 def domain_disable_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('Disable the domain: ')
-    # Disable the domain before deleting
     conn.cdn.disable_domain_by_enterprise_project_id(domain_id, enterprise_project_id)
+
+
+def domain_delete(domain_id):
+    print('Deleted the domain.')
+    conn.cdn.delete_domain(domain_id)
+
 
 def domain_delete_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('Delete the domain: ')
@@ -166,6 +163,7 @@ def domain_enable(domain_id):
     # Enable the domain
     conn.cdn.enable_domain(domain_id)
 
+
 def domain_enable_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('enable the domain: ')
     # Enable the domain
@@ -176,6 +174,7 @@ def get_domain_origin_host(domain_id):
     print('get domain origin host: ')
     domain = conn.cdn.get_domain_origin_host(domain_id)
     print(domain)
+
 
 def get_domain_origin_host_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('get domain origin host: ')
@@ -191,6 +190,7 @@ def set_domain_origin_host(domain_id):
     }
     conn.cdn.set_domain_origin_host(domain_id, **attrs)
 
+
 def set_domain_origin_host_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('set domain origin host: ')
     attrs = {
@@ -199,15 +199,18 @@ def set_domain_origin_host_by_enterprise_project_id(domain_id, enterprise_projec
     }
     conn.cdn.set_domain_origin_host_by_enterprise_project_id(domain_id, enterprise_project_id, **attrs)
 
+
 def get_domain_referer(domain_id):
     print('get domain referer:')
     domain = conn.cdn.get_domain_referer(domain_id)
     print(domain)
 
+
 def get_domain_referer_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('get domain referer:')
     domain = conn.cdn.get_domain_referer_by_enterprise_project_id(domain_id, enterprise_project_id)
     print(domain)
+
 
 def set_domain_referer(domain_id):
     print('set domain referer:')
@@ -218,6 +221,7 @@ def set_domain_referer(domain_id):
     }
     conn.cdn.set_domain_referer(domain_id, **attrs)
 
+
 def set_domain_referer_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('set domain referer:')
     attrs = {
@@ -227,15 +231,18 @@ def set_domain_referer_by_enterprise_project_id(domain_id, enterprise_project_id
     }
     conn.cdn.set_domain_referer_by_enterprise_project_id(domain_id, enterprise_project_id, **attrs)
 
+
 def get_domain_cache_rules(domain_id):
     print('get domain cache rules:')
     domain = conn.cdn.get_domain_cache_rules(domain_id)
     print(domain)
 
+
 def get_domain_cache_rules_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('get domain cache rules:')
     domain = conn.cdn.get_domain_cache_rules_by_enterprise_project_id(domain_id, enterprise_project_id)
     print(domain)
+
 
 def set_domain_cache_rules(domain_id):
     print('set domain cache rules:')
@@ -253,6 +260,7 @@ def set_domain_cache_rules(domain_id):
     }
     conn.cdn.set_domain_cache_rules(domain_id, **attrs)
 
+
 def set_domain_cache_rules_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('set domain cache rules:')
     attrs = {
@@ -269,15 +277,18 @@ def set_domain_cache_rules_by_enterprise_project_id(domain_id, enterprise_projec
     }
     conn.cdn.set_domain_cache_rules_by_enterprise_project_id(domain_id, enterprise_project_id, **attrs)
 
+
 def get_domain_https(domain_id):
     print('get domain https:')
     domain = conn.cdn.get_domain_https(domain_id)
     print(domain)
 
+
 def get_domain_https_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('get domain https:')
     domain = conn.cdn.get_domain_https_by_enterprise_project_id(domain_id, enterprise_project_id)
     print(domain)
+
 
 def set_domain_https(domain_id):
     print('set domain https:')
@@ -290,6 +301,7 @@ def set_domain_https(domain_id):
     }
     conn.cdn.set_domain_https(domain_id, **attrs)
 
+
 def set_domain_https_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('set domain https:')
     attrs = {
@@ -300,6 +312,7 @@ def set_domain_https_by_enterprise_project_id(domain_id, enterprise_project_id):
         'private_key': 'xxxxxxxxxxx'
     }
     conn.cdn.set_domain_https_by_enterprise_project_id(domain_id, enterprise_project_id, **attrs)
+
 
 def set_domain_sources(domain_id):
     print('set domain sources: ')
@@ -313,6 +326,7 @@ def set_domain_sources(domain_id):
         ]
     }
     conn.cdn.set_domain_sources(domain_id, **attrs)
+
 
 def set_domain_sources_by_enterprise_project_id(domain_id, enterprise_project_id):
     print('set domain sources: ')
@@ -329,66 +343,66 @@ def set_domain_sources_by_enterprise_project_id(domain_id, enterprise_project_id
 
 
 if __name__ == "__main__":
-    domain_name = 'xxxxxxxxxxx'
-    domain_id = 'xxxxxxxxxxx'
-    
-    domain_create(domain_name)
-    
+    domain_name_sample = 'xxxxxxxxxxx'
+    domain_id_sample = 'xxxxxxxxxxx'
+    enterprise_project_id_sample = 'xxxxxxxxxxx'
+
+    domain_create(domain_name_sample)
+
     domains_query()
-    
-    domain_query_detail(domain_id)
-    
-    domain_disable_and_delete(domain_id)
 
-    domain_enable(domain_id)
+    domain_query_detail(domain_id_sample)
 
-    get_domain_origin_host(domain_id)
+    domain_disable(domain_id_sample)
 
-    set_domain_origin_host(domain_id)
+    domain_delete(domain_id_sample)
 
-    get_domain_referer(domain_id)
+    domain_enable(domain_id_sample)
 
-    set_domain_referer(domain_id)
+    get_domain_origin_host(domain_id_sample)
 
-    get_domain_cache_rules(domain_id)
+    set_domain_origin_host(domain_id_sample)
 
-    set_domain_cache_rules(domain_id)
+    get_domain_referer(domain_id_sample)
 
-    get_domain_https(domain_id)
+    set_domain_referer(domain_id_sample)
 
-    set_domain_https(domain_id)
+    get_domain_cache_rules(domain_id_sample)
 
-    set_domain_sources(domain_id)
+    set_domain_cache_rules(domain_id_sample)
 
+    get_domain_https(domain_id_sample)
 
-    enterprise_project_id = 'xxxxxxxxxxx'
-    domain_id = 'xxxxxxxxxxx'
-    domain_create(domain_name, enterprise_project_id)
+    set_domain_https(domain_id_sample)
 
-    domains_query_by_enterprise_project_id(enterprise_project_id)
+    set_domain_sources(domain_id_sample)
 
-    domain_query_detail_by_enterprise_project_id(domain_id, enterprise_project_id)
+    domain_create_by_enterprise_project_id(domain_name_sample, enterprise_project_id_sample)
 
-    domain_disable_by_enterprise_project_id(domain_id, enterprise_project_id)
+    domains_query_by_enterprise_project_id(enterprise_project_id_sample)
 
-    domain_delete_by_enterprise_project_id(domain_id, enterprise_project_id)
+    domain_query_detail_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    domain_enable_by_enterprise_project_id(domain_id, enterprise_project_id)
+    domain_disable_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    get_domain_origin_host_by_enterprise_project_id(domain_id, enterprise_project_id)
+    domain_delete_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    set_domain_origin_host_by_enterprise_project_id(domain_id, enterprise_project_id)
+    domain_enable_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    get_domain_referer_by_enterprise_project_id(domain_id, enterprise_project_id)
+    get_domain_origin_host_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    set_domain_referer_by_enterprise_project_id(domain_id, enterprise_project_id)
+    set_domain_origin_host_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    get_domain_cache_rules_by_enterprise_project_id(domain_id, enterprise_project_id)
+    get_domain_referer_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    set_domain_cache_rules_by_enterprise_project_id(domain_id, enterprise_project_id)
+    set_domain_referer_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    get_domain_https_by_enterprise_project_id(domain_id, enterprise_project_id)
+    get_domain_cache_rules_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    set_domain_https_by_enterprise_project_id(domain_id, enterprise_project_id)
+    set_domain_cache_rules_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
 
-    set_domain_sources_by_enterprise_project_id(domain_id, enterprise_project_id)
+    get_domain_https_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
+
+    set_domain_https_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)
+
+    set_domain_sources_by_enterprise_project_id(domain_id_sample, enterprise_project_id_sample)

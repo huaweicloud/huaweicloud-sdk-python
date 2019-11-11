@@ -71,6 +71,9 @@ endpoint = {
   "RDSV1": {
      "public": "https://rds.%(region)s.%(domain)s/rds/v1/%(project_id)s"
   },
+  "RDSV3": {
+     "public": "https://rds.%(region)s.%(domain)s/v3/%(project_id)s"
+  },
   "SMNV2": {
       "public": "https://smn.%(region)s.%(domain)s/v2/%(project_id)s"
   },

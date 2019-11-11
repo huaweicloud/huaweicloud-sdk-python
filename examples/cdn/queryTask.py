@@ -13,31 +13,48 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-import sys
 import time
 from openstack import connection
 
-os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
+os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE',
+                      'xxxxxxxxxxx')  # CDN API url,example:https://cdn.myhuaweicloud.com/v1.0/
 
-username = "xxxxxxxxxxx"
-password = "xxxxxxxxxxx"
-projectId = "xxxxxxxxxxx"
-userDomainId = "xxxxxxxxxxx"
-auth_url = "xxxxxxxxxxx"
+# token Auth
+# username = "xxxxxxxxxxx"  # IAM User Name
+# password = "xxxxxxxxxxx"  # IAM User Password
+# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+# userDomainId = "xxxxxxxxxxx"  # Account ID
+# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
+#
+# conn = connection.Connection(
+#     auth_url=auth_url,
+#     user_domain_id=userDomainId,
+#     project_id=projectId,
+#     username=username,
+#     password=password
+# )
+
+
+# AKSK Auth
+projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+cloud = "xxxxxxxxxxx"  # cdn use: cloud = "myhuaweicloud.com"
+region = "xxxxxxxxxxx"  # example: region = "cn-north-1"
+AK = "xxxxxxxxxxx"
+SK = "xxxxxxxxxxx"
 
 conn = connection.Connection(
-    auth_url=auth_url,
-    user_domain_id=userDomainId,
     project_id=projectId,
-    username=username,
-    password=password
-)
+    cloud=cloud,
+    region=region,
+    ak=AK,
+    sk=SK)
 
-def queryTask():
+
+def query_task():
     print("query tasks by time:")
     now = time.time()
     end_date = int(now * 1000)
-    start_date = end_date - 3600* 1000
+    start_date = end_date - 3600 * 1000
     tasks = conn.cdn.tasks(page_size=100, page_number=1, start_date=start_date, end_date=end_date)
     task_list = list(tasks)
     print(task_list)
@@ -47,5 +64,6 @@ def queryTask():
     task_detail = conn.cdn.get_task(task_id)
     print(task_detail)
 
+
 if __name__ == "__main__":
-    queryTask()
+    query_task()

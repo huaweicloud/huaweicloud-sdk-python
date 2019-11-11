@@ -18,6 +18,7 @@ from openstack.ecs.v1 import server_ext as _server_ext
 from openstack.ecs.v1 import job as _job
 from openstack.ecs.v1 import flavors
 from openstack.ecs.v1 import quotas
+from openstack.ecs.v1 import tag
 
 
 class Proxy(proxy2.BaseProxy):
@@ -145,6 +146,52 @@ class Proxy(proxy2.BaseProxy):
         :return: None
         '''
         _server.Servers.config_autorecovery(self._session, server_id, autorecovery)
+
+    def get_server_tags(self, server_id):
+        """
+
+        :param server_id: server uuid.
+        :return: server tags.
+        """
+        return self._list(tag.ServerTag, server_id=server_id)
+
+    def get_project_tags(self):
+        """
+        :return: project tags.
+        """
+        return self._list(tag.ProjectTag)
+
+    def create_server_tags(self, server_id, **data):
+        """
+        :param server_id: server uuid.
+        :param data: dict of add tags, like this:
+                    {
+                        "tags": [
+                            {
+                                "key": "key1",
+                                "value": "value1"
+                            }
+                        ]
+                    }
+        """
+        data["action"] = "create"
+        self._create(tag.ServerTagAction, server_id=server_id, **data)
+
+    def delete_server_tags(self, server_id, **data):
+        """
+        :param server_id: server uuid.
+        :param data: dict of delete tags, like this:
+                        {
+                            "tags": [
+                                {
+                                    "key": "key1",
+                                    "value": "value1"
+                                }
+                            ]
+                        }
+        """
+        data["action"] = "delete"
+        self._create(tag.ServerTagAction, server_id=server_id, **data)
 
     # def register_server_to_ces(self, server_id):
     #     '''

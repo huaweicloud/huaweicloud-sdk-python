@@ -33,9 +33,28 @@ def find_flavor(flavor_id):
     flavor = conn.compute.find_flavor(flavor_id)
     print(flavor)
 
+# find flavor extra specs
+def query_flavor_extra_specs(flavor_id):
+    extra_specs = conn.compute.query_flavor_extra_specs(flavor_id)
+    if extra_specs is not None:
+        extra_specs_dict = extra_specs.extra_specs;
+        if extra_specs_dict is not None:
+            print("extra_specs:%s" % extra_specs_dict)
+            status = extra_specs_dict.get("cond:operation:status")
+            generation = extra_specs_dict.get("ecs:generation")
+            if status is not None:
+                print(status)
+            if generation is not None:
+                print(generation)
+        else:
+            print("extra_specs body is None")
+    else:
+        print("get extra_specs result is None")
+
 
 if __name__ == "__main__":
     flavor_id = "s3.xlarge.2"
     list_flavors()
     show_flavor(flavor_id)
     find_flavor(flavor_id)
+    query_flavor_extra_specs(flavor_id)

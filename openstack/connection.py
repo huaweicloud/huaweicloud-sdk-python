@@ -301,7 +301,7 @@ class Connection(object):
 
     def _load(self, service):
         attr_name = service.get_service_module()
-        # print attr_name
+        # print attr_names
         module = service.get_module() + "._proxy"
         try:
             __import__(module)
@@ -310,6 +310,10 @@ class Connection(object):
                         issubclass(proxy_class, proxy2.BaseProxy)):
                 raise TypeError("%s.Proxy must inherit from BaseProxy" %
                                 proxy_class.__module__)
+            # version_list = self.profile.get_module(attr_name)
+            # if len(version_list) > 1:
+            #     items = service.get_module().split(".")[1:3]
+            #     setattr(self, "_".join(items), proxy_class(self.session))
             setattr(self, attr_name, proxy_class(self.session))
         except Exception as e:
             _logger.warning("Unable to load %s: %s" % (module, e))

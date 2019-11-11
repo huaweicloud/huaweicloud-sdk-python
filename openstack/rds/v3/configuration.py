@@ -13,22 +13,24 @@
 # specific language governing permissions and limitations under the License.
 
 from openstack.rds import rds_service
+from openstack.rds.v3 import rdsresource as _rdsresource
 from openstack import resource2 as resource
 
 
-class Version(resource.Resource):
-    resources_key = 'version'
-    resources_key = 'versions'
-    base_path = '/'
-    service = rds_service.RDSService(
-        version=rds_service.RDSService.UNVERSIONED
-    )
+class Configurations(_rdsresource.Resource):
+    base_path = '/configurations'
+    resources_key = 'configurations'
+    service = rds_service.RDSServiceV3()
 
     # capabilities
     allow_list = True
 
-    # Properties
     id = resource.Body('id')
-    links = resource.Body('links', type=dict)
-    status = resource.Body('status')
+    spec_code = resource.Body('spec_code')
+    name = resource.Body('name')
+    description = resource.Body('description')
+    datastore_version_name = resource.Body('datastore_version_name')
+    datastore_name = resource.Body('datastore_name')
+    created = resource.Body('created')
     updated = resource.Body('updated')
+    user_defined = resource.Body('user_defined', type=bool)

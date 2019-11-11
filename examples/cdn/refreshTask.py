@@ -13,17 +13,17 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-import sys
 from openstack import connection
 
-os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
+os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE',
+                      'xxxxxxxxxxx')  # CDN API url,example:https://cdn.myhuaweicloud.com/v1.0/
 
-# token认证
-# username = "xxxxxxxxxxx"
-# password = "xxxxxxxxxxx"
-# projectId = "xxxxxxxxxxx"
-# userDomainId = "xxxxxxxxxxx"
-# auth_url = "xxxxxxxxxxx"
+# token Auth
+# username = "xxxxxxxxxxx"  # IAM User Name
+# password = "xxxxxxxxxxx"  # IAM User Password
+# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+# userDomainId = "xxxxxxxxxxx"  # Account ID
+# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
 #
 # conn = connection.Connection(
 #     auth_url=auth_url,
@@ -33,38 +33,38 @@ os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
 #     password=password
 # )
 
-# AKSK认证
-projectId = "xxxxxxxxxxx"
-cloud = "xxxxxxxxxxx"   # cdn use: cloud = "myhwclouds.com"
-region= "xxxxxxxxxxx"    # example: region = "cn-north-1"
+
+# AKSK Auth
+projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+cloud = "xxxxxxxxxxx"  # cdn use: cloud = "myhuaweicloud.com"
+region = "xxxxxxxxxxx"  # example: region = "cn-north-1"
 AK = "xxxxxxxxxxx"
 SK = "xxxxxxxxxxx"
 
 conn = connection.Connection(
-              project_id=projectId,
-              cloud=cloud,
-              region=region,
-              ak=AK,
-              sk=SK)
+    project_id=projectId,
+    cloud=cloud,
+    region=region,
+    ak=AK,
+    sk=SK)
 
 
-def refreshTask(refreshTask):
+def refresh_create(refresh_task):
     print("refresh files or dirs:")
-    refreshtask = conn.cdn.create_refresh_task(**refreshTask)
-    print(refreshtask)
+    refresh_task = conn.cdn.create_refresh_task(**refresh_task)
+    print(refresh_task)
 
 
 if __name__ == "__main__":
-    refreshFileTask={
+    refresh_file_task = {
         "type": "file",
         "urls": ["xxxxxxxxxxx",
                  "xxxxxxxxxxx"]
     }
-    refreshDirTask={
+    refresh_dir_task = {
         "type": "directory",
         "urls": ["xxxxxxxxxxx",
-                "xxxxxxxxxxx"]
+                 "xxxxxxxxxxx"]
     }
-    refreshTask(refreshFileTask)
-    refreshTask(refreshDirTask)
-
+    refresh_create(refresh_file_task)
+    refresh_create(refresh_dir_task)

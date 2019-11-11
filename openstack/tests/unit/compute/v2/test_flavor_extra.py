@@ -26,15 +26,6 @@ class TestFlavorExtra(testtools.TestCase):
 
     def test_basic(self):
         sot = flavor.ExtraSpecs()
-        self.assertEqual('extra_specs', sot.resource_key)
-        self.assertEqual('extra_specss', sot.resources_key)
         self.assertEqual('/flavors/%(flavor_id)s/os-extra_specs', sot.base_path)
         self.assertEqual('compute', sot.service.service_type)
         self.assertTrue(sot.allow_get)
-
-    def test_make_basic(self):
-        sot = flavor.ExtraSpecs(**BASIC_EXAMPLE)
-        self.assertEqual(BASIC_EXAMPLE['cond:operation:status'], sot.status)
-        self.assertEqual(BASIC_EXAMPLE['cond:operation:az'], sot.az)
-        self.assertEqual(BASIC_EXAMPLE['cond:operation:roles'], sot.roles)
-

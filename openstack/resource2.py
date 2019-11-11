@@ -58,6 +58,7 @@ from openstack import utils
 
 _logger = logging.getLogger(__name__)
 
+
 class _BaseComponent(object):
     # The name this component is being tracked as in the Resource
     key = None
@@ -127,6 +128,7 @@ class _BaseComponent(object):
             del attributes[self.name]
         except KeyError:
             print("Key Error")
+
 
 class Body(_BaseComponent):
     """Body attributes"""
@@ -609,7 +611,6 @@ class Resource(object):
             body = {self.resource_key: body}
 
         headers = self._header.dirty
-
         uri = self.base_path % self._uri.attributes
         if requires_id:
             if self.id is None:
@@ -675,7 +676,7 @@ class Resource(object):
             response = session.put(request.uri, endpoint_filter=self.service,
                                    endpoint_override=endpoint_override,
                                    json=request.body, headers=request.headers,
-                                   microversion = service.microversion)
+                                   microversion=service.microversion)
         else:
             request = self._prepare_request(requires_id=False,
                                             prepend_key=prepend_key)
@@ -704,8 +705,8 @@ class Resource(object):
         request = self._prepare_request(requires_id=requires_id)
         endpoint_override = self.service.get_endpoint_override()
         service = self.get_service_filter(self, session)
-        response = session.get(request.uri, endpoint_filter = self.service,
-                               microversion = service.microversion,
+        response = session.get(request.uri, endpoint_filter=self.service,
+                               microversion=service.microversion,
                                endpoint_override=endpoint_override)
         self._translate_response(response)
         return self
@@ -764,7 +765,7 @@ class Resource(object):
         endpoint_override = self.service.get_endpoint_override()
         if self.patch_update:
             response = session.patch(request.uri, endpoint_filter=self.service,
-                                     microversion = service.microversion,
+                                     microversion=service.microversion,
                                      endpoint_override=endpoint_override,
                                      json=request.body,
                                      headers=request.headers)
@@ -796,7 +797,7 @@ class Resource(object):
         service = self.get_service_filter(self, session)
         endpoint_override = self.service.get_endpoint_override()
         response = session.delete(request.uri, endpoint_filter=self.service,
-                                  microversion = service.microversion,
+                                  microversion=service.microversion,
                                   endpoint_override=endpoint_override,
                                   headers={"Accept": ""},
                                   params=params)
@@ -1047,7 +1048,7 @@ class Resource(object):
             match = cls.existing(id=name_or_id, **params)
             return match.get(session)
         except exceptions.NotFoundException:
-            _logger.debug("The resource is not found by %s, then other methods will be tried"%name_or_id)
+            _logger.debug("The resource is not found by %s, then other methods will be tried" % name_or_id)
         except exceptions.BadRequestException as e:
             _logger.debug(e)
 

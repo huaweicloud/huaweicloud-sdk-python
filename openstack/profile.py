@@ -134,6 +134,7 @@ class Profile(object):
         'compute', etc.
         """
         self._services = {}
+        # self._services_module = {}
 
         self._add_service(anti_ddos_service.AntiDDosService(version="v1"))
         self._add_service(block_store_service.BlockStoreService(version="v2"))
@@ -178,6 +179,7 @@ class Profile(object):
             # object_store_service.ObjectStoreService(version="v1"))
 
         self._add_service(rds_service.RDSService(version="v1"))
+        self._add_service(rds_service.RDSServiceV3(version="v3"))
         self._add_service(cdn_service.CDNService(version='v1'))
         self._add_service(iam_service.IamService(version='v3.0'))
 
@@ -197,6 +199,11 @@ class Profile(object):
     def _add_service(self, serv):
         serv.interface = None
         self._services[serv.service_type] = serv
+        # module_name = serv.get_service_module()
+        # self._services_module.setdefault(module_name, []).append(serv)
+
+    # def get_module(self, module_name):
+    #     return self._services_module.get(module_name, [])
 
     def _load_plugin(self, namespace):
         """Load a service plugin.

@@ -21,6 +21,8 @@ class Bandwidth(resource.Resource):
     base_path = '/bandwidths'
     service = vpc_service.VpcServiceV1()
 
+    _query_mapping = resource.QueryParameters('enterprise_project_id')
+
     # capabilities
     allow_create = False
     allow_get = True

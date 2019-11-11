@@ -23,7 +23,7 @@ class PublicIP(resource.Resource):
     base_path = '/publicips'
     service = vpc_service.VpcServiceV1()
 
-    _query_mapping = resource.QueryParameters('ip_version')
+    _query_mapping = resource.QueryParameters('ip_version', 'enterprise_project_id')
 
     # capabilities
     allow_create = True

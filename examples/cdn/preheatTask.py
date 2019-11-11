@@ -13,17 +13,17 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-import sys
 from openstack import connection
 
-os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
+os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE',
+                      'xxxxxxxxxxx')  # CDN API url,example:https://cdn.myhuaweicloud.com/v1.0/
 
-# token认证
-# username = "xxxxxxxxxxx"
-# password = "xxxxxxxxxxx"
-# projectId = "xxxxxxxxxxx"
-# userDomainId = "xxxxxxxxxxx"
-# auth_url = "xxxxxxxxxxx"
+# token Auth
+# username = "xxxxxxxxxxx"  # IAM User Name
+# password = "xxxxxxxxxxx"  # IAM User Password
+# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+# userDomainId = "xxxxxxxxxxx"  # Account ID
+# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
 #
 # conn = connection.Connection(
 #     auth_url=auth_url,
@@ -33,29 +33,31 @@ os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
 #     password=password
 # )
 
-# AKSK认证
-projectId = "xxxxxxxxxxx"
-cloud = "xxxxxxxxxxx"   # cdn use: cloud = "myhwclouds.com"
-region= "xxxxxxxxxxx"    # example: region = "cn-north-1"
+
+# AKSK Auth
+projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+cloud = "xxxxxxxxxxx"  # cdn use: cloud = "myhuaweicloud.com"
+region = "xxxxxxxxxxx"  # example: region = "cn-north-1"
 AK = "xxxxxxxxxxx"
 SK = "xxxxxxxxxxx"
 
 conn = connection.Connection(
-              project_id=projectId,
-              cloud=cloud,
-              region=region,
-              ak=AK,
-              sk=SK)
+    project_id=projectId,
+    cloud=cloud,
+    region=region,
+    ak=AK,
+    sk=SK)
 
-def preheattask(preheatTask):
+
+def preheat_create(preheat_task):
     print("preheat urls or dirs:")
-    preheattask = conn.cdn.create_preheat_task(**preheatTask)
+    preheattask = conn.cdn.create_preheat_task(**preheat_task)
     print(preheattask)
 
+
 if __name__ == "__main__":
-    preheatTask={
+    preheat_task_sample = {
         "urls": ["xxxxxxxxxxx",
                  "xxxxxxxxxxx"]
     }
-    preheattask(preheatTask)
-
+    preheat_create(preheat_task_sample)

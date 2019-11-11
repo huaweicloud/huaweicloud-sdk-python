@@ -13,18 +13,18 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-import sys
 import time
 from openstack import connection
 
-os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
+os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE',
+                      'xxxxxxxxxxx')  # CDN API url,example:https://cdn.myhuaweicloud.com/v1.0/
 
-# token认证
-# username = "xxxxxxxxxxx"
-# password = "xxxxxxxxxxx"
-# projectId = "xxxxxxxxxxx"
-# userDomainId = "xxxxxxxxxxx"
-# auth_url = "xxxxxxxxxxx"
+# token Auth
+# username = "xxxxxxxxxxx"  # IAM User Name
+# password = "xxxxxxxxxxx"  # IAM User Password
+# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+# userDomainId = "xxxxxxxxxxx"  # Account ID
+# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
 #
 # conn = connection.Connection(
 #     auth_url=auth_url,
@@ -34,41 +34,43 @@ os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE', 'xxxxxxxxxxx')
 #     password=password
 # )
 
-# AKSK认证
-projectId = "xxxxxxxxxxx"
-cloud = "xxxxxxxxxxx"   # cdn use: cloud = "myhwclouds.com"
-region= "xxxxxxxxxxx"    # example: region = "cn-north-1"
+
+# AKSK Auth
+projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+cloud = "xxxxxxxxxxx"  # cdn use: cloud = "myhuaweicloud.com"
+region = "xxxxxxxxxxx"  # example: region = "cn-north-1"
 AK = "xxxxxxxxxxx"
 SK = "xxxxxxxxxxx"
 
 conn = connection.Connection(
-              project_id=projectId,
-              cloud=cloud,
-              region=region,
-              ak=AK,
-              sk=SK)
+    project_id=projectId,
+    cloud=cloud,
+    region=region,
+    ak=AK,
+    sk=SK)
 
 
-def list_logs(domain_name, today):
-    #today = '1532620800000'
-    logs = conn.cdn.logs(domain_name=domain_name, query_date=today, page_number=1, page_size=10)
+def list_logs(domain_name, query_date):
+    # example: query_date = '1532620800000'
+    logs = conn.cdn.logs(domain_name=domain_name, query_date=query_date, page_number=1, page_size=10)
     log_list = list(logs)
     print(log_list)
     # for log in conn.cdn.logs(domain_name=domain_name, query_date=today):
     #     print(log)
 
-def list_logs_by_enterprise_project_id(domain_name, today, enterprise_project_id):
-    #today = '1532620800000'
-    logs = conn.cdn.logs_by_enterprise_project_id(domain_name=domain_name, query_date=today, page_number=1, page_size=10,
-                         enterprise_project_id=enterprise_project_id)
+
+def list_logs_by_enterprise_project_id(domain_name, query_date, enterprise_project_id):
+    # example: query_date = '1532620800000'
+    logs = conn.cdn.logs_by_enterprise_project_id(domain_name=domain_name, query_date=query_date, page_number=1,
+                                                  page_size=10,
+                                                  enterprise_project_id=enterprise_project_id)
     log_list = list(logs)
     print(log_list)
+
 
 if __name__ == "__main__":
     today = int(time.time() * 1000) - 24 * 3600 * 1000
     domain = "xxxxxxxxxxx"
-    enterprise_project_id = "xxxxxxxxxxx"
+    enterprise_project_id_sample = "xxxxxxxxxxx"
     list_logs(domain, today)
-    list_logs_by_enterprise_project_id(domain, today, enterprise_project_id)
-
-
+    list_logs_by_enterprise_project_id(domain, today, enterprise_project_id_sample)

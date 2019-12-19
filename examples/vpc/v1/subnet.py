@@ -40,6 +40,15 @@ def test_subnets(_conn):
         print(obj)
 
 
+def test_subnets_paginated(_conn):
+    query = {
+        "limit": 2
+    }
+    objs = _conn.vpcv1.subnets(paginated=False, **query)
+    for obj in objs:
+        print(obj)
+
+
 def test_get_subnet(_conn):
     print(_conn.vpcv1.get_subnet('5261b63d-ac0b-4591-b1fe-462339726f20'))
 

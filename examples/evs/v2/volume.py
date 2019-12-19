@@ -27,6 +27,7 @@ conn = connection.Connection(auth_url=auth_url,
                              username=username,
                              password=password)
 
+
 # create volume
 def create_volume():
     data = {
@@ -47,12 +48,14 @@ def create_volume():
     volume = conn.evs.create_volume(**data)
     print(volume)
 
+
 # get job
 def get_job():
     job_id = "xxx"
 
     job = conn.evs.get_job(job_id)
     print(job)
+
 
 # expand volume
 def resize_volume():
@@ -66,6 +69,7 @@ def resize_volume():
     volume = conn.evs.resize_volume(volume_id=volume_id, **data)
     print(volume)
 
+
 # update volume
 def update_volume():
     volume_id = 'xxx'
@@ -77,12 +81,14 @@ def update_volume():
     volume = conn.evs.update_volume(volume_id, **data)
     print(volume)
 
+
 # get volume
 def get_volume():
     volume_id = 'xxx'
 
     volume = conn.evs.get_volume(volume_id)
     print(volume)
+
 
 # create volume ext
 def create_volume_ext():
@@ -111,6 +117,7 @@ def create_volume_ext():
     volume = conn.evs.create_volume_ext(**data)
     print(volume)
 
+
 # expand volume ext
 def resize_volume_ext():
     volume_id = 'xxx'
@@ -127,12 +134,22 @@ def resize_volume_ext():
     volume = conn.evs.resize_volume_ext(volume_id=volume_id, **data)
     print(volume)
 
+
 # get volumes list
 def volumes():
     generator = conn.evs.volumes(limit=2)
     for volumes_list in generator:
         for volume in volumes_list.volumes:
             print(volume)
+
+
+# get volumes list with paginated
+def list_volumes_with_one_page():
+    generator = conn.evs.volumes(paginated=False, limit=4)
+    for volumes_list in generator:
+        for volume in volumes_list.volumes:
+            print(volume)
+
 
 if __name__ == "__main__":
     create_volume()
@@ -143,3 +160,4 @@ if __name__ == "__main__":
     create_volume_ext()
     resize_volume_ext()
     volumes()
+    list_volumes_with_one_page()

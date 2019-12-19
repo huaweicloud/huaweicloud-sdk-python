@@ -107,6 +107,19 @@ def servers():
             print (each_server["id"], each_server["name"])
 
 
+# get list of servers with paginated parameter
+def servers_with_paginated():
+    query = {
+        "name": "ecs",
+        "status": "ACTIVE",
+    }
+    servers = conn.ecs.servers(paginated=False, **query)
+    for server in servers:
+        print("count: ", server.count)
+        for each_server in server.servers:
+            print (each_server["id"], each_server["name"])
+
+
 # get detail of server
 def get_server(server_id):
     server = conn.ecs.get_server(server_id)
@@ -135,6 +148,27 @@ def stop_server():
     success_servers, failed_servers = get_servers_after_job(job)
     print ("Stop success servers: ", success_servers)
     print ("Stop failed servers: ", failed_servers)
+
+
+# batch change os server
+def batch_change_os():
+    data = {
+        "servers": [
+            {
+                "id": "server_id1"
+            },
+            {
+                "id": "server_id2"
+            }
+        ],
+        "keyname": "keyname",
+        "imageid": "image_id"
+    }
+    change_os_result = conn.ecs.batch_change_os(**data)
+    job = wait_for_job(TIMES, INTERVAL, change_os_result.job_id)
+    success_servers, failed_servers = get_servers_after_job(job)
+    print ("change os success servers: ", success_servers)
+    print ("change os failed servers: ", failed_servers)
 
 
 # batch start server
@@ -254,9 +288,11 @@ if __name__ == "__main__":
     config_autorecovery(server_id, autorecovery)
     create_server()
     servers()
+    servers_with_paginated()
     get_server(server_id)
     stop_server()
     start_server()
     reboot_server()
     resize_server(server_id)
     delete_server()
+    batch_change_os()

@@ -122,20 +122,24 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_flavor.Flavor, flavor)
 
-    def flavors(self, details=True, **query):
+    def flavors(self, details=True, paginated=True, **query):
         """Return a generator of flavors
 
         :param bool details: When ``True``, returns
             :class:`~openstack.compute.v2.flavor.FlavorDetail` objects,
             otherwise :class:`~openstack.compute.v2.flavor.Flavor`.
             *Default: ``True``*
+        :param paginated: When set to ``False``, expect all of the data
+                          to be returned in one response. When set to
+                          ``True``, the resource supports data being
+                          returned across multiple pages.
         :param kwargs \*\*query: Optional query parameters to be sent to limit
                                  the flavors being returned.
 
         :returns: A generator of flavor objects
         """
         flv = _flavor.FlavorDetail if details else _flavor.Flavor
-        return self._list(flv, paginated=True, **query)
+        return self._list(flv, paginated=paginated, **query)
 
     def delete_image(self, image, ignore_missing=True):
         """Delete an image
@@ -408,7 +412,7 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_server.Server, server)
 
-    def servers(self, details=True, **query):
+    def servers(self, details=True, paginated=True, **query):
         """Retrieve a generator of servers
 
         :param bool details: When set to ``False``
@@ -416,6 +420,10 @@ class Proxy(proxy2.BaseProxy):
                     will be returned. The default, ``True``, will cause
                     :class:`~openstack.compute.v2.server.ServerDetail`
                     instances to be returned.
+        :param paginated: When set to ``False``, expect all of the data
+                          to be returned in one response. When set to
+                          ``True``, the resource supports data being
+                          returned across multiple pages.
         :param kwargs \*\*query: Optional query parameters to be sent to limit
             the servers being returned.  Available parameters include:
 
@@ -446,7 +454,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of server instances.
         """
         srv = _server.ServerDetail if details else _server.Server
-        return self._list(srv, paginated=True, **query)
+        return self._list(srv, paginated=paginated, **query)
 
     def update_server(self, server, **attrs):
         """Update a server

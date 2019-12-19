@@ -22,6 +22,14 @@ def list_flavors():
         print(flavor)
 
 
+# get list of flavor with paginated parameter
+def list_flavors_with_paginated():
+    flavors = conn.compute.flavors(paginated=True, limit=10)
+    for flavor in flavors:
+        print(flavor)
+        print(flavor.id)
+
+
 # show flavor detail
 def show_flavor(flavor_id):
     flavor = conn.compute.get_flavor(flavor_id)
@@ -32,6 +40,7 @@ def show_flavor(flavor_id):
 def find_flavor(flavor_id):
     flavor = conn.compute.find_flavor(flavor_id)
     print(flavor)
+
 
 # find flavor extra specs
 def query_flavor_extra_specs(flavor_id):
@@ -55,6 +64,7 @@ def query_flavor_extra_specs(flavor_id):
 if __name__ == "__main__":
     flavor_id = "s3.xlarge.2"
     list_flavors()
+    list_flavors_with_paginated()
     show_flavor(flavor_id)
     find_flavor(flavor_id)
     query_flavor_extra_specs(flavor_id)

@@ -85,6 +85,7 @@ from openstack import proxy
 from openstack import proxy2
 from openstack import session as _session
 from openstack import aksksession as aksession
+from openstack import tokenid_session as token_session
 from openstack.exceptions import MicroversionNotSupported
 
 _logger = logging.getLogger(__name__)
@@ -268,6 +269,17 @@ class Connection(object):
                                                 securitytoken=auth_args.get("securitytoken", None),
                                                 domain_id=auth_args.get("domain_id", None)
                                                 )
+        elif auth_args.get('auth_token', None):
+            self.session = token_session.TokenSession(self.profile,
+                                                      verify=verify,
+                                                      timeout=timeout,
+                                                      cert=cert,
+                                                      user_agent=user_agent,
+                                                      auth_url=auth_args.get('auth_url', None),
+                                                      auth_token=auth_args.get('auth_token', None),
+                                                      # project_id=auth_args.get('project_id', None)
+                                                      )
+
         else:
             self.authenticator = self._create_authenticator(authenticator,
                                                             auth_plugin,

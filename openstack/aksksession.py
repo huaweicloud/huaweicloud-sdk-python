@@ -38,7 +38,7 @@ TERMINATORSTRING = "sdk_request"
 ALGORITHM = "SDK-HMAC-SHA256"
 PYTHON2 = "2"
 UTF8 = "utf-8"
-IAMURL = "https://iam.%s.%s/v3/%s"
+IAMURL = "https://iam.%s/v3/%s"
 
 _logger = utils.get_logger(__name__)
 
@@ -142,7 +142,7 @@ class AkSksignature(object):
                         result.append(
                             (k.encode('utf-8') if isinstance(k, str) else k,
                              v.encode('utf-8') if isinstance(v, str) else v))
-            result.sort(key= lambda item: item[0])
+            result.sort(key=lambda item: item[0])
             canonical_querystring = urllib.parse.urlencode(result, doseq=True)
             canonical_querystring = canonical_querystring.replace("+", "%20")
         else:
@@ -170,9 +170,10 @@ class AkSksignature(object):
         algorithm = ALGORITHM
         request_datetime = dtstamp
         request_date = dtstamp.split('T')[0]
+        region = self.region if self.region else ""
         credential_scope = '/'.join([
             request_date,
-            self.region,
+            region,
             svr,
             TERMINATORSTRING
         ])
@@ -224,9 +225,10 @@ class AkSksignature(object):
                                                                         signed_header,
                                                                         signature)
 
+
 def check(session):
     def oninit(*pargs, **kwargs):
-        for arg in ['ak', 'sk', 'project_id', 'region', 'domain']:
+        for arg in ['ak', 'sk', 'domain']:
             if kwargs.get(arg) is None:
                 if arg == "domain":
                     arg = "cloud"
@@ -236,7 +238,9 @@ def check(session):
                     arg = "cloud"
                 raise MissingRequiredArgument("the argument: %s is empty" % arg)
         return session(*pargs, **kwargs)
+
     return oninit
+
 
 @check
 class ASKSession(osession.Session):
@@ -288,7 +292,7 @@ class ASKSession(osession.Session):
                 allow=None, client_name=None, client_version=None,
                 **kwargs):
         headers = kwargs.setdefault('headers', dict())
-        
+
         if microversion:
             self._set_microversion_headers(headers, microversion, None, endpoint_filter)
         if self._securitytoken:
@@ -449,7 +453,10 @@ class ASKSession(osession.Session):
         if self.__endpoint_cache.get(service_type_iam, ""):
             return self.__endpoint_cache.get(service_type_iam)
         if not self.__iam_endpoint:
-            self.__iam_endpoint = self.__fetch_all_endpoint_service()
+            if self.region:
+                self.__iam_endpoint = self.__fetch_all_endpoint_service_project_level()
+            else:
+                self.__iam_endpoint = self.__fetch_all_endpoint_service_global_level()
         filt = self.profile.get_filter(service_type)
         sc_endpoint = self.__iam_endpoint.get(service_type_iam, "")
         if not sc_endpoint:
@@ -482,18 +489,18 @@ class ASKSession(osession.Session):
             base_url = endpoint % map
         return base_url
 
-    def __fetch_all_endpoint_service(self):
+    def __fetch_all_endpoint_service_project_level(self):
         kvendpoints = {}
-        resp = self.request(IAMURL % (self.region, self.domain, "endpoints"), "GET",
+        resp = self.request(IAMURL % (self.domain, "endpoints"), "GET",
                             endpoint_filter=identity_service.AdminService())
         endpoints = resp.json().get("endpoints", [])
-        resp = self.request(IAMURL % (self.region, self.domain, "services"), "GET",
+        resp = self.request(IAMURL % (self.domain, "services"), "GET",
                             endpoint_filter=identity_service.AdminService())
         services = resp.json().get("services", [])
         id_endpoint_map, servicetype_id_map = {}, {}
-        lzip = itertools.izip_longest if hasattr(itertools, "izip_longest")  else itertools.zip_longest
+        lzip = itertools.izip_longest if hasattr(itertools, "izip_longest") else itertools.zip_longest
         for endpoint, service in lzip(endpoints, services):
-            if endpoint and endpoint.get("enabled"):
+            if endpoint and endpoint.get("enabled") and endpoint.get("region") is not None:
                 id_endpoint_map.setdefault(endpoint.get("service_id"), [])
                 data_map = {endpoint.get("region"): endpoint.get("url")}
                 id_endpoint_map[endpoint.get("service_id")].append(data_map)
@@ -507,6 +514,32 @@ class ASKSession(osession.Session):
                     if url != "":
                         kvendpoints[k] = url.replace("$(tenant_id)s", self.project_id)
                         break
+                if kvendpoints.get(k, ""):
+                    break
+        return kvendpoints
+
+    def __fetch_all_endpoint_service_global_level(self):
+        kvendpoints = {}
+        resp = self.request(IAMURL % (self.domain, "endpoints"), "GET",
+                            endpoint_filter=identity_service.AdminService())
+        endpoints = resp.json().get("endpoints", [])
+        resp = self.request(IAMURL % (self.domain, "services"), "GET",
+                            endpoint_filter=identity_service.AdminService())
+        services = resp.json().get("services", [])
+        id_endpoint_map, servicetype_id_map = {}, {}
+        lzip = itertools.izip_longest if hasattr(itertools, "izip_longest") else itertools.zip_longest
+        for endpoint, service in lzip(endpoints, services):
+            if endpoint and endpoint.get("enabled") and endpoint.get("region") is None:
+                id_endpoint_map[endpoint.get("service_id")] = endpoint.get("url")
+            if service and service.get("enabled"):
+                servicetype_id_map.setdefault(service.get("type"), [])
+                servicetype_id_map[service.get("type")].append(service.get("id"))
+        for k, v in servicetype_id_map.items():
+            for serviceid in v:
+                url = id_endpoint_map.get(serviceid)
+                if url != "":
+                    kvendpoints[k] = url
+                    break
                 if kvendpoints.get(k, ""):
                     break
         return kvendpoints

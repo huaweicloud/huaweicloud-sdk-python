@@ -108,6 +108,8 @@ from openstack.nat import nat_service
 # from openstack.message import message_service
 # from openstack.object_store import object_store_service
 from openstack.rds import rds_service
+from openstack.bss import bss_service
+from openstack.bssintl import bss_intl_service
 # from openstack.rds_os import rds_os_service
 # from openstack.telemetry.alarm import alarm_service
 # from openstack.telemetry import telemetry_service
@@ -168,6 +170,8 @@ class Profile(object):
         self._add_service(ims_service.ImsService(version='v2'))
         self._add_service(nat_service.NatService(version='v2.0'))
         self._add_service(lb_service.LoadBalancerService(version='v1'))
+        self._add_service(bss_service.BssService(version='v1'))
+        self._add_service(bss_intl_service.BssIntlService(version='v1'))
         # not support below service
         # self._add_service(message_service.MessageService(version="v1"))
         # self._add_service(cluster_service.ClusterService(version="v1"))

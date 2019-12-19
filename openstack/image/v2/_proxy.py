@@ -152,7 +152,7 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_image.Image, image)
 
-    def images(self, **query):
+    def images(self, paginated=True, **query):
         """Return a generator of images
 
         :param kwargs \*\*query: Optional query parameters to be sent to limit
@@ -161,7 +161,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of image objects
         :rtype: :class:`~openstack.image.v2.image.Image`
         """
-        return self._list(_image.Image, paginated=True, **query)
+        return self._list(_image.Image, paginated=paginated, **query)
 
     def update_image(self, image, **attrs):
         """Update a image

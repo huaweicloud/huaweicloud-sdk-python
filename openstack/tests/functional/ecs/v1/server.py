@@ -17,6 +17,7 @@ import warnings
 
 from openstack import utils
 from openstack import connection
+import time
 
 utils.enable_logging(debug=False, stream=sys.stdout)
 warnings.filterwarnings('ignore')
@@ -35,6 +36,9 @@ conn = connection.Connection(
     password=password,
     verify=False
 )
+
+TIMES = 60
+INTERVAL = 10
 
 
 def create_server_ext(conn):
@@ -285,6 +289,26 @@ def server_action_restart(conn):
     print(ff)
 
 
+def batch_change_os(conn):
+    data = {
+        "servers": [
+            {
+                "id": "server_id1"
+            },
+            {
+                "id": "server_id2"
+            }
+        ],
+        "keyname": "keyname",
+        "imageid": "image_id"
+    }
+    change_os_result = conn.ecs.batch_change_os(**data)
+    job = wait_for_job(TIMES, INTERVAL, change_os_result.job_id)
+    success_servers, failed_servers = get_servers_after_job(job)
+    print ("change os success servers: ", success_servers)
+    print ("change os failed servers: ", failed_servers)
+
+
 def get_server(_conn):
     ff = conn.ecs.get_server('600ea016-47c2-4aed-a8c1-c1a2106e3ad0')
     print(ff)
@@ -306,7 +330,41 @@ def servers(_conn):
             print((server.get('id')))
 
 
+# wait until job status becoming SUCCESS or FAIL
+def wait_for_job(times, interval, job_id):
+    job_result = None
+    for index in range(times):
+        time.sleep(interval)
+        job = conn.ecs.get_job(job_id)
+        if job.status == "SUCCESS":
+            job_result = job
+            print("Get job success after %s tries" % index)
+            break
+        elif job.status == "FAIL":
+            job_result = job
+            print("Get job failed after %s tries" % index)
+            break
+    return job_result
+
+
+# get success and failed server list after waiting job status
+def get_servers_after_job(job):
+    sub_jobs = job.entities["sub_jobs"]
+    success_servers = []
+    failed_servers = []
+
+    if len(sub_jobs) > 0:
+        for sub_job in sub_jobs:
+            if "server_id" in sub_job.get("entities"):
+                if sub_job["status"] == "SUCCESS":
+                    success_servers.append(sub_job.get("entities").get("server_id"))
+                else:
+                    failed_servers.append(sub_job.get("entities").get("server_id"))
+    return success_servers, failed_servers
+
+
 if __name__ == '__main__':
     # get_server(conn)
     # servers(conn)
+    batch_change_os(conn)
     pass

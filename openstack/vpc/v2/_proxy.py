@@ -185,13 +185,17 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_route.Route, route_id)
 
-    def routes(self, **query):
+    def routes(self, paginated=True, **query):
         """Retrieve a generator of route.
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param query: The attributes to query route.
         :return: A generator of route.
         """
-        return self._list(_route.Route, paginated=True, **query)
+        return self._list(_route.Route, paginated=paginated, **query)
 
     def get_network_ip_availability(self, network_id):
         """Get IP availability of a network.

@@ -60,6 +60,12 @@ def routes(_conn):
         print(index)
 
 
+# List Routes paginated
+def routes_paginated(_conn):
+    for index in _conn.vpc.routes(paginated=False):
+        print(index)
+
+
 if __name__ == '__main__':
     create_route(conn)
     delete_route(conn)

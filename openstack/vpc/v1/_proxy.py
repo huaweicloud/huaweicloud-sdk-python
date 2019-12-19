@@ -25,9 +25,13 @@ from openstack.vpc.v1 import vpc as _vpc
 
 class Proxy(proxy2.BaseProxy):
 
-    def vpcs(self, **query):
+    def vpcs(self, paginated=True, **query):
         """Return a generator of VPCs
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned. Available parameters include:
 
@@ -38,7 +42,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of network objects
         :rtype: :class:`~openstack.vpc.v1.vpc.VPC`
         """
-        return self._list(_vpc.VPC, paginated=True, **query)
+        return self._list(_vpc.VPC, paginated=paginated, **query)
 
     def get_vpc(self, vpc):
         """Get a single VPC
@@ -139,9 +143,13 @@ class Proxy(proxy2.BaseProxy):
         return self._find(_vpc.VPC, name_or_id,
                           ignore_missing=ignore_missing)
 
-    def subnets(self, **query):
+    def subnets(self, paginated=True, **query):
         """Return a generator of subnets
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned. Available parameters include:
 
@@ -152,7 +160,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of subnet objects
         :rtype: :class:`~openstack.vpc.v1.subnet.Subnet`
         """
-        return self._list(_subnet.Subnet, paginated=True, **query)
+        return self._list(_subnet.Subnet, paginated=paginated, **query)
 
     def get_subnet(self, subnet):
         """Query details about a subnet.
@@ -249,9 +257,13 @@ class Proxy(proxy2.BaseProxy):
         return self._find(_subnet.Subnet, name_or_id,
                           ignore_missing=ignore_missing)
 
-    def public_ips(self, **query):
+    def public_ips(self, paginated=True, **query):
         """Return a generator of elastic ips
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned. Valid parameters are:
 
@@ -262,7 +274,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of elastic IP objects
         :rtype: :class:`~openstack.vpc.v1.public_ip.PublicIP`
         """
-        return self._list(_public_ip.PublicIP, paginated=True, **query)
+        return self._list(_public_ip.PublicIP, paginated=paginated, **query)
 
     def get_public_ip(self, public_ip):
         """Get a single elastic ip
@@ -342,9 +354,13 @@ class Proxy(proxy2.BaseProxy):
         return self._find(_public_ip.PublicIP, name_or_id,
                           ignore_missing=ignore_missing)
 
-    def private_ips(self, subnet, **query):
+    def private_ips(self, subnet, paginated=True, **query):
         """Return a generator of private ips
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param subnet: The value can be either the ID of a subnet or a
             :class:`~openstack.vpc.v1.subnet.Subnet` instance.
         :param dict query: Optional query parameters to be sent to limit
@@ -359,7 +375,7 @@ class Proxy(proxy2.BaseProxy):
         subnet_id = subnet.id if isinstance(subnet, _subnet.Subnet) else subnet
         query = query or {}
         query.update(subnet_id=subnet_id)
-        return self._list(_private_ip.PrivateIP, paginated=True, **query)
+        return self._list(_private_ip.PrivateIP, paginated=paginated, **query)
 
     def get_private_ip(self, private_ip):
         """Get a single private ip
@@ -444,9 +460,13 @@ class Proxy(proxy2.BaseProxy):
                           ignore_missing=ignore_missing,
                           subnet_id=subnet_id)
 
-    def ports(self, **query):
+    def ports(self, paginated=True, **query):
         """Return a generator of ports
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned. Available parameters include:
 
@@ -463,7 +483,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of port objects
         :rtype: :class:`~openstack.vpc.v1.port.Port`
         """
-        return self._list(_port.Port, paginated=True, **query)
+        return self._list(_port.Port, paginated=paginated, **query)
 
     def get_port(self, port):
         """Get a single port
@@ -561,9 +581,13 @@ class Proxy(proxy2.BaseProxy):
         return self._find(_port.Port, name_or_id,
                           ignore_missing=ignore_missing)
 
-    def bandwidths(self, **query):
+    def bandwidths(self, paginated=False, **query):
         """Return a generator of bandwidths
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned. Available parameters include:
 
@@ -573,7 +597,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of bandwidth objects
         :rtype: :class:`~openstack.vpc.v1.bandwidth.Bandwidth`
         """
-        return self._list(_bandwidth.Bandwidth, paginated=False, **query)
+        return self._list(_bandwidth.Bandwidth, paginated=paginated, **query)
 
     def get_bandwidth(self, bandwidth):
         """Get a single bandwidth
@@ -622,9 +646,13 @@ class Proxy(proxy2.BaseProxy):
         return self._find(_bandwidth.Bandwidth, name_or_id,
                           ignore_missing=ignore_missing)
 
-    def security_groups(self, **query):
+    def security_groups(self, paginated=True, **query):
         """Return a generator of security groups
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param dict query: Optional query parameters to be sent to limit
                            the resources being returned. Valid parameters are:
 
@@ -637,7 +665,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of security group objects
         :rtype: :class:`~openstack.vpc.v1.security_group.SecurityGroup`
         """
-        return self._list(_security_group.SecurityGroup, paginated=True,
+        return self._list(_security_group.SecurityGroup, paginated=paginated,
                           **query)
 
     def create_security_group(self, **attrs):
@@ -794,9 +822,13 @@ class Proxy(proxy2.BaseProxy):
         return self._get(_security_group_rule.SecurityGroupRule,
                          security_group_rule)
 
-    def security_group_rules(self, **query):
+    def security_group_rules(self, paginated=False, **query):
         """Return a generator of security group rules
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned. Available parameters include:
 
@@ -807,7 +839,7 @@ class Proxy(proxy2.BaseProxy):
             SecurityGroupRule`
         """
         return self._list(_security_group_rule.SecurityGroupRule,
-                          paginated=False, **query)
+                          paginated=paginated, **query)
 
     def quotas(self, **query):
         """Return a generator of quotas

@@ -1487,9 +1487,13 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_port.Port, port)
 
-    def ports(self, **query):
+    def ports(self, paginated=False, **query):
         """Return a generator of ports
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param kwargs \*\*query: Optional query parameters to be sent to limit
             the resources being returned. Available parameters include:
 
@@ -1509,7 +1513,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of port objects
         :rtype: :class:`~openstack.network.v2.port.Port`
         """
-        return self._list(_port.Port, paginated=False, **query)
+        return self._list(_port.Port, paginated=paginated, **query)
 
     def update_port(self, port, **attrs):
         """Update a port
@@ -2431,9 +2435,13 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_security_group.SecurityGroup, security_group)
 
-    def security_groups(self, **query):
+    def security_groups(self, paginated=False, **query):
         """Return a generator of security groups
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param dict query: Optional query parameters to be sent to limit
                            the resources being returned. Valid parameters are:
 
@@ -2445,7 +2453,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of security group objects
         :rtype: :class:`~openstack.network.v2.security_group.SecurityGroup`
         """
-        return self._list(_security_group.SecurityGroup, paginated=False,
+        return self._list(_security_group.SecurityGroup, paginated=paginated,
                           **query)
 
     def update_security_group(self, security_group, **attrs):
@@ -2555,9 +2563,13 @@ class Proxy(proxy2.BaseProxy):
         return self._get(_security_group_rule.SecurityGroupRule,
                          security_group_rule)
 
-    def security_group_rules(self, **query):
+    def security_group_rules(self, paginated=False, **query):
         """Return a generator of security group rules
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param kwargs \*\*query: Optional query parameters to be sent to limit
             the resources being returned. Available parameters include:
 
@@ -2576,7 +2588,7 @@ class Proxy(proxy2.BaseProxy):
                 SecurityGroupRule`
         """
         return self._list(_security_group_rule.SecurityGroupRule,
-                          paginated=False, **query)
+                          paginated=paginated, **query)
 
     def create_segment(self, **attrs):
         """Create a new segment from attributes
@@ -2824,9 +2836,13 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_subnet.Subnet, subnet)
 
-    def subnets(self, **query):
+    def subnets(self, paginated=False, **query):
         """Return a generator of subnets
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned. Available parameters include:
 
@@ -2846,7 +2862,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of subnet objects
         :rtype: :class:`~openstack.network.v2.subnet.Subnet`
         """
-        return self._list(_subnet.Subnet, paginated=False, **query)
+        return self._list(_subnet.Subnet, paginated=paginated, **query)
 
     def update_subnet(self, subnet, **attrs):
         """Update a subnet

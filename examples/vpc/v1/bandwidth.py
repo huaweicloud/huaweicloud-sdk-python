@@ -40,6 +40,15 @@ def test_bandwidths(_conn):
         print(obj)
 
 
+def test_bandwidths_with_all_page(_conn):
+    query = {
+        "limit": 3
+    }
+    objs = _conn.vpcv1.bandwidths(paginated=True, **query)
+    for obj in objs:
+        print(obj)
+
+
 def test_get_bandwidth(_conn):
     print(_conn.vpcv1.get_bandwidth('7a7781c0-6205-486b-a6d0-d321c4a7076a'))
 
@@ -58,6 +67,7 @@ def test_find_bandwidth(_conn):
 
 if __name__ == '__main__':
     test_bandwidths(conn)
+    test_bandwidths_with_all_page(conn)
     test_get_bandwidth(conn)
     test_update_bandwidth(conn)
     test_find_bandwidth(conn)

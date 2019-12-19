@@ -227,6 +227,37 @@ class ServerAction(resource2.Resource):
     code = resource2.Body('code')
 
 
+class ChangeOs(resource2.Resource):
+    base_path = "/cloudservers/batch-changeos"
+    resource_key = "os-change"
+
+    service = ecs_service.EcsService()
+
+    allow_create = True
+    # key name
+    keyname = resource2.Body('keyname')
+    # image id
+    imageid = resource2.Body('imageid')
+    # user id
+    userid = resource2.Body('userid')
+    # adminpass
+    adminpass = resource2.Body('adminpass')
+    # metadata for ces server
+    metadata = resource2.Body('metadata', type=dict)
+    # ecs server id list
+    servers = resource2.Body('servers', type=list)
+    # mode
+    mode = resource2.Body('mode')
+
+    # task id
+    job_id = resource2.Body('job_id')
+    # order id
+    order_id = resource2.Body('order_id')
+    error = resource2.Body('error')
+    message = resource2.Body('message')
+    code = resource2.Body('code')
+
+
 class DeleteServer(resource2.Resource):
     base_path = "/cloudservers/delete"
 

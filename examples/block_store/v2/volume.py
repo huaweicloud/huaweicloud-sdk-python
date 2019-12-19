@@ -93,6 +93,12 @@ def volumes():
         print(index)
 
 
+# list volumes with paginated
+def list_volumes_one_page():
+    for index in conn.block_store.volumes(paginated=False, limit=3):
+        print(index)
+
+
 # get volume
 def get_volume():
     volume_id = 'xxx'
@@ -177,6 +183,7 @@ if __name__ == '__main__':
     update_volume()
     expand_volume()
     volumes()
+    list_volumes_one_page()
     get_volume()
     get_quota_set()
     create_volume_metadata()

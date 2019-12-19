@@ -19,13 +19,13 @@ from openstack.ims.v2 import job as _job
 
 class Proxy(proxy2.BaseProxy):
 
-    def cloudimages(self, **query):
+    def cloudimages(self, paginated=False, **query):
         """List cloud images.
 
         :param query: Query conditions.
         :return: A generator of cloud image instances.
         """
-        return self._list(_cloudimage.CloudImage, **query)
+        return self._list(_cloudimage.CloudImage, paginated=paginated, **query)
 
     def update_cloudimage(self, cloudimage_id, **data):
         """Update a cloud image.

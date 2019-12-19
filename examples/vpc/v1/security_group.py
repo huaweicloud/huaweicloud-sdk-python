@@ -40,6 +40,15 @@ def test_security_groups(_conn):
         print(obj)
 
 
+def test_security_groups_paginated(_conn):
+    query = {
+        "limit": 2
+    }
+    objs = _conn.vpcv1.security_groups(paginated=False, **query)
+    for obj in objs:
+        print(obj)
+
+
 def test_get_security_group(_conn):
     print(_conn.vpcv1.get_security_group('7236365d-7341-4d94-ae11-7ce0360bf155'))
 

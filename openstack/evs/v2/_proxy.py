@@ -90,8 +90,13 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_volume.Volume, volume_id)
 
-    def volumes(self, **query):
+    def volumes(self, paginated=True, **query):
         """Retrieve a generator of volumes
+
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
 
         :param kwargs query: Optional query parameters to be sent to limit
             the volumes being returned.  Available parameters include:
@@ -162,7 +167,7 @@ class Proxy(proxy2.BaseProxy):
 
         volume = _volume.VolumeDetail
         res = self._get_resource(volume, value=None, **query)
-        return res.list_by_offset(self._session, paginated=True, **query)
+        return res.list_by_offset(self._session, paginated=paginated, **query)
 
     def rollback_snapshot(self, snapshot_id, **data):
         """Rolling back a snapshot to a volume.

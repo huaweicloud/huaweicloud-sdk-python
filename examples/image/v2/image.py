@@ -58,6 +58,16 @@ def list_images(_conn):
     ):
         print(image)
 
+#get list images with paginated parameter
+def list_images_with_paginated(_conn):
+    for image in conn.image.images(
+        paginated=True,
+        visibility='private',
+        __platform='CentOS',
+        __imagetype='private',
+        name='suse_test_post'
+    ):
+        print(image)
 
 # Get image.
 def show_image(_conn):

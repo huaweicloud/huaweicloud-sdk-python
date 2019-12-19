@@ -40,6 +40,16 @@ def test_private_ips(_conn):
         print(obj)
 
 
+def test_private_ips_paginated(_conn):
+    query = {
+        "limit": 2
+    }
+    objs = _conn.vpcv1.private_ips('6df498a2-3480-4faf-b6e7-ac25a053bbbc',
+                                   paginated=False, **query)
+    for obj in objs:
+        print(obj)
+
+
 def test_get_private_ip(_conn):
     print(_conn.vpcv1.get_private_ip('120f4621-be02-4412-b743-6e896bb88e32'))
 

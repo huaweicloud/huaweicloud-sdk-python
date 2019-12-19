@@ -80,6 +80,14 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._create(_server.ServerAction, **data)
 
+    def batch_change_os(self, **data):
+        """
+        post method to do batch change os server
+        :param data: data: data to do change os server such as server id list,image id
+        :return: :class:`~openstack.ecs.v1.server.ChangeOs`
+        """
+        return self._create(_server.ChangeOs, **data)
+
     def delete_server(self, **data):
         """
         post method to batch delete server
@@ -123,14 +131,18 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_server.Servers, server_id)
 
-    def servers(self, **query):
+    def servers(self, paginated=True, **query):
         """
         Retrieve a generator of servers.
+        :param paginated: When set to ``False``, expect all of the data
+                          to be returned in one response. When set to
+                          ``True``, the resource supports data being
+                          returned across multiple pages.
         :param query: Query parameters.
         :return: A generator of server instances.
         """
         res = self._get_resource(_server.ServerDetail, value=None, **query)
-        return res.list_by_offset(self._session, paginated=True, **query)
+        return res.list_by_offset(self._session, paginated=paginated, **query)
 
     def get_autorecovery(self, server_id):
         '''

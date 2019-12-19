@@ -44,6 +44,15 @@ def test_public_ips(_conn):
         print(obj)
 
 
+def test_public_ips_with_one_page(_conn):
+    query = {
+        "limit": 2
+    }
+    objs = _conn.vpcv1.public_ips(paginated=False, **query)
+    for obj in objs:
+        print(obj)
+
+
 def test_get_public_ip(_conn):
     print(_conn.vpcv1.get_public_ip('6ffdbd50-1425-4901-9383-09993304db61'))
 
@@ -80,6 +89,7 @@ def test_find_public_ip(_conn):
 
 if __name__ == '__main__':
     test_public_ips(conn)
+    test_public_ips_with_one_page(conn)
     test_get_public_ip(conn)
     test_create_public_ip(conn)
     test_update_public_ip(conn)

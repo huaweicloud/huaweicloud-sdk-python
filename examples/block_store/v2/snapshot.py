@@ -35,6 +35,7 @@ def create_snapshot():
     }
     print(conn.block_store.create_snapshot(**data))
 
+
 # update snapshot
 def update_snapshot():
     snapshot_id = 'xxx'
@@ -43,6 +44,7 @@ def update_snapshot():
     }
     snapshot = conn.block_store.update_snapshot(snapshot_id, **data)
     print(snapshot)
+
 
 # get snapshot
 def get_snapshot():
@@ -56,6 +58,7 @@ def delete_snapshot():
     snapshot_id = 'xxx'
     conn.block_store.delete_snapshot(snapshot_id)
 
+
 # create snapshot metadata
 def create_snapshot_metadata():
     snapshot_id = 'xxx'
@@ -67,11 +70,13 @@ def create_snapshot_metadata():
     snapshot_metadata = conn.block_store.create_snapshot_metadata(snapshot_id, **data)
     print(snapshot_metadata)
 
+
 # get snapshot metadata
 def get_snapshot_metadata():
     snapshot_id = 'xxx'
     snapshot_metadata = conn.block_store.get_snapshot_metadata(snapshot_id, key=None)
     print(snapshot_metadata)
+
 
 # update snapshot metadata
 def update_snapshot_metadata():
@@ -84,16 +89,25 @@ def update_snapshot_metadata():
     snapshot_metadata = conn.block_store.update_snapshot_metadata(snapshot_id, key=None, **data_all)
     print(snapshot_metadata)
 
+
 # delete snapshot metadata
 def delete_snapshot_metadata():
     snapshot_id = 'xxx'
     snapshot_metadata = conn.block_store.delete_snapshot_metadata(snapshot_id, key='delete_key')
     print(snapshot_metadata)
 
+
 # snapshots
 def snapshots():
     for index in conn.block_store.snapshots():
         print(index)
+
+
+# list snapshots with paginated
+def list_snapshots_one_page():
+    for index in conn.block_store.snapshots(paginated=False, limit=4):
+        print(index)
+
 
 if __name__ == '__main__':
     create_snapshot()
@@ -105,3 +119,4 @@ if __name__ == '__main__':
     update_snapshot_metadata()
     delete_snapshot_metadata()
     snapshots()
+    list_snapshots_one_page()

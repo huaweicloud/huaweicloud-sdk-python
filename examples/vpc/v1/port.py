@@ -40,6 +40,15 @@ def test_ports(_conn):
         print(obj)
 
 
+def test_ports_paginated(_conn):
+    query = {
+        "limit": 2
+    }
+    objs = _conn.vpcv1.ports(paginated=False, **query)
+    for obj in objs:
+        print(obj)
+
+
 def test_get_port(_conn):
     print(_conn.vpcv1.get_port('0a684452-6e1c-4f07-b53a-f3be419efe9c'))
 

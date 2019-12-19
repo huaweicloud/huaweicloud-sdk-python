@@ -60,6 +60,14 @@ def list_servers():
         print(server)
 
 
+# get list of server with paginated parameter(details=False)
+# if details is not set,default True
+def list_servers_with_paginated():
+    servers = conn.compute.servers(details=False, paginated=False)
+    for server in servers:
+        print(server)
+
+
 # update server
 def update_server(server_id, server_name):
     server = conn.compute.update_server(server_id, name=server_name)
@@ -228,6 +236,7 @@ if __name__ == "__main__":
     value = "test_value"
     length = "10"
     list_servers()
+    list_servers_with_paginated()
     server = create_server()
     find_server(server.id)
     show_server(server.id)

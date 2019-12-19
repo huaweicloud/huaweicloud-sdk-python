@@ -40,6 +40,15 @@ def test_vpcs(_conn):
         print(obj)
 
 
+def test_vpcs_paginated(_conn):
+    query = {
+        "limit": 2
+    }
+    objs = _conn.vpcv1.vpcs(paginated=False, **query)
+    for obj in objs:
+        print(obj)
+
+
 def test_get_vpc(_conn):
     print(_conn.vpcv1.get_vpc('1069dd2e-db67-4d0a-bd2f-0205af7e6d63'))
 

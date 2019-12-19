@@ -1,4 +1,10 @@
 endpoint = {
+  "BSSV1": {
+    "public": "https://bss.%(domain)s/v1.0/"
+  },
+  "BSS_INTLV1": {
+    "public": "https://cbc.ap-southeast-1.%(domain)s/v1.0/"
+  },
   "ANTI_DDOS": {
     "public": "https://antiddos.%(region)s.%(domain)s/v1/%(project_id)s"
   },

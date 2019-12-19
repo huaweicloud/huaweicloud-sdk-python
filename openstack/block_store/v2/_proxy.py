@@ -50,9 +50,13 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_snapshot.Snapshot, snapshot)
 
-    def snapshots(self, details=True, **query):
+    def snapshots(self, details=True, paginated=True, **query):
         """Retrieve a generator of snapshots
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param bool details: When set to ``False``
                     :class:`~openstack.block_store.v2.snapshot.Snapshot`
                     objects will be returned. The default, ``True``, will cause
@@ -70,7 +74,7 @@ class Proxy(proxy2.BaseProxy):
         :returns: A generator of snapshot objects.
         """
         snapshot = _snapshot.SnapshotDetail if details else _snapshot.Snapshot
-        return self._list(snapshot, paginated=True, **query)
+        return self._list(snapshot, paginated=paginated, **query)
 
     def create_snapshot(self, **attrs):
         """Create a new snapshot from attributes
@@ -159,9 +163,13 @@ class Proxy(proxy2.BaseProxy):
         """
         return self._get(_volume.Volume, volume)
 
-    def volumes(self, details=True, **query):
+    def volumes(self, details=True, paginated=True, **query):
         """Retrieve a generator of volumes
 
+        :param paginated: When set to ``True``, expect all of the data
+                          to be returned in one response. When set to
+                          ``False``, the resource supports data being
+                          returned across multiple pages.
         :param bool details: When set to ``False``
                     :class:`~openstack.block_store.v2.volume.Volume` objects
                     will be returned. The default, ``True``, will cause
@@ -213,7 +221,7 @@ class Proxy(proxy2.BaseProxy):
                 type is :class:`~openstack.block_store.v2.volume.VolumeDetail`.
         """
         volume = _volume.VolumeDetail if details else _volume.Volume
-        return self._list(volume, paginated=True, **query)
+        return self._list(volume, paginated=paginated, **query)
 
     def create_volume(self, **attrs):
         """Create a new volume from attributes

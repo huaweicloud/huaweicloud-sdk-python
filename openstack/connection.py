@@ -267,6 +267,7 @@ class Connection(object):
                                                 region=auth_args.get("region", None),
                                                 domain=auth_args.get('domain', None),
                                                 securitytoken=auth_args.get("securitytoken", None),
+                                                auth_url=auth_args.get('auth_url', None),
                                                 domain_id=auth_args.get("domain_id", None)
                                                 )
         elif auth_args.get('auth_token', None):

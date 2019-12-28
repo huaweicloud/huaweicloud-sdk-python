@@ -26,7 +26,8 @@ from keystoneauth1.session import TCPKeepAliveAdapter, _JSONEncoder, _determine_
 from openstack.exceptions import EndpointNotFound, SDKException
 from openstack.session import DEFAULT_USER_AGENT
 from openstack import session as osession
-from keystoneauth1 import _utils as utils
+from keystoneauth1 import _utils as log_utils
+from openstack import utils
 from openstack.session import map_exceptions
 from openstack.service_endpoint import endpoint as _endpoint
 from keystoneauth1 import exceptions
@@ -38,9 +39,10 @@ TERMINATORSTRING = "sdk_request"
 ALGORITHM = "SDK-HMAC-SHA256"
 PYTHON2 = "2"
 UTF8 = "utf-8"
-IAMURL = "https://iam.%s/v3/%s"
+PROJECTIAMURL = "https://iam.%s.%s/v3/"
+GLOBALIAMURL = "https://iam.%s/v3/"
 
-_logger = utils.get_logger(__name__)
+_logger = log_utils.get_logger(__name__)
 
 
 def construct_session(session_obj=None):
@@ -152,7 +154,7 @@ class AkSksignature(object):
         canonical_header = '\n'.join(canonical_header)
         canonical_header += '\n'
         signed_header = ';'.join([k.lower() for k in self.headtosign])
-        body = body if body  else ""
+        body = body if body else ""
         request_payload = hashlib.sha256(get_utf8_bytes(body)).hexdigest()
         return '\n'.join(
             [canonical_method, canonical_uri, canonical_querystring, canonical_header, signed_header, request_payload])
@@ -254,6 +256,7 @@ class ASKSession(osession.Session):
                  **kwargs
                  ):
         self.project_id = kwargs.get("project_id")
+        self.auth_url = kwargs.get('auth_url', None)
         self.domain_id = kwargs.get("domain_id", None)
         self.domain = kwargs.get("domain")
         self.region = kwargs.get("region")
@@ -491,10 +494,14 @@ class ASKSession(osession.Session):
 
     def __fetch_all_endpoint_service_project_level(self):
         kvendpoints = {}
-        resp = self.request(IAMURL % (self.domain, "endpoints"), "GET",
+        if self.auth_url:
+            auth_url = self.auth_url
+        else:
+            auth_url = PROJECTIAMURL % (self.region, self.domain)
+        resp = self.request(utils.urljoin(auth_url, "endpoints"), "GET",
                             endpoint_filter=identity_service.AdminService())
         endpoints = resp.json().get("endpoints", [])
-        resp = self.request(IAMURL % (self.domain, "services"), "GET",
+        resp = self.request(utils.urljoin(auth_url, "services"), "GET",
                             endpoint_filter=identity_service.AdminService())
         services = resp.json().get("services", [])
         id_endpoint_map, servicetype_id_map = {}, {}
@@ -520,10 +527,14 @@ class ASKSession(osession.Session):
 
     def __fetch_all_endpoint_service_global_level(self):
         kvendpoints = {}
-        resp = self.request(IAMURL % (self.domain, "endpoints"), "GET",
+        if self.auth_url:
+            auth_url = self.auth_url
+        else:
+            auth_url = GLOBALIAMURL % self.domain
+        resp = self.request(utils.urljoin(auth_url, "endpoints"), "GET",
                             endpoint_filter=identity_service.AdminService())
         endpoints = resp.json().get("endpoints", [])
-        resp = self.request(IAMURL % (self.domain, "services"), "GET",
+        resp = self.request(utils.urljoin(auth_url, "services"), "GET",
                             endpoint_filter=identity_service.AdminService())
         services = resp.json().get("services", [])
         id_endpoint_map, servicetype_id_map = {}, {}

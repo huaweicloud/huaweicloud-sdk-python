@@ -924,6 +924,45 @@ class Resource(object):
             query_params[cls.query_marker_key] = new_marker
 
     @classmethod
+    def list_once(cls, session, **params):
+        """
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param dict params: These keyword arguments are passed through the
+            :meth:`~openstack.resource2.QueryParamter._transpose` method
+            to find if any of them match expected query parameters to be
+            sent in the *params* argument to
+            :meth:`~openstack.session.Session.get`. They are additionally
+            checked against the
+            :data:`~openstack.resource2.Resource.base_path` format string
+            to see if any path fragments need to be filled in by the contents
+            of this argument.
+
+        :return: A instance of :class:`Resource` objects.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_list` is not set to ``True``.
+        """
+        if not cls.allow_list:
+            raise exceptions.MethodNotSupported(cls, "list")
+        query_params = cls._query_mapping._transpose(params)
+        uri = cls.get_list_uri(params)
+        service = cls.get_service_filter(cls, session)
+        endpoint_override = cls.service.get_endpoint_override()
+
+        resp = session.get(uri, endpoint_filter=cls.service,
+                           microversion=service.microversion,
+                           endpoint_override=endpoint_override,
+                           headers={"Accept": "application/json"},
+                           params=query_params)
+
+        response_json = resp.json()
+        if not response_json:
+            return
+
+        value = cls.existing(**response_json)
+        return value
+
+    @classmethod
     def list_by_offset(cls, session, paginated=False, **params):
         """This method is a generator which yields resource objects.
 

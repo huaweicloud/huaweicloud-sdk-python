@@ -154,7 +154,7 @@ class AkSksignature(object):
         canonical_header = '\n'.join(canonical_header)
         canonical_header += '\n'
         signed_header = ';'.join([k.lower() for k in self.headtosign])
-        body = body if body else ""
+        body = body if body  else ""
         request_payload = hashlib.sha256(get_utf8_bytes(body)).hexdigest()
         return '\n'.join(
             [canonical_method, canonical_uri, canonical_querystring, canonical_header, signed_header, request_payload])
@@ -255,8 +255,8 @@ class ASKSession(osession.Session):
                  additional_user_agent=None,
                  **kwargs
                  ):
-        self.project_id = kwargs.get("project_id")
         self.auth_url = kwargs.get('auth_url', None)
+        self.project_id = kwargs.get("project_id")
         self.domain_id = kwargs.get("domain_id", None)
         self.domain = kwargs.get("domain")
         self.region = kwargs.get("region")

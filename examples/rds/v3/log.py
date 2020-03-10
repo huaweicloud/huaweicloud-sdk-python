@@ -27,7 +27,7 @@ def list_error_log(conn):
     }
     error_log_list = conn.rdsv3.list_instance_errorlog(**query)
     for error_log in error_log_list:
-        print error_log
+        print(error_log)
 
 
 def list_slow_log(conn):
@@ -38,4 +38,4 @@ def list_slow_log(conn):
     }
     slow_log_list = conn.rdsv3.list_instance_slowlog(**query)
     for slow_log in slow_log_list:
-        print slow_log
+        print(slow_log)

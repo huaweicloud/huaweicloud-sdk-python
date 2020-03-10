@@ -273,6 +273,28 @@ class BaseProxy(object):
         res = self._get_resource(resource_type, value, **attrs)
         return res.list(self._session, paginated=paginated, **attrs)
 
+    def _list_once(self, resource_type, value=None, **attrs):
+        """List a resource
+
+        :param resource_type: The type of resource to delete. This should
+                              be a :class:`~openstack.resource2.Resource`
+                              subclass with a ``from_id`` method.
+        :param value: The resource to list. It can be the ID of a resource, or
+                      a :class:`~openstack.resource2.Resource` object. When set
+                      to None, a new bare resource is created.
+        :param dict attrs: Attributes to be passed onto the
+            :meth:`~openstack.resource2.Resource.list` method. These should
+            correspond to either :class:`~openstack.resource2.URI` values
+            or appear in :data:`~openstack.resource2.Resource._query_mapping`.
+
+        :returns: A generator of Resource objects.
+        :raises: ``ValueError`` if ``value`` is a
+                 :class:`~openstack.resource2.Resource` that doesn't match
+                 the ``resource_type``.
+        """
+        res = self._get_resource(resource_type, value, **attrs)
+        return res.list_once(self._session, **attrs)
+
     def _head(self, resource_type, value=None, **attrs):
         """Retrieve a resource's header
 

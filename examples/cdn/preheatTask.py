@@ -18,22 +18,6 @@ from openstack import connection
 os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE',
                       'xxxxxxxxxxx')  # CDN API url,example:https://cdn.myhuaweicloud.com/v1.0/
 
-# token Auth
-# username = "xxxxxxxxxxx"  # IAM User Name
-# password = "xxxxxxxxxxx"  # IAM User Password
-# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
-# userDomainId = "xxxxxxxxxxx"  # Account ID
-# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
-#
-# conn = connection.Connection(
-#     auth_url=auth_url,
-#     user_domain_id=userDomainId,
-#     project_id=projectId,
-#     username=username,
-#     password=password
-# )
-
-
 # AKSK Auth
 projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
 cloud = "xxxxxxxxxxx"  # cdn use: cloud = "myhuaweicloud.com"
@@ -49,15 +33,36 @@ conn = connection.Connection(
     sk=SK)
 
 
-def preheat_create(preheat_task):
+# token Auth
+# username = "xxxxxxxxxxx"  # IAM User Name
+# password = "xxxxxxxxxxx"  # IAM User Password
+# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+# userDomainId = "xxxxxxxxxxx"  # Account ID
+# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
+#
+# conn = connection.Connection(
+#     auth_url=auth_url,
+#     user_domain_id=userDomainId,
+#     project_id=projectId,
+#     username=username,
+#     password=password
+# )
+
+# new version API
+# part 3: Refreshing and Preheating
+# Creating a Preheating Task
+def preheat_create(_preheat_task):
     print("preheat urls or dirs:")
-    preheattask = conn.cdn.create_preheat_task(**preheat_task)
-    print(preheattask)
+    task = conn.cdn.create_preheat_task(**_preheat_task)
+    print(task)
 
 
 if __name__ == "__main__":
-    preheat_task_sample = {
+    # new version API
+    # part 3: Refreshing and Preheating
+    # Creating a Preheating Task
+    preheat_task = {
         "urls": ["xxxxxxxxxxx",
                  "xxxxxxxxxxx"]
     }
-    preheat_create(preheat_task_sample)
+    preheat_create(preheat_task)

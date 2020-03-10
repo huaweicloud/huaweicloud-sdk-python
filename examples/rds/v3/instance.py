@@ -18,7 +18,7 @@ conn = connection.Connection(
 
 def datastore_versions(conn):
     for version in conn.rdsv3.datastore_versions('mysql'):
-        print version
+        print(version)
 
 
 def flavors(conn):
@@ -27,7 +27,7 @@ def flavors(conn):
          'version_name': '5.6'
     }
     for flavor in conn.rdsv3.flavors(**query):
-        print flavor
+        print(flavor)
 
 
 def instances(conn):
@@ -36,7 +36,7 @@ def instances(conn):
         'limit': 100
     }
     for instance in conn.rdsv3.instances(**query):
-        print instance
+        print(instance)
 
 
 def create_instance(conn):
@@ -101,7 +101,7 @@ def create_instance(conn):
     if isinstance(result, ErrorResponse):
         output_error_response(result)
     else:
-        print result.job_id
+        print(result.job_id)
 
 
 def resize_instance(conn):
@@ -112,7 +112,7 @@ def resize_instance(conn):
     if isinstance(result, ErrorResponse):
         output_error_response(result)
     else:
-        print result.job_id
+        print(result.job_id)
 
 
 def resize_instance_volume(conn):
@@ -138,5 +138,5 @@ def single_to_ha(conn):
 
 
 def output_error_response(response):
-    print "Error Code: %s" % response.error_code
-    print "Error Message: %s" % response.error_msg
+    print("Error Code: %s" % response.error_code)
+    print("Error Message: %s" % response.error_msg)

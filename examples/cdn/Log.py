@@ -19,22 +19,6 @@ from openstack import connection
 os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE',
                       'xxxxxxxxxxx')  # CDN API url,example:https://cdn.myhuaweicloud.com/v1.0/
 
-# token Auth
-# username = "xxxxxxxxxxx"  # IAM User Name
-# password = "xxxxxxxxxxx"  # IAM User Password
-# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
-# userDomainId = "xxxxxxxxxxx"  # Account ID
-# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
-#
-# conn = connection.Connection(
-#     auth_url=auth_url,
-#     user_domain_id=userDomainId,
-#     project_id=projectId,
-#     username=username,
-#     password=password
-# )
-
-
 # AKSK Auth
 projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
 cloud = "xxxxxxxxxxx"  # cdn use: cloud = "myhuaweicloud.com"
@@ -50,27 +34,43 @@ conn = connection.Connection(
     sk=SK)
 
 
-def list_logs(domain_name, query_date):
-    # example: query_date = '1532620800000'
-    logs = conn.cdn.logs(domain_name=domain_name, query_date=query_date, page_number=1, page_size=10)
+# token Auth
+# username = "xxxxxxxxxxx"  # IAM User Name
+# password = "xxxxxxxxxxx"  # IAM User Password
+# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+# userDomainId = "xxxxxxxxxxx"  # Account ID
+# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
+#
+# conn = connection.Connection(
+#     auth_url=auth_url,
+#     user_domain_id=userDomainId,
+#     project_id=projectId,
+#     username=username,
+#     password=password
+# )
+
+# new version API
+# part 5: Log Management
+# Querying Logs
+def list_logs(_domain_name, _query_date):
+    logs = conn.cdn.logs(domain_name=_domain_name, query_date=_query_date, page_number=1, page_size=10)
     log_list = list(logs)
     print(log_list)
-    # for log in conn.cdn.logs(domain_name=domain_name, query_date=today):
-    #     print(log)
 
 
-def list_logs_by_enterprise_project_id(domain_name, query_date, enterprise_project_id):
-    # example: query_date = '1532620800000'
-    logs = conn.cdn.logs_by_enterprise_project_id(domain_name=domain_name, query_date=query_date, page_number=1,
-                                                  page_size=10,
-                                                  enterprise_project_id=enterprise_project_id)
+def list_logs_by_enterprise_project_id(_domain_name, _query_date, _enterprise_project_id):
+    logs = conn.cdn.logs_by_enterprise_project_id(domain_name=_domain_name, query_date=_query_date, page_number=1,
+                                                  page_size=10, enterprise_project_id=_enterprise_project_id)
     log_list = list(logs)
     print(log_list)
 
 
 if __name__ == "__main__":
-    today = int(time.time() * 1000) - 24 * 3600 * 1000
-    domain = "xxxxxxxxxxx"
-    enterprise_project_id_sample = "xxxxxxxxxxx"
-    list_logs(domain, today)
-    list_logs_by_enterprise_project_id(domain, today, enterprise_project_id_sample)
+    # new version API
+    # part 5: Log Management
+    # Querying Logs
+    query_date = int(time.time() * 1000) - 24 * 3600 * 1000
+    domain_name = "xxxxxxxxxxx"
+    enterprise_project_id = "xxxxxxxxxxx"
+    list_logs(domain_name, query_date)
+    list_logs_by_enterprise_project_id(domain_name, query_date, enterprise_project_id)

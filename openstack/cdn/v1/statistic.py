@@ -228,3 +228,51 @@ class ConsumptionSummaryByDomain(Statistic):
     stat_type = resource.Body('stat_type')
     #: Includes mainland_china and outside_mainland_china.
     service_area = resource.Body('service_area')
+
+
+class DomainItemDetails(Statistic):
+    base_path = '/cdn/statistics/domain-item-details'
+    resource_key = 'domain_item_details'
+
+    stat_type = resource.Body('stat_type')
+    domains = resource.Body('domains')
+
+
+class DomainItemLocationDetails(Statistic):
+    base_path = '/cdn/statistics/domain-item-location-details'
+    resource_key = 'domain_item_location_details'
+
+    stat_type = resource.Body('stat_type')
+    domains = resource.Body('domains')
+
+
+class TopUrl(Statistic):
+    base_path = '/cdn/statistics/top-url'
+
+    top_url_summary = resource.Body('top_url_summary')
+    service_area = resource.Body('service_area')
+
+
+class RegionDetailSummary(Statistic):
+    base_path = '/cdn/statistics/region-detail-summary'
+
+    region_data = resource.Body('region_data')
+
+
+class CarrierDetailSummary(Statistic):
+    base_path = '/cdn/statistics/carrier-detail-summary'
+
+    carrier_data = resource.Body('carrier_data')
+
+
+class RegionCarrierDomain(Statistic):
+    base_path = '/cdn/statistics/region-carrier-domain'
+
+    domain = resource.Body('domain')
+
+
+class RegionCarrierDetail(StatisticDetail):
+    base_path = '/cdn/statistics/region-carrier-detail'
+
+    region = resource.Body('region')
+    carrier = resource.Body('carrier')

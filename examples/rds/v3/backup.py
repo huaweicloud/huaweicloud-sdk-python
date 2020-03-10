@@ -36,14 +36,14 @@ def create_backup_policy(conn):
         "instance_id": "instance_id",
         "keep_days": 0,
     }
-    print (conn.rdsv3.create_backup_policy(**close_policy))
+    print(conn.rdsv3.create_backup_policy(**close_policy))
 
 
 def get_backup_policy(conn):
     query = {
         'instance_id': 'instance_id',
        }
-    print conn.rdsv3.get_backup_policy(**query)
+    print(conn.rdsv3.get_backup_policy(**query))
 
 
 def create_backup(conn):
@@ -63,7 +63,7 @@ def create_backup(conn):
             }]
         }
 
-    print conn.rdsv3.create_backup(**mysql_pg_backup)
+    print(conn.rdsv3.create_backup(**mysql_pg_backup))
 
 
 def delete_backup(conn):

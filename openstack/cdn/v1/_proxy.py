@@ -27,7 +27,7 @@ class Proxy(proxy2.BaseProxy):
             page. The value ranges from 10 to 1000. Mandatory.
         :param int page_number: The page number that is queried. The value
             ranges from 1 to 65535. Mandatory.
-        :param kwargs \*\*query: Optional query parameters to be sent to limit
+        :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned. Available attributes include:
 
             * domain_name: The acceleration domain name, which is matched in
@@ -99,7 +99,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-
+        :param enterprise_project_id:enterprise project id.
         :returns: One :class:`~openstack.cdn.v1.domain.Domain`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
@@ -128,12 +128,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-        :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, no exception will be set when
-                    attempting to delete a nonexistent resource.
-
+        :param enterprise_project_id:enterprise project id.
         :returns: ``None``
         """
         res = self._get_resource(_domain.Domain, domain)
@@ -144,7 +139,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-        :param \*sources: A list of dict which specifies the domain name
+        :param sources: A list of dict which specifies the domain name
             or the IP address of the origin server.
             Available keys for each source dict include:
 
@@ -167,7 +162,8 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-        :param \*sources: A list of dict which specifies the domain name
+        :param enterprise_project_id:enterprise project id.
+        :param attrs: A list of dict which specifies the domain name
             or the IP address of the origin server.
             Available keys for each source dict include:
 
@@ -203,7 +199,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-
+        :param enterprise_project_id:enterprise project id.
         :returns: One :class:`~openstack.cdn.v1.domain.Domain`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
@@ -229,7 +225,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-
+        :param enterprise_project_id:enterprise project id.
         :returns: One :class:`~openstack.cdn.v1.domain.Domain`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
@@ -269,6 +265,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
+        :param enterprise_project_id:enterprise project id.
         :param dict attrs: Keyword arguments which contains origin host
             configuration for :class:`~openstack.cdn.v1.domain.Domain`.
             Available attributes include:
@@ -308,12 +305,20 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-
+        :param enterprise_project_id:enterprise project id.
         :returns: The retrieval host configuration of this domain name
         :rtype: dict
         """
         res = self._get_resource(_domain.Domain, domain)
         return res.get_origin_host_by_enterprise_project_id(self._session, enterprise_project_id)
+
+    def set_domain_range_status(self, domain, **attrs):
+        res = self._get_resource(_domain.Domain, domain)
+        return res.set_range_status(self._session, **attrs)
+
+    def set_domain_follow302_switch(self, domain, **attrs):
+        res = self._get_resource(_domain.Domain, domain)
+        return res.set_follow302_switch(self._session, **attrs)
 
     def set_domain_referer(self, domain, **attrs):
         """Configures a referrer list
@@ -353,6 +358,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
+        :param enterprise_project_id:enterprise project id.
         :param dict attrs: Keyword arguments which contains origin host
             configuration for :class:`~openstack.cdn.v1.domain.Domain`.
             Available attributes include:
@@ -392,12 +398,39 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-
+        :param enterprise_project_id:enterprise project id.
         :returns: The referer list of this domain name
         :rtype: dict
         """
         res = self._get_resource(_domain.Domain, domain)
         return res.get_referer_by_enterprise_project_id(self._session, enterprise_project_id)
+
+    def set_domain_ip_acl(self, domain, **attrs):
+        """Set the IP acls of the domain name
+
+        :param domain: The value can be either the ID of a domain name or a
+                       :class:`~openstack.cdn.v1.domain.Domain` instance.
+        :param dict attrs: Keyword arguments which contains ip acls
+                    configuration,Available attributes include:
+                    * type: The ip acl type. The values include:
+                      0: ip acl not set; 1: blacklist; 2: whitelist.
+                    * ip_list: A list of ip
+        :returns: set result
+        :rtype: dict
+        """
+        res = self._get_resource(_domain.Domain, domain)
+        return res.set_ip_acl(self._session, **attrs)
+
+    def get_domain_ip_acl(self, domain):
+        """Query the IP acls of the domain name
+
+        :param domain: The value can be either the ID of a domain name or a
+                       :class:`~openstack.cdn.v1.domain.Domain` instance.
+        :returns: ip acls
+        :rtype: dict
+        """
+        res = self._get_resource(_domain.Domain, domain)
+        return res.get_ip_acl(self._session)
 
     def set_domain_cache_rules(self, domain, **attrs):
         """Configures a cache policy for resources on CDN nodes
@@ -446,6 +479,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
+        :param enterprise_project_id:enterprise project id.
         :param dict attrs: Keyword arguments which contains cache policies
             for :class:`~openstack.cdn.v1.domain.Domain`.
             Available attributes include:
@@ -500,7 +534,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-
+        :param enterprise_project_id:enterprise project id.
         :returns: The cache rules of this domain name
         :rtype: dict
         """
@@ -549,6 +583,7 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
+        :param enterprise_project_id:enterprise project id.
         :param dict attrs: Keyword arguments which contains cache policies
             for :class:`~openstack.cdn.v1.domain.Domain`.
             Available attributes include:
@@ -590,12 +625,56 @@ class Proxy(proxy2.BaseProxy):
 
         :param domain: The value can be either the ID of a domain name or a
                        :class:`~openstack.cdn.v1.domain.Domain` instance.
-
+        :param enterprise_project_id:enterprise project id.
         :returns: The HTTPS certificate of this domain name
         :rtype: dict
         """
         res = self._get_resource(_domain.Domain, domain)
         return res.get_https_by_enterprise_project_id(self._session, enterprise_project_id)
+
+    def get_cdn_ips(self, ips, enterprise_project_id=None):
+        """Check whether the IP belongs to Huawei CDN
+
+        :param ips: The IP for query
+        :param enterprise_project_id:enterprise project id.
+        :returns: IP attribution information
+        :rtype: list of dict
+        """
+        res = self._get_resource(_domain.Domain, ips)
+        return res.get_ip_info(self._session, enterprise_project_id)
+
+    def set_domain_response_header(self, domain, enterprise_project_id=None, **attrs):
+        """Set the response header of the domain name
+
+        :param domain: The value can be either the ID of a domain name or a
+                       :class:`~openstack.cdn.v1.domain.Domain` instance.
+        :param enterprise_project_id:enterprise project id.
+        :param dict attrs: Keyword arguments which contains response headers.
+            Available attributes include:
+            * Content-Disposition
+            * Content-Language
+            * Access-Control-Allow-Origin
+            * Access-Control-Allow-Methods
+            * Access-Control-Max-Age
+            * Access-Control-Expose-Headers
+
+        :returns: the http response headers
+        :rtype: dict
+        """
+        res = self._get_resource(_domain.Domain, domain)
+        return res.set_response_header(self._session, enterprise_project_id, **attrs)
+
+    def get_domain_response_header(self, domain, enterprise_project_id=None):
+        """Query the response header of the domain name
+
+        :param domain: The value can be either the ID of a domain name or a
+                       :class:`~openstack.cdn.v1.domain.Domain` instance.
+        :param enterprise_project_id:enterprise project id.
+        :returns: the http response headers
+        :rtype: dict
+        """
+        res = self._get_resource(_domain.Domain, domain)
+        return res.get_response_header(self._session, enterprise_project_id)
 
     def tasks(self, page_size=100, page_number=1, **query):
         """List the cache refreshing or preheating tasks matching the query
@@ -604,7 +683,7 @@ class Proxy(proxy2.BaseProxy):
             page. The value ranges from 10 to 1000. Default to 100.
         :param int page_number: The page number that is queried. The value
             ranges from 1 to 65535. Default to 1.
-        :param kwargs \*\*query: Optional query parameters to be sent to limit
+        :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned. Available attributes include:
 
             * status: The status of a task after refreshing.
@@ -688,7 +767,7 @@ class Proxy(proxy2.BaseProxy):
             The value ranges from 10 to 1000. Default to 100.
         :param int page_number: The page number that is queried. The value
             ranges from 1 to 65535. Default to 1.
-        :param kwargs \*\*query: Optional query parameters to be sent to limit
+        :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned.
 
         :returns: A generator of Task objects
@@ -701,17 +780,18 @@ class Proxy(proxy2.BaseProxy):
         return self._list(_log.Log, **query)
 
     def logs_by_enterprise_project_id(self, domain_name, query_date, enterprise_project_id,
-             page_size=100, page_number=1, **query):
+                                      page_size=100, page_number=1, **query):
         """List the logs matching the query
 
         :param str domain_name: The name of the acceleration domain name.
         :param int query_date: The date that you want to query, which is
             expressed as milliseconds since 1970-01-01 00:00:00 UTC.
+        :param enterprise_project_id:enterprise project id.
         :param int page_size: The number of logs on each page.
             The value ranges from 10 to 1000. Default to 100.
         :param int page_number: The page number that is queried. The value
             ranges from 1 to 65535. Default to 1.
-        :param kwargs \*\*query: Optional query parameters to be sent to limit
+        :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned.
 
         :returns: A generator of Task objects
@@ -726,7 +806,7 @@ class Proxy(proxy2.BaseProxy):
     def query_network_traffic(self, **query):
         """Queries the total network traffic
 
-        :param \*\*query: The query parameters. Available parameters include:
+        :param query: The query parameters. Available parameters include:
 
             * start_time: The timestamp marking the start of the query.
                 Optional.
@@ -747,7 +827,7 @@ class Proxy(proxy2.BaseProxy):
     def query_network_traffic_detail(self, **query):
         """Queries the details of network traffic
 
-        :param \*\*query: The query parameters. Available parameters include:
+        :param query: The query parameters. Available parameters include:
 
             * start_time: The timestamp marking the start of the query.
             * end_time: The timestamp marking the end of the query.
@@ -782,7 +862,7 @@ class Proxy(proxy2.BaseProxy):
     def query_bandwidth_peak(self, **query):
         """Queries the bandwidth peak value
 
-        :param \*\*query: The query parameters. Available parameters include:
+        :param query: The query parameters. Available parameters include:
 
             * start_time: The timestamp marking the start of the query.
                 Optional.
@@ -803,7 +883,7 @@ class Proxy(proxy2.BaseProxy):
     def query_bandwidth(self, **query):
         """Queries the bandwidth details
 
-        :param \*\*query: The query parameters. Available parameters include:
+        :param query: The query parameters. Available parameters include:
 
             * start_time: The timestamp marking the start of the query.
                 Optional.
@@ -841,7 +921,7 @@ class Proxy(proxy2.BaseProxy):
     def query_summary(self, **query):
         """Queries summary information of data type and domains in the interval
 
-        :param \*\*query: The query parameters. Available parameters include:
+        :param query: The query parameters. Available parameters include:
 
             * start_time: The timestamp marking the start of the query.
                 Optional.
@@ -881,7 +961,7 @@ class Proxy(proxy2.BaseProxy):
     def query_summary_detail(self, **query):
         """Queries details information of data type and domains in the interval
 
-        :param \*\*query: The query parameters. Available parameters include:
+        :param query: The query parameters. Available parameters include:
 
             * start_time: The timestamp marking the start of the query.
                 Optional.
@@ -938,7 +1018,7 @@ class Proxy(proxy2.BaseProxy):
     def summaries(self, **query):
         """Queries summaries of data type in the interval for each domain
 
-        :param \*\*query: The query parameters. Available parameters include:
+        :param query: The query parameters. Available parameters include:
 
             * start_time: The timestamp marking the start of the query.
                 Optional.
@@ -973,3 +1053,245 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.cdn.v1.statistic.ConsumptionSummary`
         """
         return self._list(_statistic.ConsumptionSummaryByDomain, **query)
+
+    def query_domain_item_details(self, **query):
+        """Querying Statistics About Domain Names in Batches
+
+        :param query: The query parameters. Available parameters include:
+
+            * start_time: Specifies the start time of a query (timestamp). Only exact 5-minute intervals are allowed.
+                Mandatory.
+            * end_time: Specifies the end time of a query (timestamp). Only exact 5-minute intervals are allowed.
+                Mandatory.
+            * domain_name: Specifies a domain name list.
+                Use commas (,) to separate domain names, for example, www.test1.com,www.test2.com.
+                The value "ALL" indicates that all domain names under a tenant are queried.
+                Mandatory.
+            * stat_type: Specifies the metric types.
+                Resource consumption:
+                    bw (bandwidth)
+                    flux (traffic)
+                    bs_bw (retrieval bandwidth)
+                    bs_flux (retrieval traffic)
+                Access information:
+                    req_num (total number of requests)
+                    hit_num (number of hits),
+                    bs_num (total number of content retrieval requests)
+                    bs_fail_num (number of content retrieval failures)
+                    and hit_flux (hit traffic)
+                Mandatory.
+            * enterprise_project_id: Specifies the enterprise project ID.
+                The default enterprise project is used if this value is not specified.
+                "ALL" indicates all authorized projects.
+                Optional.
+
+        :returns: The Statistics About Domain Names matching the query
+        :rtype: :class:`~openstack.cdn.v1.statistic.DomainItemDetails`
+        """
+        res = self._get_resource(_statistic.DomainItemDetails, None)
+        return res.query(self._session, **query)
+
+    def query_domain_item_location_details(self, **query):
+        """Querying Statistics About Domain Names by Region and Carrier in Batches
+
+        :param query: The query parameters. Available parameters include:
+
+            * start_time: Specifies the start time of a query (timestamp). Only exact 5-minute intervals are allowed.
+                Mandatory.
+            * end_time: Specifies the end time of a query (timestamp). Only exact 5-minute intervals are allowed.
+                Mandatory.
+            * domain_name: Specifies a domain name list.
+                Use commas (,) to separate domain names, for example, www.test1.com,www.test2.com.
+                The value "ALL" indicates that all domain names under a tenant are queried.
+                Mandatory.
+            * stat_type: Specifies the metric types.
+                Resource consumption:
+                    bw (bandwidth)
+                    flux (traffic)
+                Access status:
+                    req_num (total number of requests)
+                Mandatory.
+            * region: Specifies the region list. Multiple regions are separated by commas (,).
+                The value "ALL" indicates that all regions are queried.
+                Mandatory.
+            * isp: Specifies the carrier list. Multiple carriers are separated by commas (,).
+                The value "ALL" indicates that all carriers are queried.
+                Mandatory.
+            * enterprise_project_id: Specifies the enterprise project ID.
+                The default enterprise project is used if this value is not specified.
+                "ALL" indicates all authorized projects.
+                Optional.
+
+        :returns: The Statistics About Domain Names matching the query
+        :rtype: :class:`~openstack.cdn.v1.statistic.DomainItemLocationDetails`
+        """
+        res = self._get_resource(_statistic.DomainItemLocationDetails, None)
+        return res.query(self._session, **query)
+
+    def query_top_url(self, **query):
+        """Query the statistical details of the top 100 URLs.
+
+        :param query: The query parameters. Available parameters include:
+
+            * start_time: Specifies the start time of a query (timestamp, in milliseconds).
+                After the value of a timestamp is converted to a date, the date must comply with the following format:
+                YYYY-MM-DD 00:00:00.Optional.
+            * end_time: Specifies the end time of a query (timestamp, in milliseconds).
+                After the value of a timestamp is converted to a date, the date must comply with the following format:
+                YYYY-MM-DD 00:00:00.Optional.
+            * domain_name: Specifies a domain name list.
+                Use commas (,) to separate domain names, for example, www.test1.com,www.test2.com.
+                The value "ALL" indicates that all domain names under a tenant are queried.
+                Mandatory.
+            * service_area: Valid values :
+                mainland_china (the Chinese mainland)
+                outside_mainland_china (outside the Chinese mainland)
+                The default value is mainland_china.
+                Optional.
+            * stat_type: Specifies the statistic types, including flux (traffic) and req_num (total requests).Mandatory.
+            * enterprise_project_id: Specifies the enterprise project ID.
+                "ALL" indicates all authorized projects.
+                Optional.The default enterprise project is used if this value is not specified.
+
+        :returns: The Statistics About Domain Names matching the query
+        :rtype: :class:`~openstack.cdn.v1.statistic.TopUrl`
+        """
+        res = self._get_resource(_statistic.TopUrl, None)
+        return res.query(self._session, **query)
+
+    def query_region_detail_summary(self, **query):
+        """Query the consumption of domain names by region within a time range.
+
+        :param query: The query parameters. Available parameters include:
+
+            * start_time: Specifies the start time of a query (timestamp, in milliseconds).Optional.
+            * end_time: Specifies the end time of a query (timestamp, in milliseconds).Optional.
+            * domain_name: Specifies a domain name list.
+                Use commas (,) to separate domain names, for example, www.test1.com,www.test2.com.
+                The value "ALL" indicates that all domain names under a tenant are queried.
+                Mandatory.
+            * stat_type: Specifies the types, including flux (traffic), bw (bandwidth), and req_num (total requests).
+                Mandatory.
+            * region: Specifies the region list, which covers the 34 provincial-level divisions
+                (including Hong Kong, Macao, and Taiwan) of China, regions outside China, and others.
+                Separate these regions with commas (,). For example, beijing,neimenggu.
+                The value "ALL" indicates that all regions are queried.
+                Mandatory.
+            * enterprise_project_id: Specifies the enterprise project ID.
+                "ALL" indicates all authorized projects.
+                Optional.The default enterprise project is used if this value is not specified.
+
+        :returns: The Statistics About Domain Names matching the query
+        :rtype: :class:`~openstack.cdn.v1.statistic.RegionDetailSummary`
+        """
+        res = self._get_resource(_statistic.RegionDetailSummary, None)
+        return res.query(self._session, **query)
+
+    def query_carrier_detail_summary(self, **query):
+        """Query the consumption of domain names by carrier within a time range.
+
+        :param query: The query parameters. Available parameters include:
+
+            * start_time: Specifies the start time of a query (timestamp, in milliseconds).Optional.
+            * end_time: Specifies the end time of a query (timestamp, in milliseconds).Optional.
+            * domain_name: Specifies a domain name list.
+                Use commas (,) to separate domain names, for example, www.test1.com,www.test2.com.
+                The value "ALL" indicates that all domain names under a tenant are queried.
+                Mandatory.
+            * stat_type: Specifies the types, including flux (traffic), bw (bandwidth), and req_num (total requests).
+                Mandatory.
+            * carrier: Specifies the carrier list. Abbreviated names of the carriers are used here.
+                Currently, valid values are CTCC (China Telecom), CUCC (China Unicom),
+                ENET (China Education and Research Network), GWB (Great Wall Broadband), CMCC (China Mobile),
+                and CRC (Tietong). The carrier names are separated by commas (,). For example, CTCC,CMCC.
+                The value "ALL" indicates that all carriers are queried.
+                Mandatory.
+            * enterprise_project_id: Specifies the enterprise project ID.
+                "ALL" indicates all authorized projects.
+                Optional.The default enterprise project is used if this value is not specified.
+
+        :returns: The Statistics About Domain Names matching the query
+        :rtype: :class:`~openstack.cdn.v1.statistic.CarrierDetailSummary`
+        """
+        res = self._get_resource(_statistic.CarrierDetailSummary, None)
+        return res.query(self._session, **query)
+
+    def query_region_carrier_domain(self, **query):
+        """Querying Statistics About Each Domain Name Under a Region or Carrier
+
+        :param query: The query parameters. Available parameters include:
+
+            * start_time: Specifies the start time of a query (timestamp, in milliseconds).Optional.
+            * end_time: Specifies the end time of a query (timestamp, in milliseconds).Optional.
+            * domain_name: Specifies a domain name list.
+                Use commas (,) to separate domain names, for example, www.test1.com,www.test2.com.
+                The value "ALL" indicates that all domain names under a tenant are queried.
+                Mandatory.
+            * stat_type: Specifies the types, including flux (traffic), bw (bandwidth), and req_num (total requests).
+                Mandatory.
+            * region: Specifies the region list, which covers the 34 provincial-level divisions
+                (including Hong Kong, Macao, and Taiwan) of China, regions outside China, and others.
+                Separate these regions with commas (,). For example, beijing,neimenggu.
+                The value "ALL" indicates that all regions are queried.
+                region and carrier cannot both be set to "ALL".
+                Mandatory.
+            * carrier: Specifies the carrier list. Abbreviated names of the carriers are used here.
+                Currently, valid values are CTCC (China Telecom), CUCC (China Unicom),
+                ENET (China Education and Research Network), GWB (Great Wall Broadband), CMCC (China Mobile),
+                and CRC (Tietong). The carrier names are separated by commas (,). For example, CTCC,CMCC.
+                The value "ALL" indicates that all carriers are queried.
+                region and carrier cannot both be set to "ALL".
+                Mandatory.
+            * enterprise_project_id: Specifies the enterprise project ID.
+                "ALL" indicates all authorized projects.
+                Optional.The default enterprise project is used if this value is not specified.
+
+        :returns: The Statistics About Domain Names matching the query
+        :rtype: :class:`~openstack.cdn.v1.statistic.RegionCarrierDomain`
+        """
+        res = self._get_resource(_statistic.RegionCarrierDomain, None)
+        return res.query(self._session, **query)
+
+    def query_region_carrier_detail(self, **query):
+        """Query the statistics of domain names under a specified carrier in a specified region and specified period.
+
+        :param query: The query parameters. Available parameters include:
+
+            * start_time: Specifies the start time of a query (timestamp, in milliseconds).Optional.
+            * end_time: Specifies the end time of a query (timestamp, in milliseconds).Optional.
+            * domain_name: Specifies a domain name list.
+                Use commas (,) to separate domain names, for example, www.test1.com,www.test2.com.
+                The value "ALL" indicates that all domain names under a tenant are queried.
+                Mandatory.
+            * stat_type: Specifies the types, including flux (traffic), bw (bandwidth), and req_num (total requests).
+                Mandatory.
+            * region: Specifies the region list, which covers the 34 provincial-level divisions
+                (including Hong Kong, Macao, and Taiwan) of China, regions outside China, and others.
+                Separate these regions with commas (,). For example, beijing,neimenggu.
+                The value "ALL" indicates that all regions are queried.
+                region and carrier cannot both be set to "ALL".
+                Mandatory.
+            * carrier: Specifies the carrier list. Abbreviated names of the carriers are used here.
+                Currently, valid values are CTCC (China Telecom), CUCC (China Unicom),
+                ENET (China Education and Research Network), GWB (Great Wall Broadband), CMCC (China Mobile),
+                and CRC (Tietong). The carrier names are separated by commas (,). For example, CTCC,CMCC.
+                The value "ALL" indicates that all carriers are queried.
+                region and carrier cannot both be set to "ALL".
+                Mandatory.
+            * interval: Specifies the sampling interval.
+                interval is measured by seconds, and its values are described as follows:
+                For a time span of 1 day, the value can be 5 minutes, 1 hour, 4 hours, or 8 hours.
+                For a time span of 2 to 7 days, the value can be 1 hour, 4 hours, 8 hours, or 1 day.
+                For a time span of 8 to 31 days, the value can be 4 hours, 8 hours, or 1 day.
+                If you need to specify it in the request, convert the interval into seconds.
+                Optional.If you do not specify a value for interval, the system uses the smallest value corresponding
+                to the queried time span by default.
+            * enterprise_project_id: Specifies the enterprise project ID.
+                "ALL" indicates all authorized projects.
+                Optional.The default enterprise project is used if this value is not specified.
+
+        :returns: The Statistics About Domain Names matching the query
+        :rtype: :class:`~openstack.cdn.v1.statistic.RegionCarrierDomain`
+        """
+        res = self._get_resource(_statistic.RegionCarrierDetail, None)
+        return res.query(self._session, **query)

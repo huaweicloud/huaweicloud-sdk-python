@@ -100,7 +100,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-        :param \*sources: A list of dict which specifies the domain name
+        :param sources: A list of dict which specifies the domain name
             or the IP address of the origin server.
             Available keys for each source dict include:
 
@@ -194,7 +194,6 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-
         :returns: The retrieval host configuration of this domain name
         :rtype: dict
         """
@@ -205,6 +204,48 @@ class Domain(cdn_resource.Resource):
         resp_json = resp.json()
         self.check_error(resp_json)
         return resp_json['origin_host']
+
+    def set_range_status(self, session, **attrs):
+        """Set the range status of the domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param dict attrs: Keyword arguments which contains range status
+            configuration, Available attributes include:
+            * range_status: The range status. The values include:on/off.
+        :returns: the range status
+        :rtype: dict
+        """
+        body = attrs
+        url = utils.urljoin(self.base_path, self.id, 'range-switch')
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['origin_range']
+
+    def set_follow302_switch(self, session, **attrs):
+        """Set the follow 302 status of the domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param dict attrs: Keyword arguments which contains range status
+            configuration, Available attributes include:
+            * follow302_status: The range status. The values include:on/off.
+        :returns: the follow 302 status
+        :rtype: dict
+        """
+        body = attrs
+        url = utils.urljoin(self.base_path, self.id, 'follow302-switch')
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['follow_status']
 
     def set_referer(self, session, **attrs):
         """Configures a referrer list
@@ -257,6 +298,46 @@ class Domain(cdn_resource.Resource):
         resp_json = resp.json()
         self.check_error(resp_json)
         return resp_json['referer']
+
+    def set_ip_acl(self, session, **attrs):
+        """Set the IP acls of the domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param dict attrs: Keyword arguments which contains ip acls
+            configuration,Available attributes include:
+
+            * type: The ip acl type. The values include:
+              0: ip acl not set; 1: blacklist; 2: whitelist.
+            * ip_list: A list of ip
+        :returns: set result
+        :rtype: dict
+        """
+        body = attrs
+        url = utils.urljoin(self.base_path, self.id, 'ip-acl')
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json
+
+    def get_ip_acl(self, session):
+        """Query the IP acls of the domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :returns: ip acls
+        :rtype: dict
+        """
+        url = utils.urljoin(self.base_path, self.id, 'ip-acl')
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.get(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json
 
     def set_cache_rules(self, session, **attrs):
         """Configures a cache policy for resources on CDN nodes
@@ -354,21 +435,18 @@ class Domain(cdn_resource.Resource):
         self.check_error(resp_json)
         return resp_json['https']
 
-
     def get_detail_by_enterprise_project_id(self, session, enterprise_project_id):
         """Get a remote resource based on this instance.
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-        :param boolean requires_id: A boolean indicating whether resource ID
-                                    should be part of the requested URI.
+        :param enterprise_project_id: enterprise project id.
 
         :returns: This :class:`Domain` instance.
         :rtype: :class:`~openstack.cdn.v1.domain.Domain`
         """
 
         request = self._prepare_request(requires_id=enterprise_project_id)
-        # NOTE(samsong8610): The URL for GET is not standard
         request.uri = utils.urljoin(request.uri, 'detail')
         params = {'enterprise_project_id': enterprise_project_id}
         endpoint_override = self.service.get_endpoint_override()
@@ -383,7 +461,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-        :param \*sources: A list of dict which specifies the domain name
+        :param dict attrs: A dict which specifies the domain name
             or the IP address of the origin server.
             Available keys for each source dict include:
 
@@ -393,6 +471,7 @@ class Domain(cdn_resource.Resource):
                            'domain'. Mandatory.
             * active_standby: Whether the source is active. 1: active,
                               0: standby. Mandatory.
+        :param enterprise_project_id:enterprise project id.
 
         :returns: This :class:`Domain` instance.
         :rtype: :class:`Domain`
@@ -416,7 +495,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-
+        :param enterprise_project_id:enterprise project id.
         :returns: This :class:`Domain` instance.
         :rtype: :class:`Domain`
         """
@@ -424,7 +503,7 @@ class Domain(cdn_resource.Resource):
         params = {'enterprise_project_id': enterprise_project_id}
         endpoint_override = self.service.get_endpoint_override()
         resp = session.delete(url, endpoint_filter=self.service,
-                           endpoint_override=endpoint_override, params=params)
+                              endpoint_override=endpoint_override, params=params)
         self._translate_response(resp)
         return self
 
@@ -433,7 +512,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-
+        :param enterprise_project_id:enterprise project id.
         :returns: This :class:`Domain` instance.
         :rtype: :class:`Domain`
         """
@@ -451,7 +530,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-
+        :param enterprise_project_id:enterprise project id.
         :returns: This :class:`Domain` instance.
         :rtype: :class:`Domain`
         """
@@ -469,6 +548,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
+        :param enterprise_project_id:enterprise project id.
         :param dict attrs: Keyword arguments which contains origin host
             configuration for :class:`~openstack.cdn.v1.domain.Domain`.
             Available attributes include:
@@ -502,7 +582,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-
+        :param enterprise_project_id:enterprise project id.
         :returns: The retrieval host configuration of this domain name
         :rtype: dict
         """
@@ -524,6 +604,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
+        :param enterprise_project_id:enterprise project id.
         :param dict attrs: Keyword arguments which contains origin host
             configuration for :class:`~openstack.cdn.v1.domain.Domain`.
             Available attributes include:
@@ -557,7 +638,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-
+        :param enterprise_project_id:enterprise project id.
         :returns: The referer list of this domain name
         :rtype: dict
         """
@@ -575,6 +656,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
+        :param enterprise_project_id:enterprise project id.
         :param dict attrs: Keyword arguments which contains cache policies
             for :class:`~openstack.cdn.v1.domain.Domain`.
             Available attributes include:
@@ -604,7 +686,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-
+        :param enterprise_project_id:enterprise project id.
         :returns: The cache rules of this domain name
         :rtype: dict
         """
@@ -626,6 +708,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
+        :param enterprise_project_id:enterprise project id.
         :param dict attrs: Keyword arguments which contains cache policies
             for :class:`~openstack.cdn.v1.domain.Domain`.
             Available attributes include:
@@ -657,7 +740,7 @@ class Domain(cdn_resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~openstack.session.Session`
-
+        :param enterprise_project_id:enterprise project id.
         :returns: The HTTPS certificate of this domain name
         :rtype: dict
         """
@@ -669,3 +752,74 @@ class Domain(cdn_resource.Resource):
         resp_json = resp.json()
         self.check_error(resp_json)
         return resp_json['https']
+
+    def get_ip_info(self, session, enterprise_project_id):
+        """Check whether the IP belongs to Huawei CDN
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param enterprise_project_id:enterprise project id.
+        :returns: IP attribution information
+        :rtype: list of dict
+        """
+        url = utils.urljoin('/cdn/ip-info')
+        params = {'ips': self.id}
+        if enterprise_project_id:
+            params['enterprise_project_id'] = enterprise_project_id
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.get(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['cdn_ips']
+
+    def set_response_header(self, session, enterprise_project_id, **attrs):
+        """Set the response header of the domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param enterprise_project_id:enterprise project id.
+        :param dict attrs: Keyword arguments which contains response headers.
+            Available attributes include:
+            * Content-Disposition
+            * Content-Language
+            * Access-Control-Allow-Origin
+            * Access-Control-Allow-Methods
+            * Access-Control-Max-Age
+            * Access-Control-Expose-Headers
+
+        :returns: the http response headers
+        :rtype: dict
+        """
+        params = {}
+        if enterprise_project_id:
+            params['enterprise_project_id'] = enterprise_project_id
+        body = {'headers': attrs}
+        url = utils.urljoin(self.base_path, self.id, 'response-header')
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.put(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override,
+                           json=body, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['headers']
+
+    def get_response_header(self, session, enterprise_project_id):
+        """Query the response header of the domain name
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~openstack.session.Session`
+        :param enterprise_project_id:enterprise project id.
+        :returns: the http response headers
+        :rtype: dict
+        """
+        params = {}
+        if enterprise_project_id:
+            params['enterprise_project_id'] = enterprise_project_id
+        url = utils.urljoin(self.base_path, self.id, 'response-header')
+        endpoint_override = self.service.get_endpoint_override()
+        resp = session.get(url, endpoint_filter=self.service,
+                           endpoint_override=endpoint_override, params=params)
+        resp_json = resp.json()
+        self.check_error(resp_json)
+        return resp_json['headers']

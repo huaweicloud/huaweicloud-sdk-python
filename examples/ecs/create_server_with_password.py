@@ -23,7 +23,7 @@ conn = connection.Connection(auth_url=auth_url,
 # use user_data to create linux server
 def create_server_with_user_data():
     user_date_org = "#!/bin/bash \r\n echo 'root:xxxxx' | chpasswd ;"
-    user_data = base64.b64encode(user_date_org)
+    user_data = utils.b64encode(user_date_org)
 
     data = {
         "availability_zone": "kvmxen.dc1",

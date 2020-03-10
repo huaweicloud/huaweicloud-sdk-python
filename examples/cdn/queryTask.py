@@ -19,22 +19,6 @@ from openstack import connection
 os.environ.setdefault('OS_CDN_ENDPOINT_OVERRIDE',
                       'xxxxxxxxxxx')  # CDN API url,example:https://cdn.myhuaweicloud.com/v1.0/
 
-# token Auth
-# username = "xxxxxxxxxxx"  # IAM User Name
-# password = "xxxxxxxxxxx"  # IAM User Password
-# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
-# userDomainId = "xxxxxxxxxxx"  # Account ID
-# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
-#
-# conn = connection.Connection(
-#     auth_url=auth_url,
-#     user_domain_id=userDomainId,
-#     project_id=projectId,
-#     username=username,
-#     password=password
-# )
-
-
 # AKSK Auth
 projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
 cloud = "xxxxxxxxxxx"  # cdn use: cloud = "myhuaweicloud.com"
@@ -50,6 +34,24 @@ conn = connection.Connection(
     sk=SK)
 
 
+# token Auth
+# username = "xxxxxxxxxxx"  # IAM User Name
+# password = "xxxxxxxxxxx"  # IAM User Password
+# projectId = "xxxxxxxxxxx"  # Project ID of cn-north-1
+# userDomainId = "xxxxxxxxxxx"  # Account ID
+# auth_url = "xxxxxxxxxxx"  # IAM auth url,example: https://iam.myhuaweicloud.com/v3
+#
+# conn = connection.Connection(
+#     auth_url=auth_url,
+#     user_domain_id=userDomainId,
+#     project_id=projectId,
+#     username=username,
+#     password=password
+# )
+
+# new version API
+# part 3: Refreshing and Preheating
+# Querying a Cache Refreshing or Preheating Task
 def query_task():
     print("query tasks by time:")
     now = time.time()
@@ -59,11 +61,20 @@ def query_task():
     task_list = list(tasks)
     print(task_list)
 
-    print("\nquery task detail by id:")
-    task_id = task_list[0].id
-    task_detail = conn.cdn.get_task(task_id)
+
+# Querying Details About a Cache Refreshing or Preheating Task
+def query_task_detail(_task_id):
+    print("query task detail by id:")
+    task_detail = conn.cdn.get_task(_task_id)
     print(task_detail)
 
 
 if __name__ == "__main__":
+    # new version API
+    # part 3: Refreshing and Preheating
+    # Querying a Cache Refreshing or Preheating Task
     query_task()
+
+    # Querying Details About a Cache Refreshing or Preheating Task
+    task_id = 'xxxxxxx'
+    query_task_detail(task_id)

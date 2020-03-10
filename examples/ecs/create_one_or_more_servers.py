@@ -27,7 +27,7 @@ INTERVAL = 10
 # use user_data to create linux server
 def create_two_servers_one_time():
     user_date_org = "#!/bin/bash \r\n echo 'root:xxxxx' | chpasswd ;"
-    user_data = base64.b64encode(user_date_org)
+    user_data = utils.b64encode(user_date_org)
 
     data = {
         "availability_zone": "az1.dc1",

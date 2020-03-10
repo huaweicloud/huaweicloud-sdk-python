@@ -290,7 +290,6 @@ class Connection(object):
                 cert=cert, user_agent=user_agent)
         self._open()
 
-
     def _create_authenticator(self, authenticator, auth_plugin, **args):
         if authenticator:
             return authenticator

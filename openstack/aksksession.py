@@ -464,8 +464,13 @@ class ASKSession(osession.Session):
         sc_endpoint = self.__iam_endpoint.get(service_type_iam, "")
         if not sc_endpoint:
             return sc_endpoint
+
         if service_type == "object-store":
-            self.endpoint_cache[service_type_iam] = sc_endpoint
+            self.__endpoint_cache[service_type_iam] = sc_endpoint
+            return sc_endpoint
+
+        if service_type == "iam":
+            self.__endpoint_cache[service_type_iam] = sc_endpoint
             return sc_endpoint
         try:
             endpoint = self._get_endpoint_versions(service_type,

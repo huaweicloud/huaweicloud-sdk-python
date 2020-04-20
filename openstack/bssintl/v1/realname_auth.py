@@ -16,12 +16,7 @@
 from openstack import exceptions
 from openstack.bssintl import bss_intl_service
 from openstack import resource2
-try:
-    # Python3
-    from urllib.parse import urlencode
-except ImportError:
-    # Python2
-    from urllib import urlencode
+
 
 
 class IndividualRealnameAuth(resource2.Resource):
@@ -54,7 +49,7 @@ class IndividualRealnameAuth(resource2.Resource):
     # Whether to transfer to manual review.
     isReview = resource2.Body('isReview')
     # Error list.
-    errorItems = resource2.Body('errorItems', type=list)
+    failCheckItems = resource2.Body('failCheckItems', type=list)
     #  Status code.
     error_code = resource2.Body('error_code')
     # Error description.
@@ -94,7 +89,7 @@ class EnterpriseRealnameAuth(resource2.Resource):
     # Whether to transfer to manual review.
     isReview = resource2.Body('isReview')
     # Error list.
-    errorItems = resource2.Body('errorItems', type=list)
+    failCheckItems = resource2.Body('failCheckItems', type=list)
     #  Status code.
     error_code = resource2.Body('error_code')
     # Error description.
@@ -140,7 +135,7 @@ class ChangeEnterpriseRealnameAuth(resource2.Resource):
     # Whether to transfer to manual review.
     isReview = resource2.Body('isReview')
     # Error list.
-    errorItems = resource2.Body('errorItems', type=list)
+    failCheckItems = resource2.Body('failCheckItems', type=list)
 
     def create(self, session, prepend_key=True):
         endpoint_override = self.service.get_endpoint_override()
@@ -159,6 +154,9 @@ class QueryRealnameAuth(resource2.Resource):
     base_path = "%(domain_id)s/partner/customer-mgr/realname-auth/result"
     service = bss_intl_service.BssIntlService()
     allow_get = True
+    allow_list = True
+    _query_mapping = resource2.QueryParameters(
+        'customerId')
 
     # User domain ID
     domain_id = resource2.URI('domain_id')
@@ -173,15 +171,3 @@ class QueryRealnameAuth(resource2.Resource):
     # Error description.
     error_msg = resource2.Body('error_msg')
 
-    def get(self, session, requires_id=False):
-        request = self._prepare_request(requires_id=False)
-        endpoint_override = self.service.get_endpoint_override()
-        service = self.get_service_filter(self, session)
-        query_dict = {'customerId': self.customerId}
-        query_str = urlencode(query_dict, doseq=True)
-        url = request.uri + '?' + query_str
-        response = session.get(url, endpoint_filter=self.service,
-                               microversion=service.microversion,
-                               endpoint_override=endpoint_override)
-        self._translate_response(response)
-        return self

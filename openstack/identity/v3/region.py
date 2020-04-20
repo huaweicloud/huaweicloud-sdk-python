@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -48,6 +48,12 @@ class Region(resource.Resource):
     #: User-facing description of the region. *Type: string*
     description = resource.Body('description')
     #: The links for the region resource.
-    links = resource.Body('links')
+    links = resource.Body('links', type=dict)
     #: ID of parent region, if any. *Type: string*
     parent_region_id = resource.Body('parent_region_id')
+    #: ID of region, if any. *Type: string*
+    id = resource.Body('id')
+    #: Type of region. *Type: string*
+    type = resource.Body('type')
+    #: Type of locales.
+    locales = resource.Body('locales', type=dict)

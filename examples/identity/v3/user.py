@@ -18,45 +18,59 @@ conn = connection.Connection(
 )
 
 
-# Creating a User
+# Create a user
+# POST /v3/users
 def create_user():
     user = {
         "enabled": True,
         "name": "**********",
-        "password": "**********"
+        "password": "**********",
+        "description": "**********",
+        "domain_id": "**********"
     }
-    conn.identity.create_user(**user);
+    user = conn.identity.create_user(**user)
+    print(user)
 
 
-# Deleteing a User
+# Delete a user
+# DELETE /v3/users/{user_id}
 def delete_user(user_id):
     conn.identity.delete_user(user_id)
 
 
-# Modifying User Information (including password)
+# Modify user information (including password)
+# PATCH /v3/users/{user_id}
 def modify_user(user_id):
     user = {
         "enabled": True,
         "name": "**********",
-        "password": "**********"
+        "password": "**********",
+        "pwd_status": False,
+        "description": "**********"
     }
-    conn.identity.update_user(user_id, **user)
+    user = conn.identity.update_user(user_id, **user)
+    print(user)
 
 
-# Querying a User List
+# Query a user list
+# GET /v3/users
 def get_user_list():
     users = conn.identity.users()
+    # users = conn.identity.users(domain_id="**********", enabled=True, name="**********",
+    #                             password_expires_at="**********")
     for user in users:
         print(user)
 
 
-# Querying User Details
+# Query user details
+# GET /v3/users/{user_id}
 def get_user_detail(user_id):
     user = conn.identity.get_user(user_id)
     print(user)
 
 
-# Changing a Password
+# Change a password
+# POST /v3/users/{user_id}/password
 def change_password(user_id, **password_attr):
     result = conn.identity.change_password(user_id, **password_attr)
     if result is True:
@@ -65,7 +79,8 @@ def change_password(user_id, **password_attr):
         print("Change password failure")
 
 
-# Deleting a User from a User Group
+# Delete a user from a user group
+# DELETE /v3/groups/{group_id}/users/{user_id}
 def remove_user_from_group(group_id, user_id):
     result = conn.identity.remove_user_from_group(group_id, user_id)
     if result is True:
@@ -74,14 +89,16 @@ def remove_user_from_group(group_id, user_id):
         print("Remove user from group failure")
 
 
-# Querying Users in a User Group
+# Query users in a user group
+# GET /v3/groups/{group_id}/users
 def list_group_users(group_id):
     groups = conn.identity.list_group_users(group_id)
     for group in groups:
         print(group)
 
 
-# Querying the User Group to Which a User Belongs
+# Query the user group to which a user belongs
+# GET /v3/users/{user_id}/groups
 def list_user_groups(user_id):
     groups = conn.identity.list_user_groups(user_id)
     for group in groups:

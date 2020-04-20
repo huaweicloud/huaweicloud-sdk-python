@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -44,6 +44,8 @@ class Service(resource.Resource):
     allow_list = True
     patch_update = True
 
+    _query_mapping = resource.QueryParameters('type')
+
     # Properties
     #: User-facing description of the service. *Type: string*
     description = resource.Body('description')
@@ -60,3 +62,28 @@ class Service(resource.Resource):
     #: future projects, the value should not be validated against this list.
     #: *Type: string*
     type = resource.Body('type')
+    #: The id of the service. *Type: string*
+    id = resource.Body('id')
+
+
+class Catalog(resource.Resource):
+    base_path = '/auth/catalog'
+    service = identity_service.IdentityService()
+
+    # capabilities
+    allow_create = True
+    allow_get = True
+    allow_update = True
+    allow_delete = True
+    allow_list = True
+    patch_update = True
+
+    # Properties
+    catalog = resource.Body('catalog', type=list)
+
+    def get_service_catalog(self, session):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = self.base_path
+        response = session.get(uri, endpoint_filter=self.service, endpoint_override=endpoint_override)
+        self._translate_response(response)
+        return self

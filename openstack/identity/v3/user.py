@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -45,6 +45,8 @@ class User(resource.Resource):
     allow_list = True
     patch_update = True
 
+    _query_mapping = resource.QueryParameters('domain_id', 'enabled', 'name', 'password_expires_at')
+
     # Properties
     #: References the user's default project ID against which to authorize,
     #: if the API user does not explicitly specify one when creating a token.
@@ -72,7 +74,7 @@ class User(resource.Resource):
     #: re-enable pre-existing tokens. *Type: bool*
     is_enabled = resource.Body('enabled', type=bool)
     #: The links for the user resource.
-    links = resource.Body('links' ,type=dict)
+    links = resource.Body('links', type=dict)
     #: Unique user name, within the owning domain. *Type: string*
     name = resource.Body('name')
     #: The default form of credential used during authentication. *Type: string*
@@ -92,6 +94,8 @@ class User(resource.Resource):
     force_reset_pwd = resource.Body('forceResetPwd', type=bool)
     #: The id of the project that the user request before log out. *Type: string*
     last_project_id = resource.Body('last_project_id')
+    #: The id of the user. *Type: string*
+    id = resource.Body('id')
 
     def change_password(self, session, user_id, **attrs):
         endpoint_override = self.service.get_endpoint_override()
@@ -104,7 +108,8 @@ class User(resource.Resource):
     def remove_user_from_group(self, session, group_id, user_id):
         endpoint_override = self.service.get_endpoint_override()
         uri = utils.urljoin('groups', group_id, 'users', user_id)
-        response = session.delete(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        response = session.delete(uri, endpoint_filter=self.service, endpoint_override=endpoint_override,
+                                  raise_exc=False)
         return response.status_code == 204
 
 

@@ -15,19 +15,16 @@
 from openstack.bss import bss_service
 from openstack import resource2
 
-try:
-    # Python3
-    from urllib.parse import urlencode
-except ImportError:
-    # Python2
-    from urllib import urlencode
-
 
 
 class QueryBillMonthlySum(resource2.Resource):
     base_path = "%(domain_id)s/customer/account-mgr/bill/monthly-sum"
     service = bss_service.BssService()
+    allow_list = True
     allow_get = True
+
+    _query_mapping = resource2.QueryParameters(
+        'cycle', 'cloud_service_type_code', 'type', 'enterpriseProjectId')
 
     # User domain ID
     domain_id = resource2.URI('domain_id')
@@ -51,27 +48,35 @@ class QueryBillMonthlySum(resource2.Resource):
     error_code = resource2.Body('error_code')
     # Error description.
     error_msg = resource2.Body('error_msg')
+    # Total amount (tax included).
+    total_amount = resource2.Body('total_amount')
+    # Total debt.
+    debt_amount = resource2.Body('debt_amount')
+    # Cash coupon amount.
+    coupon_amount = resource2.Body('coupon_amount')
+    # Flexi-purchase coupon amount (reserved).
+    cashcoupon_amount = resource2.Body('cashcoupon_amount')
+    # Stored-value card amount (reserved).
+    storedcard_amount = resource2.Body('storedcard_amount')
+    # Balance in the cash account.
+    debit_amount = resource2.Body('debit_amount')
+    # Balance in the credit account.
+    credit_amount = resource2.Body('credit_amount')
+    # Unit
+    measure_id = resource2.Body('measure_id')
 
-    def get(self, session, requires_id=False):
-        request = self._prepare_request(requires_id=False)
-        endpoint_override = self.service.get_endpoint_override()
-        service = self.get_service_filter(self, session)
-        xstr = lambda s: '' if s is None else str(s)
-        query_dict = {'cycle': xstr(self.cycle), 'cloud_service_type_code': xstr(self.cloud_service_type_code), 'type': xstr(self.account_type),
-                      'enterpriseProjectId': xstr(self.enterpriseProjectId)}
-        query_str = urlencode(query_dict, doseq=True)
-        url = request.uri + "?" + query_str
-        response = session.get(url, endpoint_filter=self.service,
-                               microversion=service.microversion,
-                               endpoint_override=endpoint_override)
-        self._translate_response(response)
-        return self
+
 
 
 class QueryBillResRecords(resource2.Resource):
     base_path = "%(domain_id)s/customer/account-mgr/bill/res-records"
     service = bss_service.BssService()
     allow_get = True
+    allow_list = True
+
+    _query_mapping = resource2.QueryParameters(
+        'cycle', 'cloudServiceTypeCode', 'resourceTypeCode', 'regionCode',
+    'resInstanceId','payMethod','enterpriseProjectId','offset','limit')
 
     # User domain ID
     domain_id = resource2.URI('domain_id')
@@ -103,30 +108,20 @@ class QueryBillResRecords(resource2.Resource):
     error_code = resource2.Body('error_code')
     # Error description.
     error_msg = resource2.Body('error_msg')
+    # Official website price
+    official_amount = resource2.Body('officialAmount')
 
-    def get(self, session, requires_id=False):
-        request = self._prepare_request(requires_id=False)
-        endpoint_override = self.service.get_endpoint_override()
-        service = self.get_service_filter(self, session)
-        xstr = lambda s: '' if s is None else str(s)
-        query_dict = {'cycle': xstr(self.cycle), 'cloudServiceTypeCode': xstr(self.cloudServiceTypeCode),
-                      'resourceTypeCode': xstr(self.resourceTypeCode), 'regionCode': xstr(self.regionCode),
-                      'resInstanceId': xstr(self.resInstanceId), 'payMethod': xstr(self.payMethod),
-                      'enterpriseProjectId': xstr(self.enterpriseProjectId),
-                      'offset': xstr(self.offset), 'limit': xstr(self.limit)}
-        query_str = urlencode(query_dict, doseq=True)
-        url = request.uri + "?" + query_str
-        response = session.get(url, endpoint_filter=self.service,
-                               microversion=service.microversion,
-                               endpoint_override=endpoint_override)
-        self._translate_response(response)
-        return self
 
 
 class QueryResFeeRecords(resource2.Resource):
     base_path = "%(domain_id)s/customer/account-mgr/bill/res-fee-records"
     service = bss_service.BssService()
     allow_get = True
+    allow_list = True
+
+    _query_mapping = resource2.QueryParameters(
+        'startTime', 'endTime', 'cloudServiceTypeCode', 'regionCode',
+    'orderId','payMethod','resourceId','enterpriseProjectId','offset','limit')
 
     # User domain ID
     domain_id = resource2.URI('domain_id')
@@ -158,21 +153,7 @@ class QueryResFeeRecords(resource2.Resource):
     error_code = resource2.Body('error_code')
     # Error description.
     error_msg = resource2.Body('error_msg')
+    # Official website price
+    official_amount = resource2.Body('officialAmount')
 
-    def get(self, session, requires_id=False):
-        request = self._prepare_request(requires_id=False)
-        endpoint_override = self.service.get_endpoint_override()
-        service = self.get_service_filter(self, session)
-        xstr = lambda s: '' if s is None else str(s)
-        query_dict = {'startTime': xstr(self.startTime), 'endTime': xstr(self.endTime),
-                      'cloudServiceTypeCode': xstr(self.cloudServiceTypeCode), 'regionCode': xstr(self.regionCode),
-                      'orderId': xstr(self.orderId), 'payMethod': xstr(self.payMethod),
-                      'resourceId': xstr(self.resourceId), 'enterpriseProjectId': xstr(self.enterpriseProjectId),
-                      'offset': xstr(self.offset), 'limit': xstr(self.limit)}
-        query_str = urlencode(query_dict, doseq=True)
-        url = request.uri + "?" + query_str
-        response = session.get(url, endpoint_filter=self.service,
-                               microversion=service.microversion,
-                               endpoint_override=endpoint_override)
-        self._translate_response(response)
-        return self
+

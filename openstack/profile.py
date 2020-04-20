@@ -116,7 +116,8 @@ from openstack.bssintl import bss_intl_service
 # from openstack.workflow import workflow_service
 from openstack.fgs import fgs_service
 from openstack.iam import iam_service
-
+from openstack.tms import tms_service
+from openstack.eps import eps_service
 _logger = logging.getLogger(__name__)
 
 
@@ -191,7 +192,8 @@ class Profile(object):
         # self._add_service(telemetry_service.TelemetryService(version="v2"))
         # self._add_service(workflow_service.WorkflowService(version="v2"))
         self._add_service(fgs_service.FGSService(version='v2'))
-
+        self._add_service(tms_service.TmsService(version='v1'))
+        self._add_service(eps_service.EpsService(version='v1'))
         if plugins:
             for plugin in plugins:
                 self._load_plugin(plugin)

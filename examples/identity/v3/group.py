@@ -18,43 +18,54 @@ conn = connection.Connection(
 )
 
 
-# Creating a User
+# Create a group
+# POST /v3/groups
 def create_group():
     group = {
-        "name": "**********",
-        "description": "**********"
+        "description": "**********",
+        "domain_id": "**********",
+        "name": "**********"
     }
-    conn.identity.create_group(**group)
+    group = conn.identity.create_group(**group)
+    print(group)
 
 
-# Deleting a Group
+# Delete a group
+# DELETE /v3/groups/{group_id}
 def delete_group(group_id):
     conn.identity.delete_group(group_id)
 
 
-# Modifying a Group
+# Modify a group
+# PATCH /v3/groups/{group_id}
 def modify_group(group_id):
     group = {
-        "name": "**********",
-        "description": "**********"
+        "description": "**********",
+        "domain_id": "**********",
+        "name": "**********"
     }
-    conn.identity.update_group(group_id, **group)
+    group = conn.identity.update_group(group_id, **group)
+    print(group)
 
 
-# Querying a Group List
+# Query a group list
+# GET /v3/groups
 def get_group_list():
     groups = conn.identity.groups()
+    # groups = conn.identity.groups(domain_id="**********", name="**********")
     for group in groups:
         print(group)
 
 
-# Querying Group Details
+# Query group details
+# GET /v3/groups/{group_id}
 def get_group_detail(group_id):
     group = conn.identity.get_group(group_id)
     print(group)
 
 
-# Adding a User to a User Group
+# Add a User to a User Group
+# PUT /v3/groups/{group_id}/users/{user_id}
 def add_user_to_group(group_id, user_id):
     result = conn.identity.add_user_to_group(group_id, user_id)
     if result is True:
@@ -63,7 +74,8 @@ def add_user_to_group(group_id, user_id):
         print("Add user to group failure")
 
 
-# Querying Whether a User Belongs to a User Group
+# Query whether a user belongs to a user group
+# HEAD /v3/groups/{group_id}/users/{user_id}
 def check_group_user(group_id, user_id):
     result = conn.identity.check_group_user(group_id, user_id)
     if result is True:

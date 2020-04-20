@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of

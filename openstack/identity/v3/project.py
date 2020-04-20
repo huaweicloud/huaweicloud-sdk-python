@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -45,6 +45,8 @@ class Project(resource.Resource):
     allow_list = True
     patch_update = True
 
+    _query_mapping = resource.QueryParameters('domain_id', 'enabled', 'is_domain', 'name', 'page', 'parent_id',
+                                              'per_page')
     # Properties
     #: The description of the project. *Type: string*
     description = resource.Body('description')
@@ -67,13 +69,19 @@ class Project(resource.Resource):
     #: The ID of the parent of the project.
     #: New in version 3.4
     parent_id = resource.Body('parent_id')
+    #: The links of the parent of the project.
+    links = resource.Body('links', type=dict)
+    #: The ID of the of the project.
+    id = resource.Body('id')
+    #: The status of the of the project.
+    status = resource.Body('status')
 
     def assign_role_to_user(self, session, user, role):
         """Assign role to user on project"""
         url = utils.urljoin(self.base_path, self.id, 'users',
                             user.id, 'roles', role.id)
         endpoint_override = self.service.get_endpoint_override()
-        resp = session.put(url, endpoint_filter=self.service, endpoint_override = endpoint_override)
+        resp = session.put(url, endpoint_filter=self.service, endpoint_override=endpoint_override)
         if resp.status_code == 204:
             return True
         return False
@@ -83,7 +91,7 @@ class Project(resource.Resource):
         url = utils.urljoin(self.base_path, self.id, 'users',
                             user.id, 'roles', role.id)
         endpoint_override = self.service.get_endpoint_override()
-        resp = session.head(url, endpoint_filter=self.service, endpoint_override = endpoint_override)
+        resp = session.head(url, endpoint_filter=self.service, endpoint_override=endpoint_override)
         if resp.status_code == 201:
             return True
         return False
@@ -93,7 +101,7 @@ class Project(resource.Resource):
         url = utils.urljoin(self.base_path, self.id, 'users',
                             user.id, 'roles', role.id)
         endpoint_override = self.service.get_endpoint_override()
-        resp = session.delete(url, endpoint_filter=self.service, endpoint_override = endpoint_override)
+        resp = session.delete(url, endpoint_filter=self.service, endpoint_override=endpoint_override)
         if resp.status_code == 204:
             return True
         return False
@@ -103,7 +111,7 @@ class Project(resource.Resource):
         url = utils.urljoin(self.base_path, self.id, 'groups',
                             group.id, 'roles', role.id)
         endpoint_override = self.service.get_endpoint_override()
-        resp = session.put(url, endpoint_filter=self.service, endpoint_override = endpoint_override)
+        resp = session.put(url, endpoint_filter=self.service, endpoint_override=endpoint_override)
         if resp.status_code == 204:
             return True
         return False
@@ -113,7 +121,7 @@ class Project(resource.Resource):
         url = utils.urljoin(self.base_path, self.id, 'groups',
                             group.id, 'roles', role.id)
         endpoint_override = self.service.get_endpoint_override()
-        resp = session.head(url, endpoint_filter=self.service, endpoint_override = endpoint_override)
+        resp = session.head(url, endpoint_filter=self.service, endpoint_override=endpoint_override)
         if resp.status_code == 201:
             return True
         return False
@@ -123,7 +131,7 @@ class Project(resource.Resource):
         url = utils.urljoin(self.base_path, self.id, 'groups',
                             group.id, 'roles', role.id)
         endpoint_override = self.service.get_endpoint_override()
-        resp = session.delete(url, endpoint_filter=self.service, endpoint_override = endpoint_override)
+        resp = session.delete(url, endpoint_filter=self.service, endpoint_override=endpoint_override)
         if resp.status_code == 204:
             return True
         return False

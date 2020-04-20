@@ -15,18 +15,19 @@
 from openstack.bssintl import bss_intl_service
 from openstack import resource2
 from openstack import utils
-try:
-    # Python3
-    from urllib.parse import urlencode
-except ImportError:
-    # Python2
-    from urllib import urlencode
+
 
 
 class QueryCustomerPeriodResourcesList(resource2.Resource):
     base_path = "%(domain_id)s/common/order-mgr/resources/detail"
     service = bss_intl_service.BssIntlService()
     allow_get = True
+    allow_list = True
+
+    _query_mapping = resource2.QueryParameters(
+        'resource_ids', 'order_id', 'only_main_resource', 'status_list',
+        'page_no','page_size')
+
 
     # User domain ID
     domain_id = resource2.URI('domain_id')
@@ -49,21 +50,6 @@ class QueryCustomerPeriodResourcesList(resource2.Resource):
     data = resource2.Body('data', type=list)
     total_count = resource2.Body('total_count', type=int)
 
-    def get(self, session, requires_id=False):
-        request = self._prepare_request(requires_id=False)
-        endpoint_override = self.service.get_endpoint_override()
-        service = self.get_service_filter(self, session)
-        xstr = lambda s: '' if s is None else str(s)
-        query_dict = {'resource_ids': xstr(self.resource_ids), 'order_id': xstr(self.order_id),
-                      'only_main_resource': xstr(self.only_main_resource), 'status_list': xstr(self.status_list),
-                      'page_no': xstr(self.page_no), 'page_size': xstr(self.page_size)}
-        query_str = urlencode(query_dict, doseq=True)
-        url = request.uri + "?" + query_str
-        response = session.get(url, endpoint_filter=self.service,
-                               microversion=service.microversion,
-                               endpoint_override=endpoint_override)
-        self._translate_response(response)
-        return self
 
 
 class RenewSubscriptionByResourceId(resource2.Resource):
@@ -92,6 +78,8 @@ class RenewSubscriptionByResourceId(resource2.Resource):
     error_msg = resource2.Body('error_msg')
     # List of order IDs generated when resource subscription is renewed.
     order_ids = resource2.Body('order_ids', type=list)
+    # List of resources that cannot be renewed due to expiration.
+    expired_resource_ids=resource2.Body('expiredResourceIds', type=list)
 
 
 class UnsubscribeByResourceId(resource2.Resource):
@@ -121,7 +109,7 @@ class UnsubscribeByResourceId(resource2.Resource):
 
 
 class AutoRenew(resource2.Resource):
-    base_path = "%(domain_id)s/common/order-mgr/resources/%(resource_id)s/actions?action_id=%(action_id)s"
+    base_path = "%(domain_id)s/common/order-mgr/resources/%(resource_id)s/actions"
     service = bss_intl_service.BssIntlService()
     # capabilities
     allow_update = True
@@ -144,7 +132,8 @@ class AutoRenew(resource2.Resource):
                                         prepend_key=prepend_key)
         response = session.post(request.uri, endpoint_filter=self.service,
                                 endpoint_override=endpoint_override,
-                                json=request.body, headers=request.headers)
+                                json=request.body, headers=request.headers,
+                                params={"action_id": self.action_id})
         self._translate_response(response)
         return self
 
@@ -153,6 +142,7 @@ class AutoRenew(resource2.Resource):
         request = self._prepare_request(requires_id=False)
         response = session.delete(request.uri, endpoint_filter=self.service,
                                   endpoint_override=endpoint_override,
-                                  headers=request.headers)
+                                  headers=request.headers,
+                                  params={"action_id": self.action_id})
         self._translate_response(response)
         return self

@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -48,6 +48,8 @@ from openstack.identity.v3 import service as _service
 from openstack.identity.v3 import trust as _trust
 from openstack.identity.v3 import user as _user
 from openstack.identity.v3 import password_config as _password_config
+from openstack.identity.v3 import version as _version
+from openstack.identity.v3 import authtoken as _authtoken
 from openstack import proxy2 as proxy
 
 
@@ -1177,3 +1179,55 @@ class Proxy(proxy.BaseProxy):
         """
         res = self._get_resource(_password_config.PasswordConfig, None)
         return res.get_by_option(self._session, domain_id, option)
+
+    def grant_all_projects_group_role(self, domain_id, group_id, role_id):
+        """Granting permissions to a user group of all projects.
+
+        :param domain_id: the id of the domain.
+        :param group_id: the id of the group.
+        :param role_id: the id of the role.
+
+        :return: A boolean indicator.
+        """
+        res = self._get_resource(_role.Role, None)
+        return res.grant_all_projects_group_role(self._session, domain_id, group_id, role_id)
+
+    def get_version3_of_keystone(self):
+        """Query version of keystone APIs
+
+        :return: A generator of version instances.
+        """
+        res = self._get_resource(_version.Version, None)
+        return res.get_version3_of_keystone(self._session)
+
+    def get_version_of_keystone(self):
+        """Query version of keystone APIs
+
+        :return: A generator of version instances.
+        """
+        res = self._get_resource(_version.Versions, None)
+        return res.get_version_of_keystone(self._session)
+
+    def get_service_catalog(self):
+        """Query the list of service catalog
+
+        :return: A generator of service catalog.
+        """
+        res = self._get_resource(_service.Catalog, None)
+        return res.get_service_catalog(self._session)
+
+    def create_authtoken(self, attr, nocatalog=None):
+        """Create a token
+
+        :return: The results of token creation.
+        """
+        res = self._get_resource(_authtoken.Authtoken, None)
+        return res.create_authtoken(self._session, attr, nocatalog)
+
+    def validate_authtoken(self, x_subject_token, nocatalog=None):
+        """Validate a token
+
+        :return: The results of the token.
+        """
+        res = self._get_resource(_authtoken.Authtoken, None)
+        return res.validate_authtoken(self._session, x_subject_token, nocatalog)

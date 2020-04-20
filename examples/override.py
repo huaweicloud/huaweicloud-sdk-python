@@ -26,49 +26,116 @@ os.environ.setdefault(
 # "example" in the endpoint stands for "Region.Cloud"
 """
 os.environ.setdefault(
+    'OS_BSS_ENDPOINT_OVERRIDE',
+    'https://bss.example.com/v1.0')
+
+os.environ.setdefault(
+    'OS_BSS_INTLV1_ENDPOINT_OVERRIDE',
+    'https://cbc.ap-southeast-1.example.com/v1.0')
+
+os.environ.setdefault(
+    'OS_BMS_ENDPOINT_OVERRIDE',
+    'https://bms.example.com/v1/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_ECS_ENDPOINT_OVERRIDE',
+    'https://ecs.example.com/v1/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_EVS_ENDPOINT_OVERRIDE',
+    'https://evs.example.com/v2/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_ECSV1.1_ENDPOINT_OVERRIDE',
+    'https://ecs.example.com/v1.1/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_EVSV2.1_ENDPOINT_OVERRIDE',
+    'https://evs.example.com/v2.1/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_IDENTITY_ENDPOINT_OVERRIDE',
+    'https://iam.example.com/v3')
+    
+os.environ.setdefault(
+    'OS_IMS_ENDPOINT_OVERRIDE',
+    'https://ims.example.com/v2')
+
+os.environ.setdefault(
+    'OS_NAT_ENDPOINT_OVERRIDE',
+    'https://nat.example.com/v2.0')
+
+os.environ.setdefault(
+    'OS_NETWORK_ENDPOINT_OVERRIDE',
+    'https://vpc.example.com/v2.0')
+
+os.environ.setdefault(
+    'OS_ORCHESTRATION_ENDPOINT_OVERRIDE',
+    'https://rts.example.com/v1/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_RDSV1_ENDPOINT_OVERRIDE',
+    'https://rds.example.com/rds/v1/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_RDSV3_ENDPOINT_OVERRIDE',
+    'https://rds.example.com/v3/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_VPC_ENDPOINT_OVERRIDE',
+    'https://vpc.example.com/v1/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_DEH_ENDPOINT_OVERRIDE',
+    'https://deh.example.com/v1.0/%(project_id)s')
+
+os.environ.setdefault(
+    'OS_FGSV2_ENDPOINT_OVERRIDE',
+    'https://functiongraph.example.com/v2/%(project_id)s')
+
+os.environ.setdefault(
     'OS_AUTO_SCALING_ENDPOINT_OVERRIDE',
     'https://as.example.com/v1/%(project_id)s')
-)
+    
 os.environ.setdefault(
     'OS_DNS_ENDPOINT_OVERRIDE',
-    'https://dns.example.com/v2'
-)
+    'https://dns.example.com/v2')
+    
 os.environ.setdefault(
     'OS_VOLUME_BACKUP_ENDPOINT_OVERRIDE',
-    'https://vbs.example.com/v2/%(project_id)s'
-)
+    'https://vbs.example.com/v2/%(project_id)s')
+    
 os.environ.setdefault(
     'OS_ELBV1_ENDPOINT_OVERRIDE',
-    'https://elb.example.com/v1.0/%(project_id)s'
-)
+    'https://elb.example.com/v1.0/%(project_id)s')
+    
 os.environ.setdefault(
     'OS_MAP_REDUCE_ENDPOINT_OVERRIDE',
-    'https://mrs.example.com/v1.1/%(project_id)s'
-)
+    'https://mrs.example.com/v1.1/%(project_id)s')
+    
 os.environ.setdefault(
     'OS_CTS_ENDPOINT_OVERRIDE',
-    'https://cts.example.com/v1.0/%(project_id)s'
-)
+    'https://cts.example.com/v1.0/%(project_id)s')
+    
 os.environ.setdefault(
     'OS_SMN_ENDPOINT_OVERRIDE',
-    'https://smn.example.com/v2/%(project_id)s'
-)
+    'https://smn.example.com/v2/%(project_id)s')
+    
 os.environ.setdefault(
     'OS_MAAS_ENDPOINT_OVERRIDE',
-    'https://maas.example.com/v1/%(project_id)s'
-)
+    'https://maas.example.com/v1/%(project_id)s')
+    
 os.environ.setdefault(
     'OS_KMS_ENDPOINT_OVERRIDE',
-    'https://kms.example.com/v1.0/%(project_id)s'
-)
+    'https://kms.example.com/v1.0/%(project_id)s')
+    
 os.environ.setdefault(
     'OS_ANTI_DDOS_ENDPOINT_OVERRIDE',
-    'https://antiddos.example.com/v1/%(project_id)s'
-)
+    'https://antiddos.example.com/v1/%(project_id)s')
+    
 os.environ.setdefault(
     'OS_DMS_ENDPOINT_OVERRIDE',
-    'https://dms.example.com/v1.0/%(project_id)s'
-)
+    'https://dms.example.com/v1.0/%(project_id)s')
 """
 
 # create connection

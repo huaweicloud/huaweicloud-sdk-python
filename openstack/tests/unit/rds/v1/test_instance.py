@@ -56,7 +56,7 @@ INSTANCE_PARA_EXAMPLE = {
 
 INSTANCE_ERR_LOG_EXAMPLE = {
     "datetime": "2016-08-30 09:55:39",
-    "content": "[Warning] 'proxies_priv' entry '@ root@rds-bf83' ignored in"
+    "content": "[Warning] 'proxies_priv' entry '@ xxx' ignored in"
 }
 
 INSTANCE_SLOW_LOG_EXAMPLE = {

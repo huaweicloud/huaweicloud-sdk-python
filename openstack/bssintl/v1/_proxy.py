@@ -46,7 +46,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_bill.QueryPartnerMonthlyBills, domain_id=domain_id, requires_id=False, **kwargs)
+        return self._list_once(_bill.QueryPartnerMonthlyBills, domain_id=domain_id, requires_id=False, **kwargs)
 
     def enable_auto_renew(self, domain_id, resource_id, action_id, **kwargs):
         '''
@@ -130,7 +130,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_period_resourse.QueryCustomerPeriodResourcesList, domain_id=domain_id, requires_id=False, **kwargs)
+        return self._list_once(_period_resourse.QueryCustomerPeriodResourcesList, domain_id=domain_id, requires_id=False, **kwargs)
 
     def query_order_detail(self, domain_id, **kwargs):
         '''
@@ -141,7 +141,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_period_order.QueryOrderDetail, domain_id=domain_id, requires_id=False, **kwargs)
+        return self._list_once(_period_order.QueryOrderDetail, domain_id=domain_id, requires_id=False, **kwargs)
 
     def query_order_list(self, domain_id, **kwargs):
         '''
@@ -153,7 +153,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_period_order.QueryOrderList, domain_id=domain_id, requires_id=False, **kwargs)
+        return self._list_once(_period_order.QueryOrderList, domain_id=domain_id, requires_id=False, **kwargs)
 
     def query_credit(self, domain_id, **kwargs):
         '''
@@ -163,7 +163,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_customer_credit.QueryCredit, domain_id=domain_id, requires_id=False, **kwargs)
+        return self._list_once(_customer_credit.QueryCredit, domain_id=domain_id, requires_id=False, **kwargs)
 
     def set_credit(self, domain_id, **kwargs):
         '''
@@ -274,7 +274,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_realname_auth.QueryRealnameAuth, domain_id=domain_id, **kwargs)
+        return self._list_once(_realname_auth.QueryRealnameAuth, domain_id=domain_id, **kwargs)
 
     def query_resource_status_by_orderId(self, domain_id, order_id, **kwargs):
         '''
@@ -285,7 +285,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_period_order.QueryResourceStatusByOrderId, domain_id=domain_id, order_id=order_id, **kwargs)
+        return self._list_once(_period_order.QueryResourceStatusByOrderId, domain_id=domain_id, order_id=order_id, **kwargs)
 
     def query_refund_order_amount(self, domain_id, order_id, **kwargs):
         '''
@@ -296,7 +296,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_period_order.QueryRefundOrderAmount, domain_id=domain_id, order_id=order_id, **kwargs)
+        return self._list_once(_period_order.QueryRefundOrderAmount, domain_id=domain_id, order_id=order_id, **kwargs)
 
     def query_monthly_expenditure_summary(self, domain_id, **kwargs):
         '''
@@ -306,7 +306,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_bill.QueryMonthlyExpenditureSummary, domain_id=domain_id, **kwargs)
+        return self._list_once(_bill.QueryMonthlyExpenditureSummary, domain_id=domain_id, **kwargs)
 
     def query_resource_usage_details(self, domain_id, **kwargs):
         '''
@@ -316,7 +316,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_bill.QueryResourceUsageDetails, domain_id=domain_id, **kwargs)
+        return self._list_once(_bill.QueryResourceUsageDetails, domain_id=domain_id, **kwargs)
 
     def query_resource_usage_record(self, domain_id, **kwargs):
         '''
@@ -326,7 +326,7 @@ class Proxy(proxy2.BaseProxy):
         :param kwargs:
         :return:
         '''
-        return self._get(_bill.QueryResourceUsageRecord, domain_id=domain_id, **kwargs)
+        return self._list_once(_bill.QueryResourceUsageRecord, domain_id=domain_id, **kwargs)
 
     def freeze_customer(self, domain_id, **kwargs):
         '''

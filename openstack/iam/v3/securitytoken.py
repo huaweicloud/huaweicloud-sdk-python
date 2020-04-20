@@ -22,9 +22,10 @@ class Securitytoken(resource2.Resource):
     base_path = '/OS-CREDENTIAL/securitytokens'
     service = iam_service.IamService()
 
-    #: The access key of the securitytoken.
+    # Properties
+    #: The accesskey of the securitytoken.
     access = resource2.Body('access')
-    #: The secret key of the securitytoken.
+    #: The secretkey of the securitytoken.
     secret = resource2.Body('secret')
     #: The expire time of the securitytoken.
     expires_at = resource2.Body('expires_at')

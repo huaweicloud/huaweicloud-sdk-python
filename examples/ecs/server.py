@@ -25,7 +25,7 @@ def create_server():
         "flavor_id": "s1.medium",
         "security_groups":[
             {
-                "name": "Sys-default"
+                "name": "default"
             }
         ],
         "networks":[

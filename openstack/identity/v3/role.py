@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -64,41 +64,60 @@ class Role(resource.Resource):
     policy = resource.Body('policy', type=dict)
     #: The description of the role. *Type: string*
     description = resource.Body('description')
+    #: The flag of the role. *Type: string*
+    flag = resource.Body('flag')
+    #: The description_cn of the role. *Type: string*
+    description_cn = resource.Body('description_cn')
+    #: The id of the role. *Type: string*
+    id = resource.Body('id')
+    #: The updated_time of the role. *Type: string*
+    updated_time = resource.Body('updated_time')
+    #: The created_time of the role. *Type: string*
+    created_time = resource.Body('created_time')
 
     def grant_domain_group_role(self, session, domain_id, group_id, role_id):
         endpoint_override = self.service.get_endpoint_override()
-        uri = utils.urljoin('domains', domain_id, 'groups',group_id, 'roles', role_id)
-        response = session.put(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        uri = utils.urljoin('domains', domain_id, 'groups', group_id, 'roles', role_id)
+        response = session.put(uri, endpoint_filter=self.service, endpoint_override=endpoint_override, raise_exc=False)
         return response.status_code == 204
 
     def grant_project_group_role(self, session, project_id, group_id, role_id):
         endpoint_override = self.service.get_endpoint_override()
-        uri = utils.urljoin('projects', project_id, 'groups',group_id, 'roles', role_id)
-        response = session.put(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        uri = utils.urljoin('projects', project_id, 'groups', group_id, 'roles', role_id)
+        response = session.put(uri, endpoint_filter=self.service, endpoint_override=endpoint_override, raise_exc=False)
         return response.status_code == 204
 
     def delete_domain_group_role(self, session, domain_id, group_id, role_id):
         endpoint_override = self.service.get_endpoint_override()
-        uri = utils.urljoin('domains', domain_id, 'groups',group_id, 'roles', role_id)
-        response = session.delete(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        uri = utils.urljoin('domains', domain_id, 'groups', group_id, 'roles', role_id)
+        response = session.delete(uri, endpoint_filter=self.service, endpoint_override=endpoint_override,
+                                  raise_exc=False)
         return response.status_code == 204
 
     def delete_project_group_role(self, session, project_id, group_id, role_id):
         endpoint_override = self.service.get_endpoint_override()
-        uri = utils.urljoin('projects', project_id, 'groups',group_id, 'roles', role_id)
-        response = session.delete(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        uri = utils.urljoin('projects', project_id, 'groups', group_id, 'roles', role_id)
+        response = session.delete(uri, endpoint_filter=self.service, endpoint_override=endpoint_override,
+                                  raise_exc=False)
         return response.status_code == 204
 
     def check_domain_group_role(self, session, domain_id, group_id, role_id):
         endpoint_override = self.service.get_endpoint_override()
-        uri = utils.urljoin('domains', domain_id, 'groups',group_id, 'roles', role_id)
-        response = session.head(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        uri = utils.urljoin('domains', domain_id, 'groups', group_id, 'roles', role_id)
+        response = session.head(uri, endpoint_filter=self.service, endpoint_override=endpoint_override, raise_exc=False)
         return response.status_code == 204
 
     def check_project_group_role(self, session, project_id, group_id, role_id):
         endpoint_override = self.service.get_endpoint_override()
         uri = utils.urljoin('projects', project_id, 'groups', group_id, 'roles', role_id)
-        response = session.head(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        response = session.head(uri, endpoint_filter=self.service, endpoint_override=endpoint_override, raise_exc=False)
+        return response.status_code == 204
+
+    def grant_all_projects_group_role(self, session, domain_id, group_id, role_id):
+        endpoint_override = self.service.get_endpoint_override()
+        uri = utils.urljoin('OS-INHERIT', 'domains', domain_id, 'groups', group_id, 'roles', role_id,
+                            'inherited_to_projects')
+        response = session.put(uri, endpoint_filter=self.service, endpoint_override=endpoint_override, raise_exc=False)
         return response.status_code == 204
 
 
@@ -108,4 +127,3 @@ class DomainGroupRole(Role):
 
 class ProjectGroupRole(Role):
     base_path = "/projects/%(project_id)s/groups/%(group_id)s/roles"
-

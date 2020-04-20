@@ -18,7 +18,8 @@ conn = connection.Connection(
 )
 
 
-# Querying the List of Domains Accessible to Users
+# Querying the list of domains accessible to users
+# GET /v3/auth/domains
 def get_domain_scopes():
     domains = conn.identity.get_domain_scopes()
     for domain in domains:
@@ -26,12 +27,14 @@ def get_domain_scopes():
 
 
 # Query domain password strength config
+# GET /v3/domains/{domain_id}/config/security_compliance
 def get_password_config(domain_id):
     password_config = conn.identity.get_password_config(domain_id)
     print(password_config)
 
 
 # Query domain password strength config with option
+# GET /v3/domains/{domain_id}/config/security_compliance/{option}
 def get_password_config_by_option(domain_id, option):
     password_config = conn.identity.get_password_config_by_option(domain_id, option)
     print(password_config)

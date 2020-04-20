@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # coding=utf-8
+import sys
 
 from openstack import connection
 
@@ -18,13 +19,15 @@ conn = connection.Connection(
 )
 
 
-# Creating Securitytoken
+# Create securitytoken
+# POST /v3.0/OS-CREDENTIAL/securitytokens
 def create_securitytoken(**auth):
     securitytoken = conn.iam.create_securitytoken(**auth)
     print(securitytoken)
 
 
 if __name__ == "__main__":
+    # Create securitytoken by token
     auth = {
         "auth": {
             "identity": {
@@ -33,8 +36,28 @@ if __name__ == "__main__":
                 ],
                 "token": {
                     "id": "**********",
+                    "duration-seconds": 900
                 }
             }
         }
     }
+
+    # Create securitytoken by agency
+    # auth = {
+    #     "auth": {
+    #         "identity": {
+    #             "methods": [
+    #                 "assume_role"
+    #             ],
+    #             "assume_role": {
+    #                 "domain_name": "**********",
+    #                 "agency_name": "**********",
+    #                 "duration-seconds": 3600,
+    #                 "session_user": {
+    #                     "name": "**********"
+    #                 }
+    #             }
+    #         }
+    #     }
+    # }
     create_securitytoken(**auth)

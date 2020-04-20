@@ -18,14 +18,17 @@ conn = connection.Connection(
 )
 
 
-# Querying a Endpoint List
+# Query a endpoint list
+# GET /v3/endpoints
 def get_endpoint_list():
     endpoints = conn.identity.endpoints()
+    # endpoints = conn.identity.endpoints(interface="**********", service_id="**********")
     for endpoint in endpoints:
         print(endpoint)
 
 
-# Querying Endpoint Details
+# Query endpoint details
+# GET /v3/endpoints/{endpoint_id}
 def get_endpoint_detail(endpoint_id):
     endpoint = conn.identity.get_endpoint(endpoint_id)
     print(endpoint)

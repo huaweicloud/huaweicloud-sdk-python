@@ -162,7 +162,7 @@ class SnapshotMetadata(resource2.Resource):
                 # Reraise with a more specific type and message
                 raise exceptions.ResourceNotFound(
                     message="No %s found for %s" %
-                            (self.__name__, key),
+                            (snapshot_id, key),
                     details=e.details, response=e.response,
                     request_id=e.request_id, url=e.url, method=e.method,
                     http_status=e.http_status, cause=e.cause, code=e.code)

@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -45,6 +45,8 @@ class Group(resource.Resource):
     allow_list = True
     patch_update = True
 
+    _query_mapping = resource.QueryParameters('domain_id', 'name')
+
     # Properties
     #: The description of this group. *Type: string*
     description = resource.Body('description')
@@ -59,21 +61,21 @@ class Group(resource.Resource):
     links = resource.Body('links', type=dict)
     #: The time that the group created. *Type: string*
     create_time = resource.Body('create_time')
+    #: The id of this group. *Type: string*
+    id = resource.Body('id')
 
     def add_user_to_group(self, session, group_id, user_id):
         endpoint_override = self.service.get_endpoint_override()
-        uri = utils.urljoin(self.base_path, group_id, 'users',user_id)
-        response = session.put(uri, endpoint_filter=self.service,endpoint_override=endpoint_override)
+        uri = utils.urljoin(self.base_path, group_id, 'users', user_id)
+        response = session.put(uri, endpoint_filter=self.service, endpoint_override=endpoint_override, raise_exc=False)
         return response.status_code == 204
 
     def check_group_user(self, session, group_id, user_id):
         endpoint_override = self.service.get_endpoint_override()
         uri = utils.urljoin(self.base_path, group_id, 'users', user_id)
-        response = session.head(uri, endpoint_filter=self.service, endpoint_override=endpoint_override)
+        response = session.head(uri, endpoint_filter=self.service, endpoint_override=endpoint_override, raise_exc=False)
         return response.status_code == 204
 
 
 class UserGroup(Group):
     base_path = "/users/%(user_id)s/groups"
-
-

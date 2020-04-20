@@ -12,7 +12,7 @@
 #
 #      Huawei has modified this source file.
 #     
-#         Copyright 2018 Huawei Technologies Co., Ltd.
+#         Copyright 2020 Huawei Technologies Co., Ltd.
 #         
 #         Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #         use this file except in compliance with the License. You may obtain a copy of
@@ -44,6 +44,8 @@ class Endpoint(resource.Resource):
     allow_list = True
     patch_update = True
 
+    _query_mapping = resource.QueryParameters('interface', 'service_id')
+
     # Properties
     #: Describes the interface of the endpoint according to one of the
     #: following values:
@@ -61,7 +63,7 @@ class Endpoint(resource.Resource):
     #: in the service catalog. *Type: bool*
     is_enabled = resource.Body('enabled', type=bool)
     #: The links for the region resource.
-    links = resource.Body('links')
+    links = resource.Body('links', type=dict)
     #: Represents the containing region ID of the service endpoint.
     #: *New in v3.2* *Type: string*
     region_id = resource.Body('region_id')
@@ -69,3 +71,7 @@ class Endpoint(resource.Resource):
     service_id = resource.Body('service_id')
     #: Fully qualified URL of the service endpoint. *Type: string*
     url = resource.Body('url')
+    #: The id of the endpoint. *Type: string*
+    id = resource.Body('id')
+    #: The region of the endpoint. *Type: string*
+    region = resource.Body('region')

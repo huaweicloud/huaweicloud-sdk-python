@@ -26,8 +26,7 @@ if __name__ == '__main__':
                                  user_domain_id=userDomainId,
                                  domain_id=userDomainId,
                                  username=username,
-                                 password=password,
-                                 verify=False)
+                                 password=password)
 
     data = {
         "searchType": "email",

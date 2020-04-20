@@ -331,6 +331,10 @@ class Session(_session.Session):
             self.endpoint_cache[key] = sc_endpoint
             return sc_endpoint
 
+        if service_type == "iam":
+            self.endpoint_cache[key] = sc_endpoint
+            return sc_endpoint
+
         # NOTE(QianBiao.NG) if we could not get matched endpoint (no matter
         # no response from endpoint or version not matched), we just use
         # service endpoint directly

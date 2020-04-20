@@ -18,14 +18,16 @@ conn = connection.Connection(
 )
 
 
-# Querying a Region List
+# Query a region list
+# GET /v3/regions
 def get_region_list():
     regions = conn.identity.regions()
     for region in regions:
         print(region)
 
 
-# Querying Region Details
+# Query region details
+# GET /v3/regions/{region_id}
 def get_region_detail(region_id):
     region = conn.identity.get_region(region_id)
     print(region)

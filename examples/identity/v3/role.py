@@ -18,34 +18,40 @@ conn = connection.Connection(
 )
 
 
-# Querying a Role List
+# Query a role list
+# GET /v3/roles
 def get_role_list():
     roles = conn.identity.roles()
+    # roles = conn.identity.roles(domain_id="**********", name="**********")
     for role in roles:
         print(role)
 
 
-# Querying Role details
+# Query role details
+# GET /v3/roles/{role_id}
 def get_role_detail(role_id):
     role = conn.identity.get_role(role_id)
     print(role)
 
 
-# Querying Permissions of a User Group Under a Domain
+# Query permissions of a user group under a domain
+# GET /v3/domains/{domain_id}/groups/{group_id}/roles
 def list_domain_user_group_role(domain_id, group_id):
     roles = conn.identity.list_domain_user_group_role(domain_id, group_id)
     for role in roles:
         print(role)
 
 
-# Querying Permissions of a User Group Corresponding to a Project
+# Query permissions of a user group corresponding to a project
+# GET /v3/projects/{project_id}/groups/{group_id}/roles
 def list_project_user_group_role(project_id, group_id):
     roles = conn.identity.list_project_user_group_role(project_id, group_id)
     for role in roles:
         print(role)
 
 
-# Granting Permissions to a User Group of a Domain
+# Grant permissions to a user group of a domain
+# PUT /v3/domains/{domain_id}/groups/{group_id}/roles/{role_id}
 def grant_domain_user_group_role(domain_id, group_id, role_id):
     result = conn.identity.grant_domain_group_role(domain_id, group_id, role_id)
     if result is True:
@@ -54,7 +60,8 @@ def grant_domain_user_group_role(domain_id, group_id, role_id):
         print("Grant permission to a user group of domain failure")
 
 
-# Granting Permissions to a User Group Corresponding to a Project
+# Grant permissions to a user group corresponding to a project
+# PUT /v3/projects/{project_id}/groups/{group_id}/roles/{role_id}
 def grant_project_user_group_role(project_id, group_id, role_id):
     result = conn.identity.grant_project_group_role(project_id, group_id, role_id)
     if result is True:
@@ -63,7 +70,8 @@ def grant_project_user_group_role(project_id, group_id, role_id):
         print("Grant permission to a user group of project failure")
 
 
-# Querying Whether a User Group Under a Domain Has Specific Permissions
+# Query whether a user group under a domain has specific permissions
+# HEAD /v3/domains/{domain_id}/groups/{group_id}/roles/{role_id}
 def check_domain_user_group_role(domain_id, group_id, role_id):
     result = conn.identity.check_domain_group_role(domain_id, group_id, role_id)
     if result is True:
@@ -72,7 +80,8 @@ def check_domain_user_group_role(domain_id, group_id, role_id):
         print("The group of domain doesn't have this permission")
 
 
-# Querying Whether a User Group Corresponding to a Project Has Specific Permissions
+# Query whether a user group corresponding to a project has specific permissions
+# HEAD /v3/projects/{project_id}/groups/{group_id}/roles/{role_id}
 def check_project_user_group_role(project_id, group_id, role_id):
     result = conn.identity.check_project_group_role(project_id, group_id, role_id)
     if result is True:
@@ -81,7 +90,8 @@ def check_project_user_group_role(project_id, group_id, role_id):
         print("The group of project doesn't have this permission")
 
 
-# Deleting Permissions of a User Group of a Domain
+# Delete Permissions of a User Group of a Domain
+# DELETE /v3/domains/{domain_id}/groups/{group_id}/roles/{role_id}
 def delete_domain_user_group_role(domain_id, group_id, role_id):
     result = conn.identity.delete_domain_group_role(domain_id, group_id, role_id)
     if result is True:
@@ -90,13 +100,24 @@ def delete_domain_user_group_role(domain_id, group_id, role_id):
         print("Delete permission to a user group of domain failure")
 
 
-# Deleting Permissions of a User Group Corresponding to a Project
+# Delete Permissions of a User Group Corresponding to a Project
+# DELETE /v3/projects/{project_id}/groups/{group_id}/roles/{role_id}
 def delete_project_user_group_role(project_id, group_id, role_id):
     result = conn.identity.delete_project_group_role(project_id, group_id, role_id)
     if result is True:
         print("Delete permission to a user group of project successfully")
     else:
         print("Delete permission to a user group of project failure")
+
+
+# Grant permissions to a user group corresponding to all projects
+# PUT /v3/OS-INHERIT/domains/{domain_id}/groups/{group_id}/roles/{role_id}/inherited_to_projects
+def grant_all_projects_group_role(domain_id, group_id, role_id):
+    result = conn.identity.grant_all_projects_group_role(domain_id, group_id, role_id)
+    if result is True:
+        print("Grant permissions to a user group corresponding to all projects successfully")
+    else:
+        print("Grant permissions to a user group corresponding to all projects failure")
 
 
 if __name__ == "__main__":
@@ -114,3 +135,4 @@ if __name__ == "__main__":
     check_project_user_group_role(project_id, group_id, role_id)
     delete_domain_user_group_role(domain_id, group_id, role_id)
     delete_project_user_group_role(project_id, group_id, role_id)
+    grant_all_projects_group_role(domain_id, group_id, role_id)

@@ -69,6 +69,8 @@ class CreateCustomer(resource2.Resource):
     domainArea = resource2.Body('domainArea')
     # Indicates whether to disable the marketing message sending function.
     isCloseMarketMs = resource2.Body('isCloseMarketMs')
+    # Association type. 1: Referral.Only value 1 is supported. If the value is not transferred, the customer is associated with the partner in Reseller mode.
+    cooperationType = resource2.Body('cooperationType')
     # response
     domainId = resource2.Body('domainId')
     # Account name.
@@ -112,9 +114,11 @@ class QueryCustomerList(resource2.Resource):
     error_code = resource2.Body('error_code')
     # Error description.
     error_msg = resource2.Body('error_msg')
+    # Whether to freeze the account. 0: No 1: Yes
+    isFrozen = resource2.Body('isFrozen')
 
 
-# 冻结客户账号
+# Freeze Customer Account
 class FreezeCustomer(resource2.Resource):
     base_path = "%(domain_id)s/partner/customer-mgr/frozens"
     service = bss_intl_service.BssIntlService()
@@ -135,7 +139,7 @@ class FreezeCustomer(resource2.Resource):
     error_msg = resource2.Body('error_msg')
 
 
-# 解冻客户账号
+# Unfreeze Customer  Account
 class UnfreezeCustomer(resource2.Resource):
     base_path = "%(domain_id)s/partner/customer-mgr/unfrozens"
     service = bss_intl_service.BssIntlService()

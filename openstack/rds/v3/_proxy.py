@@ -19,6 +19,7 @@ from openstack.rds.v3 import flavor as _flavor
 from openstack.rds.v3 import instance as _instance
 from openstack.rds.v3 import rdsversion as _version
 from openstack.rds.v3 import configuration as _configurations
+from openstack.rds.v3 import database as _database
 
 
 class Proxy(proxy2.BaseProxy):
@@ -339,7 +340,6 @@ class Proxy(proxy2.BaseProxy):
         return self._get(_datastore.Parameter, name,
                          datastore_version_id=datastore_version_id)
 
-
     def get_rds_version(self,version):
         """Get version by id
 
@@ -353,10 +353,7 @@ class Proxy(proxy2.BaseProxy):
         else:
             version_id = version
 
-
-
         return self._get(_version.rdsverion,version_id)
-
 
     def list_rds_version(self):
         """Get instance by id
@@ -367,3 +364,56 @@ class Proxy(proxy2.BaseProxy):
         :rtype: :class:`~openstack.rds.v1.instance.Instance`.
         """
         return self._list(_version.rdsverion, paginated=False)
+
+    def create_database(self, **kwargs):
+        """Create a new database from attributes
+
+        :param dict kwargs: Keyword arguments which will be used to create
+                           a :class:`~openstack.rds.v3.database.Database`,
+                           comprised of the properties on the Database class.
+
+        :returns: The results of server creation
+        :rtype: :class:`~openstack.database.v3.database.Database`
+        """
+        return self._create(_database.Database, **kwargs)
+
+    def delete_database(self, database, instance=None, ignore_missing=True):
+        """Delete a database
+
+        :param database: The value can be either the name of a database or a
+               :class:`~openstack.rds.v3.database.Database` instance.
+        :param instance: This can be either the ID of an instance
+                         or a :class:`~openstack.database.v3.instance.Instance`
+                         instance that the interface belongs to.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the database does not exist.
+                    When set to ``True``, no exception will be set when
+                    attempting to delete a nonexistent database.
+
+        :returns: ``None``
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        self._delete(_database.Database, database, instance_id=instance.id,
+                     ignore_missing=ignore_missing)
+
+    def databases(self, instance, details=True, **query):
+        """Return a generator of databases
+
+        :param details: When ``True``, returns
+            :class:`~openstack.rds.v3.database.DatabaseDetail` objects,
+            otherwise :class:`~openstack.rds.v3.database.Database`.
+            *Default: ``True``*
+        :param instance: This can be either the ID of an instance
+                         or a :class:`~openstack.rds.v3.instance.Instance`
+                         instance that the interface belongs to.
+        :param kwargs \*\*query: Optional query parameters to be sent to limit
+                                 the resources being returned.
+
+        :returns: A generator of database objects
+        :rtype: :class:`~openstack.database.v3.database.Database`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        res_type = _database.DatabaseDetail if details else _database.Database
+        return self._list(res_type, paginated=False,
+                          instance_id=instance.id, **query)

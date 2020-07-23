@@ -98,12 +98,12 @@ class Cluster(resource.Resource):
 
     #: Cluster billing type, The value is 12, indicating on-demand payment.
     billing_type = resource.Body("billing_type", type=int, default=12)
-    #: Number of Master nodes, set to 2
-    master_node_num = resource.Body("master_node_num", type=int, default=2)
-    #: The Flavor of Master Node, Best match based on several years of
+    #: Number of Main nodes, set to 2
+    main_node_num = resource.Body("main_node_num", type=int, default=2)
+    #: The Flavor of Main Node, Best match based on several years of
     #: commissioning experience. MRS supports nine specifications of hosts,
     #: and host specifications are determined by CPUs, memory, and disks.
-    #: Master nodes support:
+    #: Main nodes support:
     #:  - c2.4xlarge.linux.mrs,
     #:  - s1.4xlarge.linux.mrs and
     #:  - s1.8xlarge.linux.mrs.
@@ -115,11 +115,11 @@ class Cluster(resource.Resource):
     #:  - s1.8xlarge.linux.mrs,
     #:  - d1.8xlarge.linux.mrs
     #: Core nodes of an analysis cluster support all specifications above.
-    master_node_size = resource.Body("master_node_size")
+    main_node_size = resource.Body("main_node_size")
     #: Number of Core nodes, Value range: 3 to 100
     core_node_num = resource.Body("core_node_num", type=int)
     #: Instance specification of a Core node Configuration method of this
-    #: parameter is identical to that of master_node_size.
+    #: parameter is identical to that of main_node_size.
     core_node_size = resource.Body("core_node_size")
 
     #: Cluster region information, Obtain the value from
@@ -155,7 +155,7 @@ class Cluster(resource.Resource):
     #: is good. The clusters cannot be deleted in a short term.
     #: It is recommended when data computing is frequently performed.
     volume_size = resource.Body("volume_size")
-    #: Name of a key pair used to login to the Master node in the cluster.
+    #: Name of a key pair used to login to the Main node in the cluster.
     keypair = resource.Body("node_public_cert_name")
     #: MRS cluster running mode, ``0`` indicate for ``Common Mode`` and ``1``
     #: for ``Safe Mode``.
@@ -314,12 +314,12 @@ class ClusterDetail(resource.Resource):
 
     #: Cluster billing type, The value is 12, indicating on-demand payment.
     billing_type = resource.Body("billingType", default=12)
-    #: Number of Master nodes, set to 2
-    master_node_num = resource.Body("masterNodeNum", type=int, default=2)
-    #: The Flavor of Master Node, Best match based on several years of
+    #: Number of Main nodes, set to 2
+    main_node_num = resource.Body("mainNodeNum", type=int, default=2)
+    #: The Flavor of Main Node, Best match based on several years of
     #: commissioning experience. MRS supports nine specifications of hosts,
     #: and host specifications are determined by CPUs, memory, and disks.
-    #: Master nodes support:
+    #: Main nodes support:
     #:  - c2.4xlarge.linux.mrs,
     #:  - s1.4xlarge.linux.mrs and
     #:  - s1.8xlarge.linux.mrs.
@@ -331,11 +331,11 @@ class ClusterDetail(resource.Resource):
     #:  - s1.8xlarge.linux.mrs,
     #:  - d1.8xlarge.linux.mrs
     #: Core nodes of an analysis cluster support all specifications above.
-    master_node_size = resource.Body("masterNodeSize")
+    main_node_size = resource.Body("mainNodeSize")
     #: Number of Core nodes, Value range: 3 to 100
     core_node_num = resource.Body("coreNodeNum", type=int)
     #: Instance specification of a Core node Configuration method of this
-    #: parameter is identical to that of master_node_size.
+    #: parameter is identical to that of main_node_size.
     core_node_size = resource.Body("coreNodeSize")
 
     #: Cluster region information, Obtain the value from
@@ -368,7 +368,7 @@ class ClusterDetail(resource.Resource):
     #: is good. The clusters cannot be deleted in a short term.
     #: It is recommended when data computing is frequently performed.
     volume_size = resource.Body("volumeSize")
-    #: Name of a key pair used to login to the Master node in the cluster.
+    #: Name of a key pair used to login to the Main node in the cluster.
     keypair = resource.Body("nodePublicCertName")
     #: MRS cluster running mode, ``0`` indicate for ``Common Mode`` and ``1``
     #: for ``Safe Mode``.
@@ -409,16 +409,16 @@ class ClusterDetail(resource.Resource):
     deployment_id = resource.Body("deploymentId")
     remark = resource.Body("remark")
     order_id = resource.Body("orderId")
-    master_node_product_id = resource.Body("masterNodeProductId")
-    master_node_spec_id = resource.Body("masterNodeSpecId")
+    main_node_product_id = resource.Body("mainNodeProductId")
+    main_node_spec_id = resource.Body("mainNodeSpecId")
     core_node_product_id = resource.Body("coreNodeProductId")
     core_node_spec_id = resource.Body("coreNodeSpecId")
     instance_id = resource.Body("instanceId")
     vnc = resource.Body("vnc")
     tenant_id = resource.Body("tenantId")
     security_groups_id = resource.Body("securityGroupsId")
-    slave_security_groups_id = resource.Body("slaveSecurityGroupsId")
-    master_node_ip = resource.Body("masterNodeIp")
+    subordinate_security_groups_id = resource.Body("subordinateSecurityGroupsId")
+    main_node_ip = resource.Body("mainNodeIp")
     private_ip_first = resource.Body("privateIpFirst")
     error_info = resource.Body("errorInfo")
     charging_start_time = resource.Body("chargingStartTime")

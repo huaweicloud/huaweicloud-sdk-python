@@ -22,7 +22,7 @@ DATA = {
     "email": "xx@example.com",
     "ttl": 300,
     "serial": 0,
-    "masters": [],
+    "mains": [],
     "status": "ACTIVE",
     "links": {
         "self": "https://Endpoint/v2/zones/2c9eb155587194ec01587224c9f90149"
@@ -57,7 +57,7 @@ class TestZone(testtools.TestCase):
         self.assertEqual(DATA["email"], obj.email)
         self.assertEqual(DATA["ttl"], obj.ttl)
         self.assertEqual(DATA["serial"], obj.serial)
-        self.assertEqual(DATA["masters"],obj.masters)
+        self.assertEqual(DATA["mains"],obj.mains)
         self.assertEqual(DATA["status"], obj.status)
         self.assertEqual(DATA["links"], obj.links)
         self.assertEqual(DATA["pool_id"],obj.pool_id)

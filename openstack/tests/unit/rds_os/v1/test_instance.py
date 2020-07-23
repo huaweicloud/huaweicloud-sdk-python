@@ -19,7 +19,7 @@ INSTANCE_EXAMPLE = {
     "paramsGroupId": "b89db814-6ba1-454f-a9ad-380064ef0c6f",
     "type": "MySQL",
     "subnetid": "0fb5d084-4e5d-463b-8920-fca10e6b4028",
-    "role": "master",
+    "role": "main",
     "internalSubnetId": "330a10fd-3962-44c5-b3a1-1d282617a183",
     "group": "1",
     "securegroup": "ca99fcef-502f-495f-b28d-85c9c6f4666e",

@@ -66,7 +66,7 @@ class TestDataSource(TestMapReduceProxy):
         data = {
             "name": "hdfs_input19",
             "type": "hdfs",
-            "url": "/test-master-node:8020/user/hadoop/input",
+            "url": "/test-main-node:8020/user/hadoop/input",
             "description": "This is public input",
             "is_protected": True
         }
@@ -100,7 +100,7 @@ class TestDataSource(TestMapReduceProxy):
         self.assertEqual("fba9bae4-dabf-4ac1-8511-db80c7ad2e5c", ds.id)
         self.assertEqual("hdfs_input13", ds.name)
         self.assertEqual("hdfs", ds.type)
-        self.assertEqual("/test-master-node:8020/user/hadoop/input",
+        self.assertEqual("/test-main-node:8020/user/hadoop/input",
                          ds.url)
         self.assertEqual("This is hdfs input13_testtest", ds.description)
         self.assertEqual("2016-12-09T19:12:14", ds.created_at)
@@ -878,7 +878,7 @@ class TestCluster(TestMapReduceProxy):
         )
         self.assertIsInstance(cluster, _cluster.ClusterDetail)
         self.assertEqual("bdb064ff-2855-4624-90d5-e9a6376abd6e", cluster.id)
-        self.assertEqual(2, cluster.master_node_num)
+        self.assertEqual(2, cluster.main_node_num)
         self.assertEqual(3, cluster.core_node_num)
         self.assertEqual("scaling-in", cluster.state)
         self.assertEqual("1487570757", cluster.create_at)
@@ -889,7 +889,7 @@ class TestCluster(TestMapReduceProxy):
         self.assertEqual("0", cluster.duration)
         self.assertEqual("0", cluster.fee)
         self.assertEqual("", cluster.hadoop_version)
-        self.assertEqual("c2.2xlarge.linux.mrs", cluster.master_node_size)
+        self.assertEqual("c2.2xlarge.linux.mrs", cluster.main_node_size)
         self.assertEqual("c2.2xlarge.linux.mrs", cluster.core_node_size)
         self.assertEqual("100.64.49.9", cluster.external_ip)
         self.assertEqual("100.64.49.13", cluster.external_alternate_ip)
@@ -901,9 +901,9 @@ class TestCluster(TestMapReduceProxy):
         self.assertEqual("1d7b939b382c4c3bb3481a8ca10da768",
                          cluster.availability_zone_id)
         self.assertEqual("b35cf2d2348a445ca74b32289a160882",
-                         cluster.master_node_product_id)
+                         cluster.main_node_product_id)
         self.assertEqual("8ab05e503b4c42abb304e2489560063b",
-                         cluster.master_node_spec_id)
+                         cluster.main_node_spec_id)
         self.assertEqual("dc970349d128460e960a0c2b826c427c",
                          cluster.core_node_product_id)
         self.assertEqual("cdc6035a249a40249312f5ef72a23cd7",
@@ -919,11 +919,11 @@ class TestCluster(TestMapReduceProxy):
         self.assertEqual("930e34e2-195d-401f-af07-0b64ea6603f8",
                          cluster.security_groups_id)
         self.assertEqual("2ef3343e-3477-4a0d-80fe-4d874e4f81b8",
-                         cluster.slave_security_groups_id)
+                         cluster.subordinate_security_groups_id)
         self.assertEqual(1, cluster.safe_mode)
         self.assertEqual("FusionInsight V100R002C61", cluster.version)
         self.assertEqual("myp", cluster.keypair)
-        self.assertEqual("192.168.1.242", cluster.master_node_ip)
+        self.assertEqual("192.168.1.242", cluster.main_node_ip)
         self.assertEqual("192.168.1.234", cluster.private_ip_first)
         self.assertEqual(None, cluster.error_info)
         self.assertEqual("0", cluster.charging_start_time)

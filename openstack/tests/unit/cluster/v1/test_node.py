@@ -28,7 +28,7 @@ FAKE = {
     'user': '3747afc360b64702a53bdd64dc1b8976',
     'project': '42d9e9663331431f97b75e25136307ff',
     'index': 1,
-    'role': 'master',
+    'role': 'main',
     'dependents': {},
     'created_at': '2015-10-10T12:46:36.000000',
     'updated_at': '2016-10-10T12:46:36.000000',

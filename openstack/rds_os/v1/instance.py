@@ -43,7 +43,7 @@ class Instance(_rdsresource.Resource):
     created = resource.Body('created')
     #: Host name of the instance
     hostname = resource.Body('hostname')
-    #: Instance type readreplica/master/slave
+    #: Instance type readreplica/main/subordinate
     type = resource.Body('type')
     #: Region
     region = resource.Body('region')
@@ -71,7 +71,7 @@ class Instance(_rdsresource.Resource):
     #: Backup Strategy
     #: *Type: dict*
     backupStrategy = resource.Body('backupStrategy', type=dict)
-    #: Id of the master
+    #: Id of the main
     replica_of = resource.Body('replica_of')
     #: HA information
     #: *Type: dict*
@@ -117,8 +117,8 @@ class Instance(_rdsresource.Resource):
     payModel = resource.Body('payModel')
     #: Cluster ID
     cluster_id = resource.Body('cluster_id')
-    #: Slave of instance
-    slave_of = resource.Body('slave_of')
+    #: Subordinate of instance
+    subordinate_of = resource.Body('subordinate_of')
     #: Replica of the instance
     replica_count = resource.Body('replica_count')
 

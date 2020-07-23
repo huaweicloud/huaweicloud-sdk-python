@@ -20,7 +20,7 @@ INSTANCE_EXAMPLE = {
     "name": "trove-instance-rep3",
     "created": "2016-06-18T21:21:50+0200",
     "hostname": "",
-    "type": "master",
+    "type": "main",
     "region": "eu-de",
     "updated": "2016-06-18T21:21:50+0200",
     "availabilityZone": "eu-de-01",

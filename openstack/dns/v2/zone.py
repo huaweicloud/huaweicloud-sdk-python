@@ -74,8 +74,8 @@ class Zone(resource.Resource):
     #: Links contains a `self` pertaining to this zone or a `next` pertaining
     #: to next page
     links = resource.Body('links', type=dict)
-    #: The master list for slaver server to fetch DNS
-    masters = resource.Body('masters', type=list)
+    #: The main list for subordinater server to fetch DNS
+    mains = resource.Body('mains', type=list)
     #: Router list associated to this zone
     routers = resource.Body('routers', type=list)
     #: Timestamp when the zone was created

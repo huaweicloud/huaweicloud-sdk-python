@@ -251,7 +251,7 @@ class CloudImageAction(resource2.Resource):
     min_disk = resource2.Body('min_disk', type=int)
     # Whether it is automatically configured.
     is_config = resource2.Body('is_config', type=bool)
-    # Create a user master key for the encrypted image.
+    # Create a user main key for the encrypted image.
     cmk_id = resource2.Body('cmk_id')
     # Type of image.
     type = resource2.Body('type')

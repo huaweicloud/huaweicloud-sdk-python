@@ -422,6 +422,67 @@ class ServerDetail(Server):
     allow_delete = False
     allow_list = True
 
+class ServerListDetail(Server):
+    base_path = '/servers/detail'
+    allow_create = False
+    allow_get = False
+    allow_update = False
+    allow_delete = False
+    allow_list = True
+
+    flavor = resource2.Body('flavor')
+    image = resource2.Body('image')
+
+    def list_ext(cls, session, paginated=False, headers=None, **params):
+        more_data = True
+        query_params = cls._query_mapping._transpose(params)
+        uri = cls.get_list_uri(params)
+
+        if headers:
+            headers.update({"Accept": "application/json"})
+        else:
+            headers = {"Accept": "application/json"}
+
+        service = cls.get_service_filter(cls, session)
+        while more_data:
+            endpoint_override = cls.service.get_endpoint_override()
+            resp = session.get(uri, endpoint_filter=cls.service,
+                               microversion=service.microversion,
+                               endpoint_override=endpoint_override,
+                               headers=headers,
+                               params=query_params)
+            response_json = resp.json()
+            if cls.resources_key:
+                resources = cls.find_value_by_accessor(response_json,
+                                                       cls.resources_key)
+            else:
+                resources = response_json
+            if not resources:
+                more_data = False
+            yielded = 0
+            new_marker = None
+            for data in resources:
+                data.pop("self", None)
+                value = cls.existing(**data)
+                new_marker = value.id
+                yielded += 1
+                yield value
+            query_params = dict(query_params)
+            next_marker = cls.get_next_marker(response_json,
+                                              yielded,
+                                              query_params)
+            if next_marker:
+                new_marker = next_marker if next_marker != -1 else None
+            if not new_marker:
+                return
+            if not paginated:
+                return
+            if cls.query_limit_key in query_params:
+                if yielded < query_params["limit"]:
+                    return
+            query_params[cls.query_limit_key] = yielded
+            query_params[cls.query_marker_key] = new_marker
+
 
 class ServerAction(resource2.Resource):
     base_path = "/servers/%(server_id)s/os-instance-actions"
@@ -523,3 +584,20 @@ class ServerOS(resource2.Resource):
         return session.post(
             url, endpoint_filter=self.service, microversion=service.microversion, json=body, headers=headers,
             endpoint_override=endpoint_override).json()
+
+
+class VncAddress(resource2.Resource):
+    base_path = '/servers/%(server_id)s/remote-consoles'
+
+    service = compute_service.ComputeService()
+
+    allow_create = True
+
+    server_id = resource2.URI('server_id')
+
+    # The total number of lists of elastic cloud servers.
+    remote_console = resource2.Body('remote_console')
+    # Elastic cloud server details list.
+    type = resource2.Body('type')
+    protocol = resource2.Body('protocol')
+    url = resource2.Body('url')

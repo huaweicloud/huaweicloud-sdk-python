@@ -211,3 +211,23 @@ class Proxy(proxy2.BaseProxy):
     #     :return: None
     #     '''
     #     _server.Servers.register_server_to_ces(self._session, server_id)
+    def get_vnc_address(self, server_id, **data):
+        """
+        Obtaining the VNC Remote Login Address
+        :param paginated: Query the host information of the server ID.
+        :param data: Operation  parameters.
+        :return: Obtaining the Remote Login Address of an ECS .
+        """
+        return self._create(_server.VncAddress, server_id=server_id, **data)
+
+    def reset_password(self, server_id, **data):
+        """
+        :param server_id: server uuid.
+        :param data: dict of add tags, like this:
+                    {
+                        "new_password": {
+                                "new_password": "xxx"
+                            }
+                    }
+        """
+        return self._update(_server.ResetPassword, server_id=server_id, has_body=False, **data)

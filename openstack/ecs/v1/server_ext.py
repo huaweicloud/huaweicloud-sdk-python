@@ -19,10 +19,14 @@ from openstack.ecs import ecs_service
 
 class Servers(resource2.Resource):
     base_path = "/cloudservers"
-    resource_key = "server"
     resources_key = 'servers'
     service = ecs_service.EcsServiceV1_1()
     allow_create = True
+
+    # server detail
+    server = resource2.Body('server', type=dict)
+    # is dry run  True or False
+    dry_run = resource2.Body('dry_run')
     # string type ECS server name
     name = resource2.Body('name')
     # availability zone name
@@ -75,6 +79,25 @@ class Servers(resource2.Resource):
     error = resource2.Body('error')
     message = resource2.Body('message')
     code = resource2.Body('code')
+
+    def create(self, session, headers=None, prepend_key=True):
+        endpoint_override = self.service.get_endpoint_override()
+        service = self.get_service_filter(self, session)
+        request = self._prepare_request(requires_id=False,
+                                        prepend_key=prepend_key)
+        if headers:
+            request.headers.update(headers)
+        try:
+            response = session.post(request.uri, endpoint_filter=self.service,
+                                    endpoint_override=endpoint_override,
+                                    json=request.body, headers=request.headers,
+                                    microversion=service.microversion)
+            if self.dry_run:
+                return "dry_run finish"
+            self._translate_response(response)
+            return self
+        except Exception as e:
+            return e
 
 
 class ResizeServer(resource2.Resource):

@@ -19,12 +19,15 @@ from openstack.ecs import ecs_service
 
 class Servers(resource2.Resource):
     base_path = "/cloudservers"
-    resource_key = "server"
     resources_key = 'servers'
     service = ecs_service.EcsService()
     allow_create = True
     allow_get = True
 
+    # server detail
+    server = resource2.Body('server', type=dict)
+    # is dry run  True or False
+    dry_run = resource2.Body('dry_run')
     # string type ECS server name
     name = resource2.Body('name')
     # availability zone name
@@ -160,6 +163,25 @@ class Servers(resource2.Resource):
     # The Windows system password cannot contain the reverse order of the username or username, and cannot contain
     # more than two consecutive characters in the username.
     adminPass = resource2.Body("adminPass")
+
+    def create(self, session, headers=None, prepend_key=True):
+        endpoint_override = self.service.get_endpoint_override()
+        service = self.get_service_filter(self, session)
+        request = self._prepare_request(requires_id=False,
+                                        prepend_key=prepend_key)
+        if headers:
+            request.headers.update(headers)
+        try:
+            response = session.post(request.uri, endpoint_filter=self.service,
+                                    endpoint_override=endpoint_override,
+                                    json=request.body, headers=request.headers,
+                                    microversion=service.microversion)
+            if self.dry_run:
+                return "dry_run finish"
+            self._translate_response(response)
+            return self
+        except Exception as e:
+            return e
 
     @classmethod
     def get_autorecovery(cls, session, server_id):
@@ -329,3 +351,46 @@ class ServerDetail(Servers):
     count = resource2.Body('count', type=int)
     # Elastic cloud server details list.
     servers = resource2.Body('servers', type=list)
+
+
+class VncAddress(resource2.Resource):
+    base_path = '/cloudservers/%(server_id)s/remote_console'
+
+    service = ecs_service.EcsService()
+
+    allow_create = True
+
+    server_id = resource2.URI('server_id')
+
+    # The total number of lists of elastic cloud servers.
+    remote_console = resource2.Body('remote_console')
+    # Elastic cloud server details list.
+    type = resource2.Body('type')
+    protocol = resource2.Body('protocol')
+    url = resource2.Body('url')
+
+
+class ResetPassword(resource2.Resource):
+    base_path = '/cloudservers/%(server_id)s/os-reset-password'
+    service = ecs_service.EcsService()
+
+    server_id = resource2.URI('server_id')
+    reset_password = resource2.Body('reset-password', type=dict)
+    error = resource2.Body('error')
+    message = resource2.Body('message')
+    code = resource2.Body('code')
+    is_check_password = resource2.Body('is_check_password')
+    new_password = resource2.Body('new_password')
+
+    def update(self, session, prepend_key=True, has_body=True):
+        request = self._prepare_request(prepend_key=prepend_key, requires_id=False)
+        service = self.get_service_filter(self, session)
+        endpoint_override = self.service.get_endpoint_override()
+        try:
+            session.put(request.uri, endpoint_filter=self.service,
+                                   microversion=service.microversion,
+                                   endpoint_override=endpoint_override,
+                                   json=request.body, headers=request.headers)
+            return "reset password finish"
+        except Exception as e:
+            return e

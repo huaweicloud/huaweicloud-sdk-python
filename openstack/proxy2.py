@@ -217,6 +217,27 @@ class BaseProxy(object):
         res = resource_type.new(**attrs)
         return res.create(self._session, prepend_key=prepend_key)
 
+    def _create_headers(self, resource_type, headers=None, prepend_key=True, **attrs):
+        """Create a resource from attributes
+
+        :param resource_type: The type of resource to _create_headers.
+        :type resource_type: :class:`~openstack.resource2.Resource`
+        :param headers: Added contents to the header..
+        :param prepend_key: A boolean indicating whether the resource_key
+                            should be prepended in a resource creation
+                            request. Default to True.
+        :param dict attrs: Attributes to be passed onto the
+                           :meth:`~openstack.resource2.Resource.create`
+                           method to be created. These should correspond
+                           to either :class:`~openstack.resource2.Body`
+                           or :class:`~openstack.resource2.Header`
+                           values on this resource.
+
+        :returns: The result of the ``create``
+        :rtype: :class:`~openstack.resource2.Resource`
+        """
+        res = resource_type.new(**attrs)
+        return res._create_headers(self._session, headers=headers, prepend_key=prepend_key)
     @_check_resource(strict=False)
     def _get(self, resource_type, value=None, requires_id=True, **attrs):
         """Get a resource
@@ -272,6 +293,32 @@ class BaseProxy(object):
         """
         res = self._get_resource(resource_type, value, **attrs)
         return res.list(self._session, paginated=paginated, **attrs)
+
+    def _list_ext(self, resource_type, value=None, paginated=False, headers=None, **attrs):
+        """List a resource
+
+        :param resource_type: The type of resource to delete. This should
+                              be a :class:`~openstack.resource2.Resource`
+                              subclass with a ``from_id`` method.
+        :param value: The resource to list. It can be the ID of a resource, or
+                      a :class:`~openstack.resource2.Resource` object. When set
+                      to None, a new bare resource is created.
+        :param bool paginated: When set to ``False``, expect all of the data
+                               to be returned in one response. When set to
+                               ``True``, the resource supports data being
+                               returned across multiple pages.
+        :param dict attrs: Attributes to be passed onto the
+            :meth:`~openstack.resource2.Resource.list` method. These should
+            correspond to either :class:`~openstack.resource2.URI` values
+            or appear in :data:`~openstack.resource2.Resource._query_mapping`.
+
+        :returns: A generator of Resource objects.
+        :raises: ``ValueError`` if ``value`` is a
+                 :class:`~openstack.resource2.Resource` that doesn't match
+                 the ``resource_type``.
+        """
+        res = self._get_resource(resource_type, value, **attrs)
+        return res.list_ext(self._session, paginated=paginated, headers=headers,  **attrs)
 
     def _list_once(self, resource_type, value=None, **attrs):
         """List a resource

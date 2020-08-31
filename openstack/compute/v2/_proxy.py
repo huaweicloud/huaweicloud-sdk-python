@@ -456,6 +456,49 @@ class Proxy(proxy2.BaseProxy):
         srv = _server.ServerDetail if details else _server.Server
         return self._list(srv, paginated=paginated, **query)
 
+    def servers_list(self, paginated=True, headers=None, **query):
+        """Retrieve a generator of servers
+
+        :param bool details: When set to ``False``
+                    :class:`~openstack.compute.v2.server.Server` instances
+                    will be returned. The default, ``True``, will cause
+                    :class:`~openstack.compute.v2.server.ServerDetail`
+                    instances to be returned.
+        :param paginated: When set to ``False``, expect all of the data
+                          to be returned in one response. When set to
+                          ``True``, the resource supports data being
+                          returned across multiple pages.
+        :param kwargs \*\*query: Optional query parameters to be sent to limit
+            the servers being returned.  Available parameters include:
+
+            * changes_since: A time/date stamp for when the server last changed
+                             status.
+            * image: An image resource or ID.
+            * flavor: A flavor resource or ID.
+            * name: Name of the server as a string.  Can be queried with
+                    regular expressions. The regular expression
+                    ?name=bob returns both bob and bobb.  If you must match on
+                    only bob, you can use a regular expression that
+                    matches the syntax of the underlying database server that
+                    is implemented for Compute, such as MySQL or PostgreSQL.
+            * status: Value of the status of the server so that you can filter
+                    on "ACTIVE" for example.
+            * host: Name of the host as a string.
+            * limit: Requests a specified page size of returned items from the
+                     query.  Returns a number of items up to the specified
+                     limit value. Use the limit parameter to make an initial
+                     limited request and use the ID of the last-seen item from
+                     the response as the marker parameter value in a subsequent
+                     limited request.
+            * marker: Specifies the ID of the last-seen item. Use the limit
+                      parameter to make an initial limited request and use the
+                      ID of the last-seen item from the response as the marker
+                      parameter value in a subsequent limited request.
+
+        :returns: A generator of server instances.
+        """
+        return self._list_ext(_server.ServerListDetail, paginated=paginated, headers=headers, **query)
+
     def update_server(self, server, **attrs):
         """Update a server
 
@@ -1391,6 +1434,14 @@ class Proxy(proxy2.BaseProxy):
         '''
         return self._get(quota.QuotaDefault, id=project_id)
 
+    def get_vnc_address(self, headers=None, server_id=None, **data):
+        """
+        Obtaining the VNC Remote Login Address
+        :param paginated: Query the host information of the server ID.
+        :param data: Operation  parameters.
+        :return: Obtaining the Remote Login Address of an ECS .
+        """
+        return self._create_headers(_server.VncAddress, headers=headers, server_id=server_id, **data)
     # def reinstall_server_os(self, server_id, **attr):
     #     '''
     #     :param dict attrs: Keyword arguments which will be used to create a

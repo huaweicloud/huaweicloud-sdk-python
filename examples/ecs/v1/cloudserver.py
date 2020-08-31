@@ -11,7 +11,7 @@ username = "xxxxx"
 password = "xxxxx"
 projectId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # tenant ID
 userDomainId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # user account ID
-auth_url = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # endpoint url
+auth_url = "https://iam.xxxxxxx.huaweicloud.com/v3"  # endpoint url
 conn = connection.Connection(auth_url=auth_url,
                              user_domain_id=userDomainId,
                              project_id=projectId,
@@ -25,57 +25,61 @@ INTERVAL = 10
 # create server
 def create_server():
     data = {
-        "availability_zone": "AZ1",
-        "name": "test-name",
-        "description": "",
-        "isAutoRename": False,
-        "imageRef": "4c4f6f5d-b198-44bf-96a5-f5e8a44bda37",
-        "flavorRef": "c1.medium",
-        "root_volume": {
-            "volumetype": "SAS",
-            "size": 40,
-            "extendparam": {
-                "resourceSpecCode": "SAS",
-                "resourceType": "3"
-            }
-        },
-        "data_volumes": [
-
-        ],
-        "vpcid": "00a2e4fe-5295-4c0e-8bfd-ad3b8426cb93",
-        "nics": [
+        "dry_run": False,
+        "server":
             {
-                "subnet_id": "47822b98-c5bd-45b3-9454-d9773380f249",
-                "ip_address": "",
-                "nictype": "",
-                "extra_dhcp_opts": [
+                "availability_zone": "AZ1",
+                "name": "test-name",
+                "description": "",
+                "isAutoRename": False,
+                "imageRef": "4c4f6f5d-b198-44bf-96a5-f5e8a44bda37",
+                "flavorRef": "c1.medium",
+                "root_volume": {
+                    "volumetype": "SAS",
+                    "size": 40,
+                    "extendparam": {
+                        "resourceSpecCode": "SAS",
+                        "resourceType": "3"
+                    }
+                },
+                "data_volumes": [
 
                 ],
-                "binding:profile": {
-                    "disable_security_groups": False
-                }
-            }
-        ],
-        "security_groups": [
-            {
-                "id": "831902ed-5ad1-453f-b54a-702d85c1d657"
-            }
-        ],
-        "personality": [
+                "vpcid": "00a2e4fe-5295-4c0e-8bfd-ad3b8426cb93",
+                "nics": [
+                    {
+                        "subnet_id": "47822b98-c5bd-45b3-9454-d9773380f249",
+                        "ip_address": "",
+                        "nictype": "",
+                        "extra_dhcp_opts": [
 
-        ],
-        "count": 1,
-        "extendparam": {
-            "chargingMode": "0",
-            "regionID": "southchina"
-        },
-        "metadata": {
-            "op_svc_userid": "19c27257bf014edc9d318fa3872c2896"
-        },
-        "server_tags": [
+                        ],
+                        "binding:profile": {
+                            "disable_security_groups": False
+                        }
+                    }
+                ],
+                "security_groups": [
+                    {
+                        "id": "831902ed-5ad1-453f-b54a-702d85c1d657"
+                    }
+                ],
+                "personality": [
 
-        ],
-        "key_name": "KeyPair-7631"
+                ],
+                "count": 1,
+                "extendparam": {
+                    "chargingMode": "0",
+                    "regionID": "southchina"
+                },
+                "metadata": {
+                    "op_svc_userid": "19c27257bf014edc9d318fa3872c2896"
+                },
+                "server_tags": [
+
+                ],
+                "key_name": "KeyPair-7631"
+            }
     }
     server = conn.ecs.create_server(**data)
     print(server)
@@ -281,8 +285,31 @@ def get_servers_after_job(job):
     return success_servers, failed_servers
 
 
+# Obtaining the VNC Remote Login Address
+def get_vnc_address(server_id):
+    data = {
+        "remote_console": {
+            "protocol": "vnc",
+            "type": "novnc"
+        }
+    }
+    action = conn.ecs.get_vnc_address(server_id, **data)
+    print (action)
+
+
+def reset_password(server_id):
+    data = {
+        "reset-password": {
+            "new_password": "xxx",
+            "is_check_password": False
+        }
+    }
+    action = conn.ecs.reset_password(server_id, **data)
+    print (action)
+
+
 if __name__ == "__main__":
-    server_id = "server_id"
+    server_id = "15b781e2-a1ae-4c0a-9608-5d097a868ee2"
     autorecovery = "true"
     get_autorecovery(server_id)
     config_autorecovery(server_id, autorecovery)
@@ -296,3 +323,4 @@ if __name__ == "__main__":
     resize_server(server_id)
     delete_server()
     batch_change_os()
+    reset_password(server_id)

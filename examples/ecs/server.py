@@ -2,13 +2,17 @@
 
 from openstack import exceptions
 from openstack import connection
+import sys
+
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 # create connection
 username = "xxxxxx"
 password = "xxxxxx"
 projectId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # tenant ID
 userDomainId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # user account ID
-auth_url = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"    # endpoint url
+auth_url = "https://iam.xxxxxxx.huaweicloud.com/v3"  # endpoint url
 conn = connection.Connection(auth_url=auth_url,
                              user_domain_id=userDomainId,
                              project_id=projectId,
@@ -54,7 +58,8 @@ def show_server(server_id):
 
 # get list of server
 def list_servers():
-    servers = conn.compute.servers(limit=1)
+    headers = {"X-OpenStack-Nova-API-Version": "2.19"}
+    servers = conn.compute.servers_list(headers=headers)
     for server in servers:
         print(server)
 
@@ -183,8 +188,22 @@ def delete_server(server_id):
     server = conn.compute.delete_server(server_id)
     print(server)
 
+# Obtaining the VNC Remote Login Address
+def get_vnc_address(server_id):
+    data = {
+        "remote_console": {
+            "protocol": "vnc",
+            "type": "novnc"
+        }
+    }
+    headers = {
+        "X-OpenStack-Nova-API-Version": "2.6",
+    }
+    action = conn.compute.get_vnc_address(headers=headers, server_id=server_id, **data)
+    print (action)
 
 if __name__ == "__main__":
+    server_id = "15b781e2-a1ae-4c0a-9608-5d097a868ee2"
     newflavor_id = "c2.medium"
     newimage_id = "228b642c-7538-4364-99b4-a88f271234a4"
     newserver_name = "name_test2"
@@ -216,3 +235,4 @@ if __name__ == "__main__":
     delete_server_metadata(server.id)
     wait_for_server(server, status)
     delete_server(server.id)
+    get_vnc_address(server_id)

@@ -32,7 +32,7 @@ def create_server_with_user_data():
         "flavorRef": "s1.medium",
         "security_groups": [
             {
-                "name": "3cd0dc61-3a84-43de-9741-394fce012f38"
+                "id": "3cd0dc61-3a84-43de-9741-394fce012f38"
             }
         ],
         "networks": [
@@ -61,7 +61,7 @@ def create_windows_server_with_adminpass():
         "flavorRef": "s1.xlarge",
         "security_groups": [
             {
-                "name": "db06a582-b8f8-42d6-bfaa-67995528dddb"
+                "id": "db06a582-b8f8-42d6-bfaa-67995528dddb"
             }
         ],
         "networks": [

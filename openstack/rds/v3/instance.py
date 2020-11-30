@@ -77,6 +77,8 @@ class Instance(_rdsresource.Resource):
     start_time = resource.Body('start_time')
     keep_days = resource.Body('keep_days')
     resize_flavor = resource.Body('resize_flavor', type=dict)
+    backup_used_space = resource.Body('backup_used_space')
+    storage_used_space = resource.Body('storage_used_space')
 
     restore_point = resource.Body('restore_point', type=dict)
     job_id = resource.Body("job_id")

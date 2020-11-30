@@ -324,3 +324,4 @@ if __name__ == "__main__":
     delete_server()
     batch_change_os()
     reset_password(server_id)
+    get_vnc_address(server_id)

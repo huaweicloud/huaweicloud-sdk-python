@@ -30,21 +30,24 @@ def create_two_servers_one_time():
     user_data = utils.b64encode(user_date_org)
 
     data = {
-        "availability_zone": "az1.dc1",
-        "name": "test-sdk-for-Linux-userdata",
-        "imageRef": "af60e0d5-6952-4f3d-b0ed-31bb19d4a692",
-        "flavorRef": "c2.large",
-        "vpcid": "0f22416a-53aa-4f45-b351-7807118c680b",
-        "user_data": user_data,
-        "nics": [
+        "server":
             {
-                "subnet_id": "d090d69f-2109-4228-a941-a6067723744a"
+                "availability_zone": "az1.dc1",
+                "name": "test-sdk-for-Linux-userdata",
+                "imageRef": "af60e0d5-6952-4f3d-b0ed-31bb19d4a692",
+                "flavorRef": "c2.large",
+                "vpcid": "0f22416a-53aa-4f45-b351-7807118c680b",
+                "user_data": user_data,
+                "nics": [
+                    {
+                        "subnet_id": "d090d69f-2109-4228-a941-a6067723744a"
+                    }
+                ],
+                "root_volume": {
+                    "volumetype": "SATA"
+                },
+                "count": 2
             }
-        ],
-        "root_volume": {
-            "volumetype": "SATA"
-        },
-        "count": 2
     }
 
     ff = conn.ecs.create_server(**data)

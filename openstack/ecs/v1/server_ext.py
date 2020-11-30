@@ -121,3 +121,4 @@ class ResizeServer(resource2.Resource):
     error = resource2.Body('error')
     message = resource2.Body('message')
     code = resource2.Body('code')
+    mode = resource2.Body('mode')

@@ -456,7 +456,7 @@ class Proxy(proxy2.BaseProxy):
         srv = _server.ServerDetail if details else _server.Server
         return self._list(srv, paginated=paginated, **query)
 
-    def servers_list(self, paginated=True, headers=None, **query):
+    def servers_list(self, details=True, paginated=True, headers=None, **query):
         """Retrieve a generator of servers
 
         :param bool details: When set to ``False``
@@ -497,7 +497,8 @@ class Proxy(proxy2.BaseProxy):
 
         :returns: A generator of server instances.
         """
-        return self._list_ext(_server.ServerListDetail, paginated=paginated, headers=headers, **query)
+        srv = _server.ServerListDetail if details else _server.ServerList
+        return self._list_ext(srv, paginated=paginated, headers=headers, **query)
 
     def update_server(self, server, **attrs):
         """Update a server

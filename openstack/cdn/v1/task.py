@@ -32,7 +32,7 @@ class Task(cdn_resource.Resource):
     _query_mapping = cdn_resource.QueryParameters('status', 'start_date',
                                                   'end_date', 'order_field',
                                                   'order_type',
-                                                  'user_domain_id')
+                                                  'user_domain_id', 'enterprise_project_id')
 
     #: The type of a task. The value is either 'refresh' or 'preheating'.
     task_type = resource.Body('task_type')
@@ -95,7 +95,7 @@ class Task(cdn_resource.Resource):
             params['order_field'] = mapping[params['order_field']]
         return super(Task, cls).list(session, paginated=paginated, **params)
 
-    def get(self, session, requires_id=True):
+    def get(self, session, requires_id=True, **params):
         """Get a remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -107,11 +107,10 @@ class Task(cdn_resource.Resource):
         :rtype: :class:`~openstack.cdn.v1.task.Task`
         """
         request = self._prepare_request(requires_id=requires_id)
-        # NOTE(samsong8610): The URL for GET is not standard.
         request.uri = utils.urljoin(request.uri, 'detail')
         endpoint_override = self.service.get_endpoint_override()
         response = session.get(request.uri, endpoint_filter=self.service,
-                               endpoint_override=endpoint_override)
+                               endpoint_override=endpoint_override, params=params)
 
         self._translate_response(response)
         return self
@@ -164,6 +163,7 @@ class RefreshTask(Task):
 
         self._translate_response(response)
         return self
+
 
 class PreheatTask(Task):
     base_path = '/cdn/preheatingtasks'

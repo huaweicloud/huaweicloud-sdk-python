@@ -712,17 +712,18 @@ class Proxy(proxy2.BaseProxy):
                      paginated=True)
         return self._list(_task.Task, **query)
 
-    def get_task(self, task):
+    def get_task(self, task_id, **params):
         """Get details about a cache refreshing or preheating task
 
-        :param task: The value can be the ID of a task or a
+        :param task_id: The value can be the ID of a task or a
                        :class:`~openstack.cdn.v1.task.Task` instance.
 
         :returns: One :class:`~openstack.cdn.v1.task.Task`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        return self._get(_task.Task, task)
+        res = self._get_resource(_task.Task, task_id)
+        return res.get(self._session, **params)
 
     def create_refresh_task(self, **attrs):
         """Create a new cache refresh task from attributes

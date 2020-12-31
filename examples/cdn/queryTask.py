@@ -57,15 +57,16 @@ def query_task():
     now = time.time()
     end_date = int(now * 1000)
     start_date = end_date - 3600 * 1000
-    tasks = conn.cdn.tasks(page_size=100, page_number=1, start_date=start_date, end_date=end_date)
+    tasks = conn.cdn.tasks(page_size=100, page_number=1, start_date=start_date, end_date=end_date,
+                           enterprise_project_id='ALL')
     task_list = list(tasks)
     print(task_list)
 
 
 # Querying Details About a Cache Refreshing or Preheating Task
-def query_task_detail(_task_id):
+def query_task_detail(task_id):
     print("query task detail by id:")
-    task_detail = conn.cdn.get_task(_task_id)
+    task_detail = conn.cdn.get_task(task_id, page_size=30, page_number=1, enterprise_project_id='ALL')
     print(task_detail)
 
 
@@ -76,5 +77,5 @@ if __name__ == "__main__":
     query_task()
 
     # Querying Details About a Cache Refreshing or Preheating Task
-    task_id = 'xxxxxxx'
-    query_task_detail(task_id)
+    history_task_id = 'xxxxxxx'
+    query_task_detail(history_task_id)

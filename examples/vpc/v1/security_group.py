@@ -68,9 +68,19 @@ def test_find_security_group(_conn):
     print(_conn.vpcv1.find_security_group('bcaac7e6-a9db-436d-b8c5-839b29407a18'))
 
 
+def test_add_security_group_to_server(_conn, server_id, sg_name):
+    print(_conn.compute.add_security_group_to_server(server_id, sg_name))
+
+
+def test_remove_security_group_from_server(_conn, server_id, sg_name):
+    print(_conn.compute.remove_security_group_from_server(server_id, sg_name))
+
+
 if __name__ == '__main__':
     test_security_groups(conn)
     test_get_security_group(conn)
     test_create_security_group(conn)
     test_delete_security_group(conn)
     test_find_security_group(conn)
+    test_add_security_group_to_server(conn, 'server_id', 'sg_name')
+    test_remove_security_group_from_server(conn, 'server_id', 'sg_name')
